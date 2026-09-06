@@ -1,218 +1,1032 @@
 <!DOCTYPE html>
+
 <html lang="pt-BR" class="dark">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SaaS Financeiro</title>
 
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        darkbg: '#0f172a',
-                        cardbg: '#1e293b'
-                    }
+<title id="titulo-pagina">SaaS Financeiro</title>
+
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com"></script>
+
+<script>
+    tailwind.config = {
+        darkMode: 'class',
+        theme: {
+            extend: {
+                colors: {
+                    darkbg: '#0f172a',
+                    cardbg: '#1e293b'
                 }
             }
         }
-    </script>
+    }
+</script>
 
-    <!-- ==================== ANIMAÇÕES ==================== -->
-    <style>
+<!-- ==================== ANIMAÇÕES ==================== -->
+<style>
 
-        /* Entrada suave das abas */
-        .aba-conteudo {
-            animation: aparecerAba 0.35s ease-out;
+    /* Entrada suave das abas */
+    .aba-conteudo {
+        animation: aparecerAba 0.35s ease-out;
+    }
+
+    @keyframes aparecerAba {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
         }
 
-        @keyframes aparecerAba {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
 
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+    /* Entrada dos cards */
+    .animar-card {
+        animation: aparecerCard 0.45s ease-out both;
+    }
+
+    @keyframes aparecerCard {
+        from {
+            opacity: 0;
+            transform: translateY(15px) scale(0.98);
         }
 
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
 
-        /* Entrada dos cards */
-        .animar-card {
-            animation: aparecerCard 0.45s ease-out both;
+    /* Animação dos cards do extrato */
+    .extrato-card {
+        animation: aparecerExtrato 0.35s ease-out both;
+    }
+
+    @keyframes aparecerExtrato {
+        from {
+            opacity: 0;
+            transform: translateY(8px);
         }
 
-        @keyframes aparecerCard {
-            from {
-                opacity: 0;
-                transform: translateY(15px) scale(0.98);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
+        to {
+            opacity: 1;
+            transform: translateY(0);
         }
+    }
 
+    /* Efeito de carregamento */
+    .carregando {
+        opacity: 0.55;
+        pointer-events: none;
+        transition: opacity 0.2s ease;
+    }
 
-        /* Animação dos cards do extrato */
-        .extrato-card {
-            animation: aparecerExtrato 0.35s ease-out both;
+    /* Pequeno efeito de brilho */
+    .efeito-hover {
+        transition:
+            transform 0.2s ease,
+            box-shadow 0.2s ease,
+            border-color 0.2s ease;
+    }
+
+    .efeito-hover:hover {
+        transform: translateY(-3px);
+    }
+
+    /* Botões */
+    button,
+    a,
+    select,
+    input {
+        transition:
+            transform 0.15s ease,
+            box-shadow 0.2s ease,
+            border-color 0.2s ease,
+            background-color 0.2s ease,
+            color 0.2s ease;
+    }
+
+    button:active {
+        transform: scale(0.97);
+    }
+
+    /* Inputs */
+    input:focus,
+    select:focus {
+        transform: translateY(-1px);
+    }
+
+    /* Botão principal */
+    .botao-animado:hover {
+        transform: translateY(-2px);
+    }
+
+    /* Badge de tipo */
+    .badge-tipo {
+        transition:
+            transform 0.2s ease,
+            box-shadow 0.2s ease;
+    }
+
+    .badge-tipo:hover {
+        transform: scale(1.05);
+    }
+
+    /* Preview da logo */
+    .logo-preview {
+        width: 88px;
+        height: 88px;
+        object-fit: cover;
+        border-radius: 18px;
+    }
+
+    /* Respeita usuários que preferem menos movimento */
+    @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
         }
+    }
 
-        @keyframes aparecerExtrato {
-            from {
-                opacity: 0;
-                transform: translateY(8px);
-            }
+    /* Faixa de notificação (substitui os alerts) */
+    #notificacoes-container {
+        position: fixed;
+        top: 5rem;
+        right: 1rem;
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        pointer-events: none;
+    }
 
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+    .notificacao-toast {
+        max-width: 20rem;
+        padding: 0.65rem 1rem;
+        border-radius: 0.75rem;
+        border: 1px solid transparent;
+        box-shadow: 0 8px 20px -4px rgba(0, 0, 0, 0.45);
+        font-size: 0.875rem;
+        font-weight: 500;
+        line-height: 1.25rem;
+        pointer-events: none;
+        animation: entraESaiToast 2.4s cubic-bezier(0.4, 0, 0.2, 1) both;
+    }
+
+    @keyframes entraESaiToast {
+        0% {
+            transform: translateX(130%);
+            opacity: 0;
         }
-
-
-        /* Efeito de carregamento */
-        .carregando {
-            opacity: 0.55;
-            pointer-events: none;
-            transition: opacity 0.2s ease;
+        8% {
+            transform: translateX(0);
+            opacity: 1;
         }
-
-
-        /* Pequeno efeito de brilho */
-        .efeito-hover {
-            transition:
-                transform 0.2s ease,
-                box-shadow 0.2s ease,
-                border-color 0.2s ease;
+        88% {
+            transform: translateX(0);
+            opacity: 1;
         }
-
-        .efeito-hover:hover {
-            transform: translateY(-3px);
+        100% {
+            transform: translateX(130%);
+            opacity: 0;
         }
+    }
 
+</style>
 
-        /* Botões */
-        button,
-        a,
-        select,
-        input {
-            transition:
-                transform 0.15s ease,
-                box-shadow 0.2s ease,
-                border-color 0.2s ease,
-                background-color 0.2s ease,
-                color 0.2s ease;
-        }
-
-
-        button:active {
-            transform: scale(0.97);
-        }
-
-
-        /* Inputs */
-        input:focus,
-        select:focus {
-            transform: translateY(-1px);
-        }
-
-
-        /* Botão principal */
-        .botao-animado:hover {
-            transform: translateY(-2px);
-        }
-
-
-        /* Badge de tipo */
-        .badge-tipo {
-            transition:
-                transform 0.2s ease,
-                box-shadow 0.2s ease;
-        }
-
-        .badge-tipo:hover {
-            transform: scale(1.05);
-        }
-
-
-        /* Respeita usuários que preferem menos movimento */
-        @media (prefers-reduced-motion: reduce) {
-
-            *,
-            *::before,
-            *::after {
-                animation-duration: 0.01ms !important;
-                animation-iteration-count: 1 !important;
-                transition-duration: 0.01ms !important;
-            }
-
-        }
-
-    </style>
 
 </head>
 
 <body class="bg-slate-950 text-slate-100 min-h-screen font-sans flex flex-col">
 
-    <!-- BARRA DE NAVEGAÇÃO -->
-    <nav class="bg-slate-900 border-b border-slate-800 sticky top-0 z-50">
+<!-- Container das notificações (faixa que entra e sai rapidamente) -->
+<div id="notificacoes-container"></div>
 
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-            <div class="flex flex-col gap-3 py-3 sm:flex-row sm:items-center sm:justify-between sm:h-16">
+<!-- ==================== BARRA DE NAVEGAÇÃO ==================== -->
+<nav class="bg-slate-900 border-b border-slate-800 sticky top-0 z-50">
 
-                <div class="flex items-center gap-3 shrink-0">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-                    <div
-                        class="p-2 bg-indigo-600 rounded-xl font-bold text-xl text-white efeito-hover cursor-default">
+        <div class="flex flex-col gap-3 py-3 sm:flex-row sm:items-center sm:justify-between sm:h-16">
+
+            <!-- IDENTIDADE DO SISTEMA -->
+            <div class="flex items-center gap-3 shrink-0">
+
+                <!-- LOGO -->
+                <div
+                    id="logo-container"
+                    class="w-10 h-10 rounded-xl font-bold text-lg text-white efeito-hover cursor-default flex items-center justify-center overflow-hidden">
+
+                    <span
+                        id="logo-fallback"
+                        class="w-full h-full p-2 bg-indigo-600 rounded-xl flex items-center justify-center">
                         SF
+                    </span>
+
+                    <img
+                        id="logo-topo"
+                        src=""
+                        alt="Logo"
+                        class="hidden w-full h-full object-cover">
+                </div>
+
+                <!-- NOME -->
+                <span
+                    id="nome-sistema-topo"
+                    class="font-bold text-base sm:text-lg tracking-wide text-slate-100">
+                    SaaS Financeiro
+                </span>
+
+            </div>
+
+
+            <!-- ==================== BOTÕES DE ABAS ==================== -->
+            <div class="flex w-full sm:w-auto gap-1 sm:gap-2 overflow-x-auto pb-1 sm:pb-0">
+
+                <button
+                    onclick="alternarAba('dashboard')"
+                    id="btn-dashboard"
+                    class="aba-btn shrink-0 px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all bg-indigo-600 text-white">
+
+                    Dashboard
+
+                </button>
+
+
+                <button
+                    onclick="alternarAba('declarar')"
+                    id="btn-declarar"
+                    class="aba-btn shrink-0 px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all text-slate-400 hover:text-white hover:bg-slate-800">
+
+                    Declarar
+
+                </button>
+
+
+                <button
+                    onclick="alternarAba('extrato')"
+                    id="btn-extrato"
+                    class="aba-btn shrink-0 px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all text-slate-400 hover:text-white hover:bg-slate-800">
+
+                    Extrato
+
+                </button>
+
+
+                <button
+                    onclick="alternarAba('configuracoes')"
+                    id="btn-configuracoes"
+                    class="aba-btn shrink-0 px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all text-slate-400 hover:text-white hover:bg-slate-800">
+
+                    Configurações
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</nav>
+
+
+<!-- ==================== CONTEÚDO PRINCIPAL ==================== -->
+<main class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-5 sm:py-8 flex-grow w-full min-w-0">
+
+
+    <!-- ==================== ABA 1: DASHBOARD ==================== -->
+    <section id="aba-dashboard" class="aba-conteudo space-y-6">
+
+
+        <!-- CARDS DE SALDO -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+
+
+            <div
+                class="bg-slate-900/90 border border-slate-800 p-4 sm:p-5 rounded-2xl shadow-lg min-w-0 animar-card efeito-hover"
+                style="animation-delay: 0.05s">
+
+                <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+                    Saldo Geral
+                </p>
+
+                <p class="text-xl sm:text-2xl font-bold mt-2 text-indigo-400 truncate">
+                    R$ {{ saldo_painel }}
+                </p>
+
+            </div>
+
+
+            <div
+                class="bg-slate-900/90 border border-slate-800 p-4 sm:p-5 rounded-2xl shadow-lg min-w-0 animar-card efeito-hover"
+                style="animation-delay: 0.1s">
+
+                <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+                    Total Entradas
+                </p>
+
+                <p class="text-xl sm:text-2xl font-bold mt-2 text-emerald-400 truncate">
+                    R$ {{ saldo_credit }}
+                </p>
+
+            </div>
+
+
+            <div
+                class="bg-slate-900/90 border border-slate-800 p-4 sm:p-5 rounded-2xl shadow-lg min-w-0 animar-card efeito-hover"
+                style="animation-delay: 0.15s">
+
+                <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+                    Total Saídas
+                </p>
+
+                <p class="text-xl sm:text-2xl font-bold mt-2 text-rose-400 truncate">
+                    R$ {{ saldo_debit }}
+                </p>
+
+            </div>
+
+
+            <div
+                class="bg-slate-900/90 border border-slate-800 p-4 sm:p-5 rounded-2xl shadow-lg min-w-0 animar-card efeito-hover"
+                style="animation-delay: 0.2s">
+
+                <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+                    Projeção (+5%)
+                </p>
+
+                <p class="text-xl sm:text-2xl font-bold mt-2 text-amber-400 truncate">
+                    R$ {{ projecao_saldo }}
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- TABELAS RESUMIDAS -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+
+            <!-- ENTRADAS -->
+            <div
+                class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-xl min-w-0 efeito-hover animar-card"
+                style="animation-delay: 0.25s">
+
+                <h3 class="text-lg font-bold text-emerald-400 mb-4 flex items-center gap-2">
+
+                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+
+                    Últimas Entradas
+
+                </h3>
+
+
+                <div class="overflow-x-auto">
+
+                    <table class="w-full table-fixed text-left text-xs sm:text-sm text-slate-300">
+
+                        <thead class="text-xs uppercase bg-slate-800/50 text-slate-400">
+
+                            <tr>
+
+                                <th class="p-2 sm:p-3 w-[40%]">
+                                    Descrição
+                                </th>
+
+                                <th class="p-2 sm:p-3 w-[30%]">
+                                    Categoria
+                                </th>
+
+                                <th class="p-2 sm:p-3 w-[30%] text-right">
+                                    Valor
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody class="divide-y divide-slate-800">
+
+                            {% for item in creditos %}
+
+                            <tr class="hover:bg-slate-800/40 transition-colors">
+
+                                <td class="p-2 sm:p-3 font-medium text-slate-200 break-words">
+                                    {{ item['nome'] }}
+                                </td>
+
+                                <td class="p-2 sm:p-3 text-slate-400 break-words">
+                                    {{ item['categoria']|capitalize }}
+                                </td>
+
+                                <td class="p-2 sm:p-3 text-right font-semibold text-emerald-400 whitespace-nowrap">
+                                    +R$ {{ "%.2f"|format(item['valor']) }}
+                                </td>
+
+                            </tr>
+
+                            {% else %}
+
+                            <tr>
+
+                                <td
+                                    colspan="3"
+                                    class="p-3 text-slate-500 italic text-center">
+
+                                    Nenhuma entrada recente.
+
+                                </td>
+
+                            </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+
+            <!-- SAÍDAS -->
+            <div
+                class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-xl min-w-0 efeito-hover animar-card"
+                style="animation-delay: 0.3s">
+
+                <h3 class="text-lg font-bold text-rose-400 mb-4 flex items-center gap-2">
+
+                    <span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
+
+                    Últimas Saídas
+
+                </h3>
+
+
+                <div class="overflow-x-auto">
+
+                    <table class="w-full table-fixed text-left text-xs sm:text-sm text-slate-300">
+
+                        <thead class="text-xs uppercase bg-slate-800/50 text-slate-400">
+
+                            <tr>
+
+                                <th class="p-2 sm:p-3 w-[40%]">
+                                    Descrição
+                                </th>
+
+                                <th class="p-2 sm:p-3 w-[30%]">
+                                    Categoria
+                                </th>
+
+                                <th class="p-2 sm:p-3 w-[30%] text-right">
+                                    Valor
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody class="divide-y divide-slate-800">
+
+                            {% for item in debitos %}
+
+                            <tr class="hover:bg-slate-800/40 transition-colors">
+
+                                <td class="p-2 sm:p-3 font-medium text-slate-200 break-words">
+                                    {{ item['nome'] }}
+                                </td>
+
+                                <td class="p-2 sm:p-3 text-slate-400 break-words">
+                                    {{ item['categoria']|capitalize }}
+                                </td>
+
+                                <td class="p-2 sm:p-3 text-right font-semibold text-rose-400 whitespace-nowrap">
+                                    -R$ {{ "%.2f"|format(item['valor']) }}
+                                </td>
+
+                            </tr>
+
+                            {% else %}
+
+                            <tr>
+
+                                <td
+                                    colspan="3"
+                                    class="p-3 text-slate-500 italic text-center">
+
+                                    Nenhuma saída recente.
+
+                                </td>
+
+                            </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ==================== ABA 2: DECLARAR ==================== -->
+    <section
+        id="aba-declarar"
+        class="aba-conteudo hidden max-w-2xl mx-auto">
+
+        <div
+            class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-xl min-w-0 efeito-hover">
+
+            <h3 class="text-xl font-bold text-slate-100 mb-6">
+                Novo Lançamento
+            </h3>
+
+
+            <form
+                action="/actions/salvar_declaracao"
+                method="POST"
+                class="space-y-4">
+
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+                    <div>
+
+                        <label class="block text-sm font-medium text-slate-300 mb-1">
+                            Tipo
+                        </label>
+
+                        <select
+                            name="tipo"
+                            class="w-full px-4 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-slate-100 focus:ring-2 focus:ring-indigo-500 outline-none">
+
+                            <option value="entrada">
+                                Entrada (+)
+                            </option>
+
+                            <option value="saida">
+                                Saída (-)
+                            </option>
+
+                        </select>
+
                     </div>
 
-                    <span class="font-bold text-base sm:text-lg tracking-wide text-slate-100">
-                        SaaS Financeiro
-                    </span>
+
+                    <div>
+
+                        <label class="block text-sm font-medium text-slate-300 mb-1">
+                            Valor (R$)
+                        </label>
+
+                        <input
+                            type="number"
+                            step="0.01"
+                            name="valor"
+                            placeholder="0.00"
+                            required
+                            class="w-full px-4 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-slate-100 focus:ring-2 focus:ring-indigo-500 outline-none">
+
+                    </div>
 
                 </div>
 
 
-                <!-- BOTÕES DE ABAS -->
-                <div class="flex w-full sm:w-auto gap-1 sm:gap-2 overflow-x-auto pb-1 sm:pb-0">
+                <div>
 
-                    <button onclick="alternarAba('dashboard')"
-                        id="btn-dashboard"
-                        class="aba-btn shrink-0 px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all bg-indigo-600 text-white">
-                        Dashboard
+                    <label class="block text-sm font-medium text-slate-300 mb-1">
+                        Descrição
+                    </label>
+
+                    <input
+                        type="text"
+                        name="nome"
+                        placeholder="Ex: Pagamento de Fornecedor"
+                        required
+                        class="w-full px-4 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-slate-100 focus:ring-2 focus:ring-indigo-500 outline-none">
+
+                </div>
+
+
+                <div>
+
+                    <label class="block text-sm font-medium text-slate-300 mb-1">
+                        Categoria
+                    </label>
+
+                    <select
+                        name="categoria"
+                        id="select_categoria_declarar"
+                        required
+                        class="w-full px-4 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-slate-100 focus:ring-2 focus:ring-indigo-500 outline-none">
+                    </select>
+
+                </div>
+
+
+                <div class="flex items-center gap-2 pt-2">
+
+                    <input
+                        type="checkbox"
+                        name="recorrente"
+                        id="recorrente"
+                        class="w-4 h-4 rounded bg-slate-950 border-slate-700 text-indigo-600 focus:ring-indigo-500">
+
+                    <label
+                        for="recorrente"
+                        class="text-sm text-slate-300">
+
+                        Lançamento Recorrente Mensal
+
+                    </label>
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="w-full mt-4 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-3 px-4 rounded-xl shadow-lg transition-all botao-animado">
+
+                    Salvar Transação
+
+                </button>
+
+            </form>
+
+        </div>
+
+    </section>
+
+
+    <!-- ==================== ABA 3: EXTRATO ==================== -->
+    <section
+        id="aba-extrato"
+        class="aba-conteudo hidden space-y-6">
+
+
+        <!-- FILTROS -->
+        <div
+            class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-xl flex flex-col sm:flex-row flex-wrap gap-4 items-stretch sm:items-end justify-between efeito-hover">
+
+
+            <div
+                class="flex flex-col sm:flex-row flex-wrap gap-4 items-stretch sm:items-end min-w-0">
+
+
+                <div>
+
+                    <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">
+                        Mês
+                    </label>
+
+                    <select
+                        id="select_mes"
+                        onchange="carregarExtrato()"
+                        class="w-full sm:w-auto px-4 py-2 bg-slate-950 border border-slate-700 rounded-xl text-slate-100">
+
+                        <option value="jan">Janeiro</option>
+                        <option value="fev">Fevereiro</option>
+                        <option value="mar">Março</option>
+                        <option value="abr">Abril</option>
+                        <option value="mai">Maio</option>
+                        <option value="jun">Junho</option>
+                        <option value="jul" selected>Julho</option>
+                        <option value="ago">Agosto</option>
+                        <option value="set">Setembro</option>
+                        <option value="out">Outubro</option>
+                        <option value="nov">Novembro</option>
+                        <option value="dez">Dezembro</option>
+
+                    </select>
+
+                </div>
+
+
+                <div>
+
+                    <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">
+                        Ano
+                    </label>
+
+                    <select
+                        id="select_ano"
+                        onchange="carregarExtrato()"
+                        class="w-full sm:w-auto px-4 py-2 bg-slate-950 border border-slate-700 rounded-xl text-slate-100">
+
+                        <option value="2025">
+                            2025
+                        </option>
+
+                        <option value="2026" selected>
+                            2026
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div>
+
+                    <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">
+                        Categoria
+                    </label>
+
+                    <select
+                        id="select_categoria_filtro"
+                        onchange="carregarExtrato()"
+                        class="w-full sm:w-auto px-4 py-2 bg-slate-950 border border-slate-700 rounded-xl text-slate-100">
+                    </select>
+
+                </div>
+
+            </div>
+
+
+            <!-- BOTÃO EXPORTAR PDF -->
+            <button
+                onclick="exportarPDFComFiltro()"
+                class="w-full sm:w-auto justify-center bg-indigo-600 hover:bg-indigo-500 text-white font-medium py-2 px-5 rounded-xl transition-all flex items-center gap-2 shadow-lg botao-animado">
+
+                <svg
+                    class="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24">
+
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                    </path>
+
+                </svg>
+
+                Exportar PDF
+
+            </button>
+
+        </div>
+
+
+        <!-- ==================== TABELA DESKTOP ==================== -->
+        <div
+            class="hidden sm:block bg-slate-900/90 border border-slate-800 rounded-2xl p-3 sm:p-6 shadow-xl overflow-x-auto max-w-full efeito-hover">
+
+            <table
+                class="w-full min-w-[680px] text-left text-sm text-slate-300">
+
+                <thead
+                    class="text-xs uppercase bg-slate-800/50 text-slate-400">
+
+                    <tr>
+
+                        <th class="p-3">
+                            Data
+                        </th>
+
+                        <th class="p-3">
+                            Tipo
+                        </th>
+
+                        <th class="p-3">
+                            Descrição
+                        </th>
+
+                        <th class="p-3">
+                            Categoria
+                        </th>
+
+                        <th class="p-3 text-right">
+                            Valor
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody
+                    id="tabela-extrato-corpo"
+                    class="divide-y divide-slate-800">
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+        <!-- ==================== CARDS MOBILE ==================== -->
+        <div
+            id="extrato-mobile"
+            class="sm:hidden grid grid-cols-1 gap-3">
+        </div>
+
+    </section>
+
+
+    <!-- ==================== ABA 4: CONFIGURAÇÕES ==================== -->
+    <section
+        id="aba-configuracoes"
+        class="aba-conteudo hidden space-y-6 max-w-4xl mx-auto">
+
+
+        <!-- ==================== IDENTIDADE DO SISTEMA ==================== -->
+        <div
+            class="bg-slate-900/90 backdrop-blur-md rounded-2xl shadow-xl border border-slate-800 overflow-hidden efeito-hover">
+
+
+            <div
+                class="bg-indigo-600/20 border-b border-indigo-500/20 px-6 py-4 flex items-center gap-3">
+
+                <div
+                    class="p-2 bg-indigo-500/10 rounded-lg border border-indigo-500/20 text-indigo-400">
+
+                    <svg
+                        class="w-5 h-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24">
+
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M4 7h16M4 12h16M4 17h16">
+                        </path>
+
+                    </svg>
+
+                </div>
+
+
+                <div>
+
+                    <h3 class="font-semibold text-lg text-slate-100">
+                        Identidade do Sistema
+                    </h3>
+
+                    <p class="text-xs text-slate-400">
+                        Personalize o nome e a logo exibidos no sistema.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="p-6">
+
+                <!-- NOME -->
+                <div class="mb-6">
+
+                    <label
+                        for="nome_sistema"
+                        class="block text-sm font-medium text-slate-300 mb-1.5">
+
+                        Nome do Sistema
+
+                    </label>
+
+
+                    <input
+                        type="text"
+                        id="nome_sistema"
+                        maxlength="50"
+                        value="SaaS Financeiro"
+                        placeholder="Ex: Minha Empresa"
+                        class="w-full px-4 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+
+                    <p class="text-xs text-slate-500 mt-1.5">
+                        Esse nome será exibido no topo do sistema.
+                    </p>
+
+                </div>
+
+
+                <!-- LOGO -->
+                <div class="border-t border-slate-800 pt-6">
+
+                    <label class="block text-sm font-medium text-slate-300 mb-3">
+                        Logo do Sistema
+                    </label>
+
+
+                    <div class="flex flex-col sm:flex-row gap-5 items-start sm:items-center">
+
+
+                        <!-- PREVIEW -->
+                        <div
+                            class="shrink-0 w-24 h-24 bg-slate-950 border border-slate-700 rounded-2xl flex items-center justify-center overflow-hidden">
+
+                            <div
+                                id="logo-preview-fallback"
+                                class="w-full h-full flex items-center justify-center text-2xl font-bold text-white bg-indigo-600">
+
+                                SF
+
+                            </div>
+
+
+                            <img
+                                id="logo-preview"
+                                src=""
+                                alt="Prévia da logo"
+                                class="hidden logo-preview">
+
+                        </div>
+
+
+                        <!-- CONTROLES -->
+                        <div class="flex-1 w-full">
+
+                            <input
+                                type="file"
+                                id="input_logo"
+                                accept="image/png,image/jpeg,image/jpg,image/webp"
+                                class="hidden"
+                                onchange="selecionarLogo(event)">
+
+
+                            <div class="flex flex-col sm:flex-row gap-2">
+
+                                <button
+                                    type="button"
+                                    onclick="document.getElementById('input_logo').click()"
+                                    class="bg-indigo-600 hover:bg-indigo-500 text-white font-medium py-2.5 px-5 rounded-xl transition-all botao-animado">
+
+                                    Escolher Imagem
+
+                                </button>
+
+
+                                <button
+                                    type="button"
+                                    onclick="removerLogo()"
+                                    class="bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 font-medium py-2.5 px-5 rounded-xl transition-all">
+
+                                    Remover Logo
+
+                                </button>
+
+                            </div>
+
+
+                            <p class="text-xs text-slate-500 mt-2">
+                                Formatos aceitos: PNG, JPG, JPEG e WEBP.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- SALVAR -->
+                <div class="border-t border-slate-800 mt-6 pt-5 flex flex-col sm:flex-row justify-end gap-3">
+
+                    <button
+                        type="button"
+                        onclick="restaurarIdentidade()"
+                        class="w-full sm:w-auto bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 font-medium py-2.5 px-5 rounded-xl transition-all">
+
+                        Restaurar Padrão
+
                     </button>
 
 
-                    <button onclick="alternarAba('declarar')"
-                        id="btn-declarar"
-                        class="aba-btn shrink-0 px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all text-slate-400 hover:text-white hover:bg-slate-800">
-                        Declarar
-                    </button>
+                    <button
+                        type="button"
+                        onclick="salvarIdentidade()"
+                        class="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-500 text-white font-medium py-2.5 px-6 rounded-xl transition-all shadow-lg shadow-emerald-900/20 botao-animado">
 
+                        Salvar Alterações
 
-                    <button onclick="alternarAba('extrato')"
-                        id="btn-extrato"
-                        class="aba-btn shrink-0 px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all text-slate-400 hover:text-white hover:bg-slate-800">
-                        Extrato
-                    </button>
-
-
-                    <button onclick="alternarAba('configuracoes')"
-                        id="btn-configuracoes"
-                        class="aba-btn shrink-0 px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all text-slate-400 hover:text-white hover:bg-slate-800">
-                        Configurações
                     </button>
 
                 </div>
@@ -221,1369 +1035,1297 @@
 
         </div>
 
-    </nav>
 
+        <!-- ==================== GERENCIADOR DE CATEGORIAS ==================== -->
+        <div
+            class="bg-slate-900/90 backdrop-blur-md rounded-2xl shadow-xl border border-slate-800 overflow-hidden efeito-hover">
 
-    <!-- CONTEÚDO PRINCIPAL -->
-    <main class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-5 sm:py-8 flex-grow w-full min-w-0">
 
+            <div
+                class="bg-indigo-600/20 border-b border-indigo-500/20 px-6 py-4 flex items-center gap-3">
 
-        <!-- ==================== ABA 1: DASHBOARD ==================== -->
-        <section id="aba-dashboard" class="aba-conteudo space-y-6">
+                <div
+                    class="p-2 bg-indigo-500/10 rounded-lg border border-indigo-500/20 text-indigo-400">
 
-
-            <!-- CARDS DE SALDO -->
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-
-
-                <div class="bg-slate-900/90 border border-slate-800 p-4 sm:p-5 rounded-2xl shadow-lg min-w-0 animar-card efeito-hover"
-                    style="animation-delay: 0.05s">
-
-                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">
-                        Saldo Geral
-                    </p>
-
-                    <p class="text-xl sm:text-2xl font-bold mt-2 text-indigo-400 truncate">
-                        R$ {{ saldo_painel }}
-                    </p>
-
-                </div>
-
-
-                <div class="bg-slate-900/90 border border-slate-800 p-4 sm:p-5 rounded-2xl shadow-lg min-w-0 animar-card efeito-hover"
-                    style="animation-delay: 0.1s">
-
-                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">
-                        Total Entradas
-                    </p>
-
-                    <p class="text-xl sm:text-2xl font-bold mt-2 text-emerald-400 truncate">
-                        R$ {{ saldo_credit }}
-                    </p>
-
-                </div>
-
-
-                <div class="bg-slate-900/90 border border-slate-800 p-4 sm:p-5 rounded-2xl shadow-lg min-w-0 animar-card efeito-hover"
-                    style="animation-delay: 0.15s">
-
-                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">
-                        Total Saídas
-                    </p>
-
-                    <p class="text-xl sm:text-2xl font-bold mt-2 text-rose-400 truncate">
-                        R$ {{ saldo_debit }}
-                    </p>
-
-                </div>
-
-
-                <div class="bg-slate-900/90 border border-slate-800 p-4 sm:p-5 rounded-2xl shadow-lg min-w-0 animar-card efeito-hover"
-                    style="animation-delay: 0.2s">
-
-                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">
-                        Projeção (+5%)
-                    </p>
-
-                    <p class="text-xl sm:text-2xl font-bold mt-2 text-amber-400 truncate">
-                        R$ {{ projecao_saldo }}
-                    </p>
-
-                </div>
-
-            </div>
-
-
-            <!-- TABELAS RESUMIDAS -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-
-
-                <!-- ENTRADAS -->
-                <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-xl min-w-0 efeito-hover animar-card"
-                    style="animation-delay: 0.25s">
-
-                    <h3 class="text-lg font-bold text-emerald-400 mb-4 flex items-center gap-2">
-
-                        <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
-
-                        Últimas Entradas
-
-                    </h3>
-
-
-                    <div class="overflow-x-auto">
-
-                        <table class="w-full table-fixed text-left text-xs sm:text-sm text-slate-300">
-
-                            <thead class="text-xs uppercase bg-slate-800/50 text-slate-400">
-
-                                <tr>
-
-                                    <th class="p-2 sm:p-3 w-[40%]">
-                                        Descrição
-                                    </th>
-
-                                    <th class="p-2 sm:p-3 w-[30%]">
-                                        Categoria
-                                    </th>
-
-                                    <th class="p-2 sm:p-3 w-[30%] text-right">
-                                        Valor
-                                    </th>
-
-                                </tr>
-
-                            </thead>
-
-
-                            <tbody class="divide-y divide-slate-800">
-
-                                {% for item in creditos %}
-
-                                <tr class="hover:bg-slate-800/40 transition-colors">
-
-                                    <td class="p-2 sm:p-3 font-medium text-slate-200 break-words">
-                                        {{ item['nome'] }}
-                                    </td>
-
-                                    <td class="p-2 sm:p-3 text-slate-400 break-words">
-                                        {{ item['categoria']|capitalize }}
-                                    </td>
-
-                                    <td class="p-2 sm:p-3 text-right font-semibold text-emerald-400 whitespace-nowrap">
-                                        +R$ {{ "%.2f"|format(item['valor']) }}
-                                    </td>
-
-                                </tr>
-
-                                {% else %}
-
-                                <tr>
-
-                                    <td colspan="3"
-                                        class="p-3 text-slate-500 italic text-center">
-
-                                        Nenhuma entrada recente.
-
-                                    </td>
-
-                                </tr>
-
-                                {% endfor %}
-
-                            </tbody>
-
-                        </table>
-
-                    </div>
-
-                </div>
-
-
-                <!-- SAÍDAS -->
-                <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-xl min-w-0 efeito-hover animar-card"
-                    style="animation-delay: 0.3s">
-
-                    <h3 class="text-lg font-bold text-rose-400 mb-4 flex items-center gap-2">
-
-                        <span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
-
-                        Últimas Saídas
-
-                    </h3>
-
-
-                    <div class="overflow-x-auto">
-
-                        <table class="w-full table-fixed text-left text-xs sm:text-sm text-slate-300">
-
-                            <thead class="text-xs uppercase bg-slate-800/50 text-slate-400">
-
-                                <tr>
-
-                                    <th class="p-2 sm:p-3 w-[40%]">
-                                        Descrição
-                                    </th>
-
-                                    <th class="p-2 sm:p-3 w-[30%]">
-                                        Categoria
-                                    </th>
-
-                                    <th class="p-2 sm:p-3 w-[30%] text-right">
-                                        Valor
-                                    </th>
-
-                                </tr>
-
-                            </thead>
-
-
-                            <tbody class="divide-y divide-slate-800">
-
-                                {% for item in debitos %}
-
-                                <tr class="hover:bg-slate-800/40 transition-colors">
-
-                                    <td class="p-2 sm:p-3 font-medium text-slate-200 break-words">
-                                        {{ item['nome'] }}
-                                    </td>
-
-                                    <td class="p-2 sm:p-3 text-slate-400 break-words">
-                                        {{ item['categoria']|capitalize }}
-                                    </td>
-
-                                    <td class="p-2 sm:p-3 text-right font-semibold text-rose-400 whitespace-nowrap">
-                                        -R$ {{ "%.2f"|format(item['valor']) }}
-                                    </td>
-
-                                </tr>
-
-                                {% else %}
-
-                                <tr>
-
-                                    <td colspan="3"
-                                        class="p-3 text-slate-500 italic text-center">
-
-                                        Nenhuma saída recente.
-
-                                    </td>
-
-                                </tr>
-
-                                {% endfor %}
-
-                            </tbody>
-
-                        </table>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- ==================== ABA 2: DECLARAR ==================== -->
-        <section id="aba-declarar"
-            class="aba-conteudo hidden max-w-2xl mx-auto">
-
-
-            <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-xl min-w-0 efeito-hover">
-
-
-                <h3 class="text-xl font-bold text-slate-100 mb-6">
-                    Novo Lançamento
-                </h3>
-
-
-                <form action="/actions/salvar_declaracao"
-                    method="POST"
-                    class="space-y-4">
-
-
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-
-
-                        <div>
-
-                            <label class="block text-sm font-medium text-slate-300 mb-1">
-                                Tipo
-                            </label>
-
-                            <select name="tipo"
-                                class="w-full px-4 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-slate-100 focus:ring-2 focus:ring-indigo-500 outline-none">
-
-                                <option value="entrada">
-                                    Entrada (+)
-                                </option>
-
-                                <option value="saida">
-                                    Saída (-)
-                                </option>
-
-                            </select>
-
-                        </div>
-
-
-                        <div>
-
-                            <label class="block text-sm font-medium text-slate-300 mb-1">
-                                Valor (R$)
-                            </label>
-
-                            <input type="number"
-                                step="0.01"
-                                name="valor"
-                                placeholder="0.00"
-                                required
-                                class="w-full px-4 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-slate-100 focus:ring-2 focus:ring-indigo-500 outline-none">
-
-                        </div>
-
-                    </div>
-
-
-                    <div>
-
-                        <label class="block text-sm font-medium text-slate-300 mb-1">
-                            Descrição
-                        </label>
-
-                        <input type="text"
-                            name="nome"
-                            placeholder="Ex: Pagamento de Fornecedor"
-                            required
-                            class="w-full px-4 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-slate-100 focus:ring-2 focus:ring-indigo-500 outline-none">
-
-                    </div>
-
-
-                    <div>
-
-                        <label class="block text-sm font-medium text-slate-300 mb-1">
-                            Categoria
-                        </label>
-
-                        <select name="categoria"
-                            id="select_categoria_declarar"
-                            required
-                            class="w-full px-4 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-slate-100 focus:ring-2 focus:ring-indigo-500 outline-none">
-                        </select>
-
-                    </div>
-
-
-                    <div class="flex items-center gap-2 pt-2">
-
-                        <input type="checkbox"
-                            name="recorrente"
-                            id="recorrente"
-                            class="w-4 h-4 rounded bg-slate-950 border-slate-700 text-indigo-600 focus:ring-indigo-500">
-
-                        <label for="recorrente"
-                            class="text-sm text-slate-300">
-
-                            Lançamento Recorrente Mensal
-
-                        </label>
-
-                    </div>
-
-
-                    <button type="submit"
-                        class="w-full mt-4 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-3 px-4 rounded-xl shadow-lg transition-all botao-animado">
-
-                        Salvar Transação
-
-                    </button>
-
-                </form>
-
-            </div>
-
-        </section>
-
-
-        <!-- ==================== ABA 3: EXTRATO ==================== -->
-        <section id="aba-extrato"
-            class="aba-conteudo hidden space-y-6">
-
-
-            <!-- FILTROS -->
-            <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-xl flex flex-col sm:flex-row flex-wrap gap-4 items-stretch sm:items-end justify-between efeito-hover">
-
-
-                <div class="flex flex-col sm:flex-row flex-wrap gap-4 items-stretch sm:items-end min-w-0">
-
-
-                    <div>
-
-                        <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">
-                            Mês
-                        </label>
-
-                        <select id="select_mes"
-                            onchange="carregarExtrato()"
-                            class="w-full sm:w-auto px-4 py-2 bg-slate-950 border border-slate-700 rounded-xl text-slate-100">
-
-                            <option value="jan">Janeiro</option>
-                            <option value="fev">Fevereiro</option>
-                            <option value="mar">Março</option>
-                            <option value="abr">Abril</option>
-                            <option value="mai">Maio</option>
-                            <option value="jun">Junho</option>
-                            <option value="jul" selected>Julho</option>
-                            <option value="ago">Agosto</option>
-                            <option value="set">Setembro</option>
-                            <option value="out">Outubro</option>
-                            <option value="nov">Novembro</option>
-                            <option value="dez">Dezembro</option>
-
-                        </select>
-
-                    </div>
-
-
-                    <div>
-
-                        <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">
-                            Ano
-                        </label>
-
-                        <select id="select_ano"
-                            onchange="carregarExtrato()"
-                            class="w-full sm:w-auto px-4 py-2 bg-slate-950 border border-slate-700 rounded-xl text-slate-100">
-
-                            <option value="2025">
-                                2025
-                            </option>
-
-                            <option value="2026" selected>
-                                2026
-                            </option>
-
-                        </select>
-
-                    </div>
-
-
-                    <div>
-
-                        <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">
-                            Categoria
-                        </label>
-
-                        <select id="select_categoria_filtro"
-                            onchange="carregarExtrato()"
-                            class="w-full sm:w-auto px-4 py-2 bg-slate-950 border border-slate-700 rounded-xl text-slate-100">
-                        </select>
-
-                    </div>
-
-                </div>
-
-
-                <!-- BOTÃO EXPORTAR PDF -->
-                <button onclick="exportarPDFComFiltro()"
-                    class="w-full sm:w-auto justify-center bg-indigo-600 hover:bg-indigo-500 text-white font-medium py-2 px-5 rounded-xl transition-all flex items-center gap-2 shadow-lg botao-animado">
-
-                    <svg class="w-5 h-5"
+                    <svg
+                        class="w-5 h-5"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24">
 
-                        <path stroke-linecap="round"
+                        <path
+                            stroke-linecap="round"
                             stroke-linejoin="round"
                             stroke-width="2"
-                            d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                            d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a1.994 1.994 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z">
                         </path>
 
                     </svg>
 
-                    Exportar PDF
-
-                </button>
-
-            </div>
+                </div>
 
 
-            <!-- ==================== TABELA DESKTOP ==================== -->
-            <div class="hidden sm:block bg-slate-900/90 border border-slate-800 rounded-2xl p-3 sm:p-6 shadow-xl overflow-x-auto max-w-full efeito-hover">
-
-                <table class="w-full min-w-[680px] text-left text-sm text-slate-300">
-
-                    <thead class="text-xs uppercase bg-slate-800/50 text-slate-400">
-
-                        <tr>
-
-                            <th class="p-3">
-                                Data
-                            </th>
-
-                            <th class="p-3">
-                                Tipo
-                            </th>
-
-                            <th class="p-3">
-                                Descrição
-                            </th>
-
-                            <th class="p-3">
-                                Categoria
-                            </th>
-
-                            <th class="p-3 text-right">
-                                Valor
-                            </th>
-
-                        </tr>
-
-                    </thead>
-
-
-                    <tbody id="tabela-extrato-corpo"
-                        class="divide-y divide-slate-800">
-
-                    </tbody>
-
-                </table>
+                <h3 class="font-semibold text-lg text-slate-100">
+                    Gerenciador de Categorias
+                </h3>
 
             </div>
 
 
-            <!-- ==================== CARDS MOBILE ==================== -->
-            <div id="extrato-mobile"
-                class="sm:hidden grid grid-cols-1 gap-3">
-
-            </div>
-
-        </section>
+            <div class="p-6">
 
 
-        <!-- ==================== ABA 4: CONFIGURAÇÕES ==================== -->
-        <section id="aba-configuracoes"
-            class="aba-conteudo hidden space-y-6 max-w-4xl mx-auto">
+                <form
+                    onsubmit="cadastrarCategoria(event)"
+                    class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
 
 
-            <!-- GERENCIADOR DE CATEGORIAS -->
-            <div class="bg-slate-900/90 backdrop-blur-md rounded-2xl shadow-xl border border-slate-800 overflow-hidden efeito-hover">
+                    <div class="md:col-span-2">
+
+                        <label
+                            for="nome_categoria"
+                            class="block text-sm font-medium text-slate-300 mb-1.5">
+
+                            Nome da Nova Categoria
+
+                        </label>
 
 
-                <div class="bg-indigo-600/20 border-b border-indigo-500/20 px-6 py-4 flex items-center gap-3">
-
-                    <div class="p-2 bg-indigo-500/10 rounded-lg border border-indigo-500/20 text-indigo-400">
-
-                        <svg class="w-5 h-5"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24">
-
-                            <path stroke-linecap="round"
-                                stroke-linejoin="round"
-                                stroke-width="2"
-                                d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a1.994 1.994 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z">
-                            </path>
-
-                        </svg>
+                        <input
+                            type="text"
+                            id="nome_categoria"
+                            placeholder="Ex: Software, Marketing, Impostos"
+                            required
+                            class="w-full px-4 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500">
 
                     </div>
 
 
-                    <h3 class="font-semibold text-lg text-slate-100">
-                        Gerenciador de Categorias
-                    </h3>
+                    <div class="flex items-end">
 
-                </div>
+                        <button
+                            type="submit"
+                            class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-medium py-2.5 px-4 rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg shadow-emerald-900/20 botao-animado">
 
+                            <svg
+                                class="w-5 h-5"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24">
 
-                <div class="p-6">
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M12 6v6m0 0v6m0-6h6m-6 0H6">
+                                </path>
 
+                            </svg>
 
-                    <form onsubmit="cadastrarCategoria(event)"
-                        class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                            Adicionar
 
-
-                        <div class="md:col-span-2">
-
-                            <label for="nome_categoria"
-                                class="block text-sm font-medium text-slate-300 mb-1.5">
-
-                                Nome da Nova Categoria
-
-                            </label>
-
-
-                            <input type="text"
-                                id="nome_categoria"
-                                placeholder="Ex: Software, Marketing, Impostos"
-                                required
-                                class="w-full px-4 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-
-                        </div>
-
-
-                        <div class="flex items-end">
-
-                            <button type="submit"
-                                class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-medium py-2.5 px-4 rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg shadow-emerald-900/20 botao-animado">
-
-                                <svg class="w-5 h-5"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    viewBox="0 0 24 24">
-
-                                    <path stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        stroke-width="2"
-                                        d="M12 6v6m0 0v6m0-6h6m-6 0H6">
-                                    </path>
-
-                                </svg>
-
-                                Adicionar
-
-                            </button>
-
-                        </div>
-
-                    </form>
-
-
-                    <div class="border-t border-slate-800 pt-5">
-
-                        <h4 class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">
-                            Categorias Cadastradas
-                        </h4>
-
-
-                        <div id="lista-badges-categorias"
-                            class="flex flex-wrap gap-2">
-
-                        </div>
+                        </button>
 
                     </div>
 
-                </div>
-
-            </div>
+                </form>
 
 
-            <!-- BACKUP -->
-            <div class="bg-slate-900/90 rounded-2xl shadow-xl border border-slate-800 p-4 sm:p-6 flex flex-col sm:flex-row gap-4 justify-between items-stretch sm:items-center efeito-hover">
+                <div class="border-t border-slate-800 pt-5">
 
+                    <h4
+                        class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">
 
-                <div>
+                        Categorias Cadastradas
 
-                    <h4 class="font-bold text-slate-100">
-                        Backup do Banco de Dados
                     </h4>
 
-                    <p class="text-sm text-slate-400">
-                        Baixe uma cópia completa do arquivo SQLite contendo suas transações e dados.
-                    </p>
+
+                    <div
+                        id="lista-badges-categorias"
+                        class="flex flex-wrap gap-2">
+
+                    </div>
 
                 </div>
 
+            </div>
 
-                <a href="/backup_db"
-                    class="w-full sm:w-auto text-center bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-medium py-2.5 px-5 rounded-xl transition-all botao-animado">
+        </div>
 
-                    Baixar DB
 
-                </a>
+        <!-- ==================== BACKUP ==================== -->
+        <div
+            class="bg-slate-900/90 rounded-2xl shadow-xl border border-slate-800 p-4 sm:p-6 flex flex-col sm:flex-row gap-4 justify-between items-stretch sm:items-center efeito-hover">
+
+
+            <div>
+
+                <h4 class="font-bold text-slate-100">
+                    Backup do Banco de Dados
+                </h4>
+
+                <p class="text-sm text-slate-400">
+                    Baixe uma cópia completa do arquivo SQLite contendo suas transações e dados.
+                </p>
 
             </div>
 
-        </section>
 
-    </main>
+            <a
+                href="/backup_db"
+                class="w-full sm:w-auto text-center bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-medium py-2.5 px-5 rounded-xl transition-all botao-animado">
+
+                Baixar DB
+
+            </a>
+
+        </div>
+
+    </section>
+
+</main>
 
 
-    <!-- SCRIPT JAVASCRIPT PRINCIPAL -->
-    <script>
+<!-- ==================== SCRIPT JAVASCRIPT PRINCIPAL ==================== -->
+<script>
 
 
-        // ==================== NAVEGAÇÃO DE ABAS ====================
+    // ============================================================
+    // NOTIFICAÇÕES (faixa que entra e sai rapidamente)
+    // Substitui os alert() nativos do navegador
+    // ============================================================
+    function mostrarNotificacao(mensagem, tipo) {
 
-        function alternarAba(nomeAba) {
+        tipo = tipo || 'info';
 
-            document.querySelectorAll('.aba-conteudo').forEach(el => {
+        const container =
+            document.getElementById('notificacoes-container');
+
+        if (!container) {
+            return;
+        }
+
+        const cores = {
+            info: 'bg-slate-800 border-slate-600 text-slate-100',
+            sucesso: 'bg-emerald-600 border-emerald-500 text-white',
+            erro: 'bg-red-600 border-red-500 text-white',
+            aviso: 'bg-amber-500 border-amber-400 text-slate-950'
+        };
+
+        const toast = document.createElement('div');
+
+        toast.className =
+            'notificacao-toast ' +
+            (cores[tipo] || cores.info);
+
+        toast.textContent = mensagem;
+
+        container.appendChild(toast);
+
+        // Remove do DOM quando a animação termina
+        toast.addEventListener('animationend', () => {
+            toast.remove();
+        });
+
+    }
+
+
+    // ============================================================
+    // IDENTIDADE DO SISTEMA
+    // ============================================================
+
+    const CONFIG_IDENTIDADE = {
+        nomePadrao: 'SaaS Financeiro',
+        logoPadrao: null
+    };
+
+
+    // Carrega as configurações salvas
+    function carregarIdentidade() {
+
+        const nomeSalvo =
+            localStorage.getItem('saas_nome_sistema');
+
+        const logoSalva =
+            localStorage.getItem('saas_logo_sistema');
+
+
+        const nome =
+            nomeSalvo ||
+            CONFIG_IDENTIDADE.nomePadrao;
+
+
+        // Atualiza campo da configuração
+        const campoNome =
+            document.getElementById('nome_sistema');
+
+        if (campoNome) {
+            campoNome.value = nome;
+        }
+
+
+        // Atualiza nome no topo
+        atualizarNomeSistema(nome);
+
+
+        // Atualiza logo
+        if (logoSalva) {
+
+            aplicarLogo(logoSalva);
+
+        } else {
+
+            removerLogoVisual();
+
+        }
+
+    }
+
+
+    // Atualiza o nome em todos os lugares necessários
+    function atualizarNomeSistema(nome) {
+
+        const nomeTopo =
+            document.getElementById('nome-sistema-topo');
+
+        if (nomeTopo) {
+            nomeTopo.textContent = nome;
+        }
+
+
+        const titulo =
+            document.getElementById('titulo-pagina');
+
+        if (titulo) {
+            titulo.textContent = nome;
+        }
+
+    }
+
+
+    // Selecionar imagem
+    function selecionarLogo(event) {
+
+        const arquivo =
+            event.target.files[0];
+
+
+        if (!arquivo) {
+            return;
+        }
+
+
+        // Verifica formato
+        const formatosPermitidos = [
+            'image/png',
+            'image/jpeg',
+            'image/jpg',
+            'image/webp'
+        ];
+
+
+        if (!formatosPermitidos.includes(arquivo.type)) {
+
+            mostrarNotificacao(
+                'Formato de imagem não permitido. Escolha PNG, JPG, JPEG ou WEBP.',
+                'erro'
+            );
+
+            event.target.value = '';
+
+            return;
+        }
+
+
+        // Limite de 2 MB
+        const tamanhoMaximo =
+            2 * 1024 * 1024;
+
+
+        if (arquivo.size > tamanhoMaximo) {
+
+            mostrarNotificacao(
+                'A imagem é muito grande. Escolha uma imagem de até 2 MB.',
+                'erro'
+            );
+
+            event.target.value = '';
+
+            return;
+        }
+
+
+        const leitor =
+            new FileReader();
+
+
+        leitor.onload = function(e) {
+
+            const imagem =
+                e.target.result;
+
+
+            aplicarLogo(imagem);
+
+            // Guarda temporariamente
+            // para o botão salvar
+            window.logoSelecionada =
+                imagem;
+
+        };
+
+
+        leitor.readAsDataURL(arquivo);
+
+    }
+
+
+    // Aplica a logo na interface
+    function aplicarLogo(imagem) {
+
+        const logoTopo =
+            document.getElementById('logo-topo');
+
+        const logoFallback =
+            document.getElementById('logo-fallback');
+
+
+        if (logoTopo) {
+
+            logoTopo.src =
+                imagem;
+
+            logoTopo.classList.remove('hidden');
+
+        }
+
+
+        if (logoFallback) {
+            logoFallback.classList.add('hidden');
+        }
+
+
+        // Preview
+        const preview =
+            document.getElementById('logo-preview');
+
+        const previewFallback =
+            document.getElementById('logo-preview-fallback');
+
+
+        if (preview) {
+
+            preview.src =
+                imagem;
+
+            preview.classList.remove('hidden');
+
+        }
+
+
+        if (previewFallback) {
+            previewFallback.classList.add('hidden');
+        }
+
+    }
+
+
+    // Remove somente visualmente
+    function removerLogoVisual() {
+
+        const logoTopo =
+            document.getElementById('logo-topo');
+
+        const logoFallback =
+            document.getElementById('logo-fallback');
+
+
+        if (logoTopo) {
+
+            logoTopo.src = '';
+
+            logoTopo.classList.add('hidden');
+
+        }
+
+
+        if (logoFallback) {
+            logoFallback.classList.remove('hidden');
+        }
+
+
+        // Preview
+        const preview =
+            document.getElementById('logo-preview');
+
+        const previewFallback =
+            document.getElementById('logo-preview-fallback');
+
+
+        if (preview) {
+
+            preview.src = '';
+
+            preview.classList.add('hidden');
+
+        }
+
+
+        if (previewFallback) {
+            previewFallback.classList.remove('hidden');
+        }
+
+    }
+
+
+    // Remover logo
+    function removerLogo() {
+
+        window.logoSelecionada = null;
+
+        localStorage.removeItem('saas_logo_sistema');
+
+        removerLogoVisual();
+
+
+        const input =
+            document.getElementById('input_logo');
+
+        if (input) {
+            input.value = '';
+        }
+
+    }
+
+
+    // Salvar identidade
+    function salvarIdentidade() {
+
+        const campoNome =
+            document.getElementById('nome_sistema');
+
+
+        if (!campoNome) {
+            return;
+        }
+
+
+        let nome =
+            campoNome.value.trim();
+
+
+        if (!nome) {
+
+            mostrarNotificacao(
+                'Digite um nome para o sistema.',
+                'aviso'
+            );
+
+            campoNome.focus();
+
+            return;
+        }
+
+
+        // Salva nome
+        localStorage.setItem(
+            'saas_nome_sistema',
+            nome
+        );
+
+
+        // Se existe uma nova logo,
+        // salva a nova logo
+        if (window.logoSelecionada) {
+
+            localStorage.setItem(
+                'saas_logo_sistema',
+                window.logoSelecionada
+            );
+
+        }
+
+
+        // Atualiza interface
+        atualizarNomeSistema(nome);
+
+
+        // Limpa estado temporário
+        window.logoSelecionada = null;
+
+    }
+
+
+    // Restaurar identidade padrão
+    function restaurarIdentidade() {
+
+        const confirmar =
+            confirm(
+                'Deseja restaurar o nome e a logo padrão?'
+            );
+
+
+        if (!confirmar) {
+            return;
+        }
+
+
+        localStorage.removeItem(
+            'saas_nome_sistema'
+        );
+
+
+        localStorage.removeItem(
+            'saas_logo_sistema'
+        );
+
+
+        const campoNome =
+            document.getElementById('nome_sistema');
+
+
+        if (campoNome) {
+            campoNome.value =
+                CONFIG_IDENTIDADE.nomePadrao;
+        }
+
+
+        atualizarNomeSistema(
+            CONFIG_IDENTIDADE.nomePadrao
+        );
+
+
+        removerLogoVisual();
+
+
+        const input =
+            document.getElementById('input_logo');
+
+        if (input) {
+            input.value = '';
+        }
+
+
+        window.logoSelecionada = null;
+
+    }
+
+
+
+    // ============================================================
+    // NAVEGAÇÃO DE ABAS
+    // ============================================================
+
+    function alternarAba(nomeAba) {
+
+        document
+            .querySelectorAll('.aba-conteudo')
+            .forEach(el => {
 
                 el.classList.add('hidden');
 
             });
 
 
-            document.querySelectorAll('.aba-btn').forEach(btn => {
+        document
+            .querySelectorAll('.aba-btn')
+            .forEach(btn => {
 
                 btn.classList.remove(
                     'bg-indigo-600',
                     'text-white'
                 );
 
-                btn.classList.add('text-slate-400');
+                btn.classList.add(
+                    'text-slate-400'
+                );
 
             });
 
 
-            const aba =
-                document.getElementById(`aba-${nomeAba}`);
-
-
-            aba.classList.remove('hidden');
-
-
-            // Reinicia a animação da aba
-            aba.style.animation = 'none';
-
-            aba.offsetHeight;
-
-            aba.style.animation = '';
-
-
-            const btnAtivo =
-                document.getElementById(`btn-${nomeAba}`);
-
-
-            btnAtivo.classList.add(
-                'bg-indigo-600',
-                'text-white'
+        const aba =
+            document.getElementById(
+                `aba-${nomeAba}`
             );
 
 
-            btnAtivo.classList.remove(
-                'text-slate-400'
+        aba.classList.remove('hidden');
+
+
+        // Reinicia a animação da aba
+        aba.style.animation = 'none';
+
+        aba.offsetHeight;
+
+        aba.style.animation = '';
+
+
+        const btnAtivo =
+            document.getElementById(
+                `btn-${nomeAba}`
             );
 
 
-            if (nomeAba === 'extrato') {
+        btnAtivo.classList.add(
+            'bg-indigo-600',
+            'text-white'
+        );
 
-                carregarExtrato();
 
-            }
+        btnAtivo.classList.remove(
+            'text-slate-400'
+        );
+
+
+        if (nomeAba === 'extrato') {
+
+            carregarExtrato();
 
         }
 
-
-        // ==================== GERENCIAMENTO DE CATEGORIAS ====================
-
-        async function atualizarCategorias() {
-
-            try {
-
-                const res =
-                    await fetch('/categoria/listar_categorias');
+    }
 
 
-                const categorias =
-                    await res.json();
+
+    // ============================================================
+    // GERENCIAMENTO DE CATEGORIAS
+    // ============================================================
+
+    async function atualizarCategorias() {
+
+        try {
+
+            const res =
+                await fetch(
+                    '/categoria/listar_categorias'
+                );
 
 
-                // 1. Atualizar Badges
-
-                const containerBadges =
-                    document.getElementById(
-                        'lista-badges-categorias'
-                    );
+            const categorias =
+                await res.json();
 
 
-                if (containerBadges) {
-
-                    if (categorias.length === 0) {
-
-                        containerBadges.innerHTML =
-                            '<p class="text-slate-500 text-sm italic">Nenhuma categoria cadastrada.</p>';
-
-                    } else {
-
-                        containerBadges.innerHTML =
-                            categorias.map(cat => `
-
-                                <div class="inline-flex items-center gap-2 px-3.5 py-1.5 bg-slate-950 text-slate-200 rounded-full text-sm font-medium border border-slate-700 efeito-hover">
-
-                                    <span>
-                                        ${cat.nome.charAt(0).toUpperCase() + cat.nome.slice(1)}
-                                    </span>
-
-                                    <button
-                                        type="button"
-                                        onclick="removerCategoria(${cat.id})"
-                                        class="text-slate-400 hover:text-rose-400 focus:outline-none">
-
-                                        <svg
-                                            class="w-4 h-4"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            viewBox="0 0 24 24">
-
-                                            <path
-                                                stroke-linecap="round"
-                                                stroke-linejoin="round"
-                                                stroke-width="2"
-                                                d="M6 18L18 6M6 6l12 12">
-                                            </path>
-
-                                        </svg>
-
-                                    </button>
-
-                                </div>
-
-                            `).join('');
-
-                    }
-
-                }
+            // 1. Atualizar Badges
+            const containerBadges =
+                document.getElementById(
+                    'lista-badges-categorias'
+                );
 
 
-                // 2. Atualizar select da Aba Declarar
+            if (containerBadges) {
 
-                const selectDeclarar =
-                    document.getElementById(
-                        'select_categoria_declarar'
-                    );
+                if (categorias.length === 0) {
 
+                    containerBadges.innerHTML =
+                        '<p class="text-slate-500 text-sm italic">Nenhuma categoria cadastrada.</p>';
 
-                if (selectDeclarar) {
+                } else {
 
-                    selectDeclarar.innerHTML =
+                    containerBadges.innerHTML =
                         categorias.map(cat => `
 
-                            <option
-                                value="${cat.nome}"
-                                class="bg-slate-900 text-slate-100">
+                            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 bg-slate-950 text-slate-200 rounded-full text-sm font-medium border border-slate-700 efeito-hover">
 
-                                ${cat.nome.charAt(0).toUpperCase() + cat.nome.slice(1)}
+                                <span>
+                                    ${cat.nome.charAt(0).toUpperCase() + cat.nome.slice(1)}
+                                </span>
 
-                            </option>
+                                <button
+                                    type="button"
+                                    onclick="removerCategoria(${cat.id})"
+                                    class="text-slate-400 hover:text-rose-400 focus:outline-none">
+
+                                    <svg
+                                        class="w-4 h-4"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24">
+
+                                        <path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            stroke-width="2"
+                                            d="M6 18L18 6M6 6l12 12">
+                                        </path>
+
+                                    </svg>
+
+                                </button>
+
+                            </div>
 
                         `).join('');
 
                 }
 
-
-                // 3. Atualizar select de Filtros do Extrato
-
-                const selectFiltro =
-                    document.getElementById(
-                        'select_categoria_filtro'
-                    );
-
-
-                if (selectFiltro) {
-
-                    const valorAtual =
-                        selectFiltro.value || 'todas';
-
-
-                    selectFiltro.innerHTML =
-                        '<option value="todas" class="bg-slate-900 text-slate-100">Todas as Categorias</option>' +
-
-                        categorias.map(cat => `
-
-                            <option
-                                value="${cat.nome}"
-                                class="bg-slate-900 text-slate-100">
-
-                                ${cat.nome.charAt(0).toUpperCase() + cat.nome.slice(1)}
-
-                            </option>
-
-                        `).join('');
-
-
-                    selectFiltro.value = valorAtual;
-
-                }
-
-
-            } catch (err) {
-
-                console.error(
-                    "Erro ao carregar categorias:",
-                    err
-                );
-
             }
 
-        }
 
-
-        async function cadastrarCategoria(event) {
-
-            event.preventDefault();
-
-
-            const input =
+            // 2. Atualizar select da Aba Declarar
+            const selectDeclarar =
                 document.getElementById(
-                    'nome_categoria'
+                    'select_categoria_declarar'
                 );
 
 
-            const nome =
-                input.value.trim();
+            if (selectDeclarar) {
 
+                selectDeclarar.innerHTML =
+                    categorias.map(cat => `
 
-            if (!nome) return;
+                        <option
+                            value="${cat.nome}"
+                            class="bg-slate-900 text-slate-100">
 
+                            ${cat.nome.charAt(0).toUpperCase() + cat.nome.slice(1)}
 
-            const res =
-                await fetch(
-                    '/categoria/adicionar_categoria',
-                    {
-                        method: 'POST',
+                        </option>
 
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-
-                        body: JSON.stringify({
-                            nome: nome
-                        })
-                    }
-                );
-
-
-            const data =
-                await res.json();
-
-
-            if (data.sucesso) {
-
-                input.value = '';
-
-                await atualizarCategorias();
-
-            } else {
-
-                alert(
-                    data.erro ||
-                    "Erro ao adicionar categoria"
-                );
-
-            }
-
-        }
-
-
-        async function removerCategoria(id) {
-
-            if (!confirm(
-                'Tem certeza que deseja remover esta categoria?'
-            )) {
-
-                return;
+                    `).join('');
 
             }
 
 
-            const res =
-                await fetch(
-                    `/categoria/deletar_categoria/${id}`,
-                    {
-                        method: 'DELETE'
-                    }
-                );
-
-
-            const data =
-                await res.json();
-
-
-            if (data.sucesso) {
-
-                await atualizarCategorias();
-
-            }
-
-        }
-
-
-        // ==================== EXTRATO DINÂMICO ====================
-
-        async function carregarExtrato() {
-
-            const mes =
-                document.getElementById(
-                    'select_mes'
-                )?.value;
-
-
-            const ano =
-                document.getElementById(
-                    'select_ano'
-                )?.value;
-
-
-            const categoria =
+            // 3. Atualizar select de Filtros do Extrato
+            const selectFiltro =
                 document.getElementById(
                     'select_categoria_filtro'
-                )?.value || 'todas';
+                );
 
 
-            try {
+            if (selectFiltro) {
 
-                const res =
-                    await fetch(
-                        `/filtra_mes?mes=${mes}&ano=${ano}&categoria=${categoria}`
-                    );
-
-
-                const dados =
-                    await res.json();
+                const valorAtual =
+                    selectFiltro.value ||
+                    'todas';
 
 
-                // ==================== DESKTOP ====================
+                selectFiltro.innerHTML =
+                    '<option value="todas" class="bg-slate-900 text-slate-100">Todas as Categorias</option>' +
 
-                const tbody =
-                    document.getElementById(
-                        'tabela-extrato-corpo'
-                    );
+                    categorias.map(cat => `
 
+                        <option
+                            value="${cat.nome}"
+                            class="bg-slate-900 text-slate-100">
 
-                if (tbody) {
+                            ${cat.nome.charAt(0).toUpperCase() + cat.nome.slice(1)}
 
-                    if (dados.length === 0) {
+                        </option>
 
-                        tbody.innerHTML =
-                            '<tr><td colspan="5" class="p-4 text-center text-slate-500 italic">Nenhum registro encontrado para estes filtros.</td></tr>';
-
-                    } else {
-
-                        tbody.innerHTML =
-                            dados.map((item, index) => `
-
-                                <tr
-                                    class="hover:bg-slate-800/40 transition-colors"
-                                    style="animation: aparecerExtrato 0.3s ease-out ${index * 0.04}s both"
-                                >
-
-                                    <td class="p-3 text-slate-400">
-                                        ${item.data}
-                                    </td>
+                    `).join('');
 
 
-                                    <td class="p-3">
+                selectFiltro.value =
+                    valorAtual;
 
-                                        <span class="badge-tipo px-2.5 py-1 rounded-full text-xs font-semibold ${
-                                            item.tipo === 'entrada'
-                                                ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
-                                                : 'bg-rose-500/10 text-rose-400 border border-rose-500/20'
-                                        }">
-
-                                            ${
-                                                item.tipo === 'entrada'
-                                                    ? 'Entrada'
-                                                    : 'Saída'
-                                            }
-
-                                        </span>
-
-                                    </td>
+            }
 
 
-                                    <td class="p-3 font-medium text-slate-200">
-                                        ${item.nome}
-                                    </td>
+        } catch (err) {
+
+            console.error(
+                "Erro ao carregar categorias:",
+                err
+            );
+
+        }
+
+    }
 
 
-                                    <td class="p-3 text-slate-400">
 
-                                        ${
-                                            item.categoria.charAt(0).toUpperCase()
-                                            + item.categoria.slice(1)
-                                        }
+    async function cadastrarCategoria(event) {
 
-                                    </td>
+        event.preventDefault();
 
 
-                                    <td class="p-3 text-right font-semibold ${
+        const input =
+            document.getElementById(
+                'nome_categoria'
+            );
+
+
+        const nome =
+            input.value.trim();
+
+
+        if (!nome) {
+            return;
+        }
+
+
+        const res =
+            await fetch(
+                '/categoria/adicionar_categoria',
+                {
+                    method: 'POST',
+
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+
+                    body: JSON.stringify({
+                        nome: nome
+                    })
+                }
+            );
+
+
+        const data =
+            await res.json();
+
+
+        if (data.sucesso) {
+
+            input.value = '';
+
+            await atualizarCategorias();
+
+        } else {
+
+            mostrarNotificacao(
+                data.erro ||
+                "Erro ao adicionar categoria",
+                'erro'
+            );
+
+        }
+
+    }
+
+
+
+    async function removerCategoria(id) {
+
+        if (!confirm(
+            'Tem certeza que deseja remover esta categoria?'
+        )) {
+
+            return;
+
+        }
+
+
+        const res =
+            await fetch(
+                `/categoria/deletar_categoria/${id}`,
+                {
+                    method: 'DELETE'
+                }
+            );
+
+
+        const data =
+            await res.json();
+
+
+        if (data.sucesso) {
+
+            await atualizarCategorias();
+
+        }
+
+    }
+
+
+
+    // ============================================================
+    // EXTRATO DINÂMICO
+    // ============================================================
+
+    async function carregarExtrato() {
+
+        const mes =
+            document.getElementById(
+                'select_mes'
+            )?.value;
+
+
+        const ano =
+            document.getElementById(
+                'select_ano'
+            )?.value;
+
+
+        const categoria =
+            document.getElementById(
+                'select_categoria_filtro'
+            )?.value ||
+            'todas';
+
+
+        try {
+
+            const res =
+                await fetch(
+                    `/filtra_mes?mes=${mes}&ano=${ano}&categoria=${categoria}`
+                );
+
+
+            const dados =
+                await res.json();
+
+
+            // ==================== DESKTOP ====================
+            const tbody =
+                document.getElementById(
+                    'tabela-extrato-corpo'
+                );
+
+
+            if (tbody) {
+
+                if (dados.length === 0) {
+
+                    tbody.innerHTML =
+                        '<tr><td colspan="5" class="p-4 text-center text-slate-500 italic">Nenhum registro encontrado para estes filtros.</td></tr>';
+
+                } else {
+
+                    tbody.innerHTML =
+                        dados.map((item, index) => `
+
+                            <tr
+                                class="hover:bg-slate-800/40 transition-colors"
+                                style="animation: aparecerExtrato 0.3s ease-out ${index * 0.04}s both">
+
+                                <td class="p-3 text-slate-400">
+                                    ${item.data}
+                                </td>
+
+
+                                <td class="p-3">
+
+                                    <span class="badge-tipo px-2.5 py-1 rounded-full text-xs font-semibold ${
                                         item.tipo === 'entrada'
-                                            ? 'text-emerald-400'
-                                            : 'text-rose-400'
+                                            ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+                                            : 'bg-rose-500/10 text-rose-400 border border-rose-500/20'
                                     }">
 
                                         ${
                                             item.tipo === 'entrada'
-                                                ? '+'
-                                                : '-'
+                                                ? 'Entrada'
+                                                : 'Saída'
                                         }
 
-                                        R$ ${parseFloat(item.valor).toFixed(2)}
+                                    </span>
 
-                                    </td>
+                                </td>
 
-                                </tr>
 
-                            `).join('');
+                                <td class="p-3 font-medium text-slate-200">
+                                    ${item.nome}
+                                </td>
 
-                    }
+
+                                <td class="p-3 text-slate-400">
+
+                                    ${
+                                        item.categoria.charAt(0).toUpperCase()
+                                        + item.categoria.slice(1)
+                                    }
+
+                                </td>
+
+
+                                <td class="p-3 text-right font-semibold ${
+                                    item.tipo === 'entrada'
+                                        ? 'text-emerald-400'
+                                        : 'text-rose-400'
+                                }">
+
+                                    ${
+                                        item.tipo === 'entrada'
+                                            ? '+'
+                                            : '-'
+                                    }
+
+                                    R$ ${parseFloat(item.valor).toFixed(2)}
+
+                                </td>
+
+                            </tr>
+
+                        `).join('');
 
                 }
 
-
-                // ==================== MOBILE ====================
-
-                const mobile =
-                    document.getElementById(
-                        'extrato-mobile'
-                    );
+            }
 
 
-                if (mobile) {
-
-                    if (dados.length === 0) {
-
-                        mobile.innerHTML = `
-
-                            <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 text-center extrato-card">
-
-                                <p class="text-slate-500 italic text-sm">
-
-                                    Nenhum registro encontrado para estes filtros.
-
-                                </p>
-
-                            </div>
-
-                        `;
-
-                    } else {
-
-                        mobile.innerHTML =
-                            dados.map((item, index) => `
-
-                                <div
-                                    class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 shadow-lg efeito-hover extrato-card"
-                                    style="animation-delay: ${index * 0.05}s"
-                                >
+            // ==================== MOBILE ====================
+            const mobile =
+                document.getElementById(
+                    'extrato-mobile'
+                );
 
 
-                                    <!-- TOPO DO CARD -->
+            if (mobile) {
 
-                                    <div class="flex items-center justify-between gap-3 mb-4">
+                if (dados.length === 0) {
 
-                                        <span class="text-xs text-slate-400">
+                    mobile.innerHTML = `
 
-                                            ${item.data}
+                        <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 text-center extrato-card">
 
-                                        </span>
+                            <p class="text-slate-500 italic text-sm">
+                                Nenhum registro encontrado para estes filtros.
+                            </p>
+
+                        </div>
+
+                    `;
+
+                } else {
+
+                    mobile.innerHTML =
+                        dados.map((item, index) => `
+
+                            <div
+                                class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 shadow-lg efeito-hover extrato-card"
+                                style="animation-delay: ${index * 0.05}s">
 
 
-                                        <span class="badge-tipo px-2.5 py-1 rounded-full text-xs font-semibold ${
+                                <!-- TOPO DO CARD -->
+                                <div class="flex items-center justify-between gap-3 mb-4">
+
+                                    <span class="text-xs text-slate-400">
+                                        ${item.data}
+                                    </span>
+
+
+                                    <span class="badge-tipo px-2.5 py-1 rounded-full text-xs font-semibold ${
+                                        item.tipo === 'entrada'
+                                            ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+                                            : 'bg-rose-500/10 text-rose-400 border border-rose-500/20'
+                                    }">
+
+                                        ${
                                             item.tipo === 'entrada'
-                                                ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
-                                                : 'bg-rose-500/10 text-rose-400 border border-rose-500/20'
+                                                ? 'Entrada'
+                                                : 'Saída'
+                                        }
+
+                                    </span>
+
+                                </div>
+
+
+                                <!-- DESCRIÇÃO -->
+                                <div class="mb-4">
+
+                                    <p class="text-xs text-slate-500 uppercase font-semibold mb-1">
+                                        Descrição
+                                    </p>
+
+
+                                    <p class="text-base font-semibold text-slate-100 break-words">
+                                        ${item.nome}
+                                    </p>
+
+                                </div>
+
+
+                                <!-- INFORMAÇÕES -->
+                                <div class="grid grid-cols-2 gap-3">
+
+
+                                    <div class="bg-slate-950/70 rounded-xl p-3">
+
+                                        <p class="text-xs text-slate-500 mb-1">
+                                            Categoria
+                                        </p>
+
+
+                                        <p class="text-sm text-slate-300 break-words">
+
+                                            ${
+                                                item.categoria.charAt(0).toUpperCase()
+                                                + item.categoria.slice(1)
+                                            }
+
+                                        </p>
+
+                                    </div>
+
+
+                                    <div class="bg-slate-950/70 rounded-xl p-3">
+
+                                        <p class="text-xs text-slate-500 mb-1">
+                                            Valor
+                                        </p>
+
+
+                                        <p class="text-base font-bold ${
+                                            item.tipo === 'entrada'
+                                                ? 'text-emerald-400'
+                                                : 'text-rose-400'
                                         }">
 
                                             ${
                                                 item.tipo === 'entrada'
-                                                    ? 'Entrada'
-                                                    : 'Saída'
+                                                    ? '+'
+                                                    : '-'
                                             }
 
-                                        </span>
-
-                                    </div>
-
-
-                                    <!-- DESCRIÇÃO -->
-
-                                    <div class="mb-4">
-
-                                        <p class="text-xs text-slate-500 uppercase font-semibold mb-1">
-
-                                            Descrição
+                                            R$ ${parseFloat(item.valor).toFixed(2)}
 
                                         </p>
-
-
-                                        <p class="text-base font-semibold text-slate-100 break-words">
-
-                                            ${item.nome}
-
-                                        </p>
-
-                                    </div>
-
-
-                                    <!-- INFORMAÇÕES -->
-
-                                    <div class="grid grid-cols-2 gap-3">
-
-
-                                        <div class="bg-slate-950/70 rounded-xl p-3">
-
-                                            <p class="text-xs text-slate-500 mb-1">
-                                                Categoria
-                                            </p>
-
-
-                                            <p class="text-sm text-slate-300 break-words">
-
-                                                ${
-                                                    item.categoria.charAt(0).toUpperCase()
-                                                    + item.categoria.slice(1)
-                                                }
-
-                                            </p>
-
-                                        </div>
-
-
-                                        <div class="bg-slate-950/70 rounded-xl p-3">
-
-                                            <p class="text-xs text-slate-500 mb-1">
-                                                Valor
-                                            </p>
-
-
-                                            <p class="text-base font-bold ${
-                                                item.tipo === 'entrada'
-                                                    ? 'text-emerald-400'
-                                                    : 'text-rose-400'
-                                            }">
-
-                                                ${
-                                                    item.tipo === 'entrada'
-                                                        ? '+'
-                                                        : '-'
-                                                }
-
-                                                R$ ${parseFloat(item.valor).toFixed(2)}
-
-                                            </p>
-
-                                        </div>
-
 
                                     </div>
 
                                 </div>
 
-                            `).join('');
+                            </div>
 
-                    }
+                        `).join('');
 
                 }
 
-
-            } catch (err) {
-
-                console.error(
-                    "Erro ao carregar extrato:",
-                    err
-                );
-
             }
+
+
+        } catch (err) {
+
+            console.error(
+                "Erro ao carregar extrato:",
+                err
+            );
 
         }
 
+    }
 
-        // ==================== EXPORTAR PDF ====================
 
-        function exportarPDFComFiltro() {
 
-            const mes =
+    // ============================================================
+    // EXPORTAR PDF
+    // ============================================================
+
+    function exportarPDFComFiltro() {
+
+        const mes =
+            document.getElementById(
+                'select_mes'
+            )?.value;
+
+
+        const ano =
+            document.getElementById(
+                'select_ano'
+            )?.value;
+
+
+        const categoria =
+            document.getElementById(
+                'select_categoria_filtro'
+            )?.value ||
+            'todas';
+
+
+        window.location.href =
+            `/exportar_pdf?mes=${mes}&ano=${ano}&categoria=${categoria}`;
+
+    }
+
+
+
+    // ============================================================
+    // INICIALIZAÇÃO
+    // ============================================================
+
+    document.addEventListener(
+        'DOMContentLoaded',
+        () => {
+
+
+            // CARREGAR IDENTIDADE PERSONALIZADA
+            carregarIdentidade();
+
+
+            // MESES NO MESMO FORMATO USADO PELO BACKEND
+            const meses = [
+
+                'jan',
+                'fev',
+                'mar',
+                'abr',
+                'mai',
+                'jun',
+                'jul',
+                'ago',
+                'set',
+                'out',
+                'nov',
+                'dez'
+
+            ];
+
+
+            // DATA ATUAL DO COMPUTADOR DO USUÁRIO
+            const agora =
+                new Date();
+
+
+            const mesAtual =
+                meses[agora.getMonth()];
+
+
+            const anoAtual =
+                agora.getFullYear();
+
+
+            // SELECIONAR MÊS ATUAL
+            const selectMes =
                 document.getElementById(
                     'select_mes'
-                )?.value;
+                );
 
 
-            const ano =
-                document.getElementById(
-                    'select_ano'
-                )?.value;
+            if (selectMes) {
 
-
-            const categoria =
-                document.getElementById(
-                    'select_categoria_filtro'
-                )?.value || 'todas';
-
-
-            window.location.href =
-                `/exportar_pdf?mes=${mes}&ano=${ano}&categoria=${categoria}`;
-
-        }
-
-
-        // ==================== INICIALIZAÇÃO ====================
-
-        document.addEventListener(
-            'DOMContentLoaded',
-            () => {
-
-
-                // MESES NO MESMO FORMATO USADO PELO BACKEND
-
-                const meses = [
-
-                    'jan',
-                    'fev',
-                    'mar',
-                    'abr',
-                    'mai',
-                    'jun',
-                    'jul',
-                    'ago',
-                    'set',
-                    'out',
-                    'nov',
-                    'dez'
-
-                ];
-
-
-                // DATA ATUAL DO COMPUTADOR DO USUÁRIO
-
-                const agora =
-                    new Date();
-
-
-                const mesAtual =
-                    meses[agora.getMonth()];
-
-
-                const anoAtual =
-                    agora.getFullYear();
-
-
-                // SELECIONAR MÊS ATUAL
-
-                const selectMes =
-                    document.getElementById(
-                        'select_mes'
-                    );
-
-
-                if (selectMes) {
-
-                    selectMes.value =
-                        mesAtual;
-
-                }
-
-
-                // SELECIONAR ANO ATUAL
-
-                const selectAno =
-                    document.getElementById(
-                        'select_ano'
-                    );
-
-
-                if (selectAno) {
-
-                    const existeAno =
-                        [...selectAno.options].some(
-                            option =>
-                                option.value == anoAtual
-                        );
-
-
-                    if (existeAno) {
-
-                        selectAno.value =
-                            anoAtual;
-
-                    }
-
-                }
-
-
-                // CARREGAR CATEGORIAS
-
-                atualizarCategorias();
+                selectMes.value =
+                    mesAtual;
 
             }
-        );
 
-    </script>
+
+            // SELECIONAR ANO ATUAL
+            const selectAno =
+                document.getElementById(
+                    'select_ano'
+                );
+
+
+            if (selectAno) {
+
+                const existeAno =
+                    [...selectAno.options].some(
+                        option =>
+                            option.value == anoAtual
+                    );
+
+
+                if (existeAno) {
+
+                    selectAno.value =
+                        anoAtual;
+
+                }
+
+            }
+
+
+            // CARREGAR CATEGORIAS
+            atualizarCategorias();
+
+        }
+    );
+
+</script>
+
 
 </body>
 
