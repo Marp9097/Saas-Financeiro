@@ -2,6 +2,7 @@ import sqlite3
 from functions.get_db_connection import get_db_connection
 from flask import Flask
 from flask import jsonify,  render_template, request, redirect, url_for, Blueprint
+import functions.calculations_dashboard_painel as pegar
 
 add_categoria_bp = Blueprint("add_categoria", __name__, url_prefix="/categoria")
 
@@ -59,7 +60,11 @@ def categoria_pastas():
 
     dados = cursor.fetchall()
 
-    resp = jsonify([dict(item) for item in dados])
+    resp = jsonify({
+        "saldo_painel": pegar.show_data_total() ,
+         "saldo_credit": pegar.total_entradas(),
+         "saldo_debit": pegar.total_saida(),
+         "projecao_saldo": pegar.projetion_saldo(),}),200
 
     conn.close()
 

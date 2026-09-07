@@ -7,7 +7,6 @@ def show_data_total():
     select_pasta = request.args.get('select_obra_dashboard')
     if select_pasta == None:
         select_pasta = '%'
-    print(select_pasta)
 
     conn = get_db_connection()
     cursor = conn.cursor()
