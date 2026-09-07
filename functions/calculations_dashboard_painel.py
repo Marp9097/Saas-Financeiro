@@ -5,8 +5,10 @@ from functions.get_db_connection import get_db_connection
 
 def show_data_total():
     select_pasta = request.args.get('obra_id')
-    if select_pasta == None:
+    
+    if select_pasta == 'todas':
         select_pasta = '%'
+
 
     conn = get_db_connection()
     cursor = conn.cursor()
