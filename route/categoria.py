@@ -44,11 +44,6 @@ def salvar_categoria():
     conn.commit()  
     conn.close()
 
-    
-
-
-
-
     return jsonify({"sucesso": True}), 200
 
 @add_categoria_bp.route('/dashboard_dados', methods=['GET'])
@@ -59,16 +54,57 @@ def categoria_pastas():
     cursor = conn.cursor()
 
     cursor.execute("""
-    SELECT * FROM transacoes WHERER pasta = ?    
-    """,(pasta))
+    SELECT * FROM transacoes WHERE pasta = ?    
+    """,(pasta,))
 
     dados = cursor.fetchall()
 
-    resp = jsonify([dict[item] for item in dados])
+    resp = jsonify([dict(item) for item in dados])
 
-
+    conn.close()
 
     return resp
 
+@add_categoria_bp.route('/obra/listar_obras', methods=['GET'])
+def lista_obras():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+    SELECT * FROM categoria_obras
+    """)
+    categoria_obras = cursor.fetchall()
+
+    conn.close()
+
+    resp = jsonify([dict(item) for item in categoria_obras])
+    return resp
+
+@add_categoria_bp.route('/obra/adicionar_obra', methods=['POST'])
+def add_categoria_obra():
+
+    obra_nome = request.form.get('nome_obra')
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+    INSERT INTO categoria_obras (nome) VALUES (?)
+    """,(obra_nome,))
+
+    conn.commit()
+
+    cursor.execute("""
+    SELECT nome FROM categoria_obras
+    """)
+
+    dados = cursor.fetchall()
+
+
+    conn.close()
+
     
+
+    return jsonify([dict(item) for item in dados]), 200
+
 

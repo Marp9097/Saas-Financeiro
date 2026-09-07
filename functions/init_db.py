@@ -33,6 +33,12 @@ def init_db():
             nome TEXT NOT NULL UNIQUE
         )
     ''')
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS categoria_obras (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            nome TEXT NOT NULL
+        )
+    ''')
     
     # Inserir categorias padrão caso a tabela esteja vazia
     cursor.execute("SELECT COUNT(*) FROM categorias")
