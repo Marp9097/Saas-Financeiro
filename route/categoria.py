@@ -60,11 +60,16 @@ def categoria_pastas():
 
     dados = cursor.fetchall()
 
+    saldo_painel = pegar.show_data_total()
+    saldo_credit = pegar.total_entradas()
+    saldo_debit = pegar.total_saida()
+    projecao_saldo = pegar.projetion_saldo()
+
     resp = jsonify({
-        "saldo_painel": pegar.show_data_total() ,
-         "saldo_credit": pegar.total_entradas(),
-         "saldo_debit": pegar.total_saida(),
-         "projecao_saldo": pegar.projetion_saldo(),}),200
+        "saldo_painel": saldo_painel ,
+         "saldo_credit":saldo_credit,
+         "saldo_debit":saldo_debit,
+         "projecao_saldo":projecao_saldo}),200
 
     conn.close()
 

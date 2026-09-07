@@ -4,7 +4,7 @@ from functions.get_db_connection import get_db_connection
 
 
 def show_data_total():
-    select_pasta = request.args.get('select_obra_dashboard')
+    select_pasta = request.args.get('obra_id')
     if select_pasta == None:
         select_pasta = '%'
 
@@ -23,13 +23,13 @@ def show_data_total():
 
     
     saldo_format = entradas - saidas
-    saldo = f"{saldo_format:,.2f}".replace(',','.')
+    saldo = saldo_format
     conn.close()
 
     return(saldo)
 
 def total_entradas():
-    select_pasta = request.args.get('select_obra_dashboard')
+    select_pasta = request.args.get('obra_id')
     if select_pasta == None:
         select_pasta = '%'
     conn = get_db_connection()
@@ -40,13 +40,13 @@ def total_entradas():
     somando  = sum(item[3] for item in cursor.fetchall() if item[3] is not None  )
     conn.close()
 
-    total_entradas = f"{somando:,.2f}".replace(',','.')
+    total_entradas = somando
 
 
     return total_entradas
 
 def total_saida():
-    select_pasta = request.args.get('select_obra_dashboard')
+    select_pasta = request.args.get('obra_id')
     if select_pasta == None:
         select_pasta = '%'
     conn = get_db_connection()
@@ -57,12 +57,12 @@ def total_saida():
     calculando = sum(item[3] for item in cursor.fetchall() if item[3] is not None  )
     conn.close()
 
-    saida = f"{calculando:,.2f}".replace(',','.')
+    saida = calculando
 
     return saida
 
 def projetion_saldo():
-    select_pasta = request.args.get('select_obra_dashboard')
+    select_pasta = request.args.get('obra_id')
     if select_pasta == None:
         select_pasta = '%'
     conn = get_db_connection()
@@ -76,6 +76,6 @@ def projetion_saldo():
     percent = entradas * (5/100)
     somando = entradas + percent
 
-    projetion = f"{somando:,.2f}".replace(',','.')
+    projetion = somando
 
     return projetion
