@@ -9,6 +9,7 @@ from route.site_on import site_on_bp
 from functions.init_db import init_db
 from functions.get_db_connection import get_db_connection
 from route.filter_extrato import filter_bp
+from route.download import download_bp
 
 
 
@@ -19,7 +20,7 @@ app.register_blueprint(add_categoria_bp)
 app.register_blueprint(actions_bp)
 app.register_blueprint(site_on_bp)
 app.register_blueprint(filter_bp)
-
+app.register_blueprint(download_bp)
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
 
