@@ -101,4 +101,20 @@ def add_categoria_obra():
 
     return jsonify({"sucesso": True}), 200
 
+@add_categoria_bp.route('/obra/deletar_obra/', methods=['DELETE'])
+def deletar_categoria_obra():
+    id = request.args.get('id')
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    cursor.execute(""" 
+    DELETE FROM categoria_obras WHERE id = (?)
+    """,(id,))
+
+    conn.commit()
+    conn.close()
+
+
+    return jsonify({'sucesso':'True'}), 200 
 
