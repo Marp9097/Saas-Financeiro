@@ -18,7 +18,7 @@ def filter(year, month, category, pasta):
     data_pattern = f"{year}-{num_month}-%"
 
     cursor.execute("""
-    SELECT *  FROM transacoes WHERE pasta = ? AND data LIKE ? AND categoria LIKE ? ORDER BY hora DESC
+    SELECT *  FROM transacoes WHERE pasta LIKE ? AND data LIKE ? AND categoria LIKE ? ORDER BY hora DESC
     """,(pasta, data_pattern, category))
 
     lista = cursor.fetchall()

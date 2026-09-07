@@ -9,12 +9,12 @@ def filtrar():
     month = request.args.get('mes')
     year = request.args.get('ano')
     category = request.args.get('categoria')
-    pasta = request.args.get('select_obra_filtro')  # Obtendo o valor do campo "pasta" do formulário
+    pasta = request.args.get('obra_id')  # Obtendo o valor do campo "pasta" do formulário
 
     if category == 'todas':
         category = '%'
 
-    if  pasta== 'todas':
+    if  pasta == 'todas':
         pasta = '%'
 
     result = filter(year=year, month=month, category=category, pasta=pasta)
