@@ -83,28 +83,22 @@ def lista_obras():
 @add_categoria_bp.route('/obra/adicionar_obra', methods=['POST'])
 def add_categoria_obra():
 
-    obra_nome = request.form.get('nome_obra')
+    dados = request.get_json('nome_obra')
+
+    obra_nome = dados.get('nome')
 
     conn = get_db_connection()
     cursor = conn.cursor()
 
     cursor.execute("""
-    INSERT INTO categoria_obras (nome) VALUES (?)
+    INSERT INTO  categoria_obras (nome) VALUES (?)
     """,(obra_nome,))
 
     conn.commit()
-
-    cursor.execute("""
-    SELECT nome FROM categoria_obras
-    """)
-
-    dados = cursor.fetchall()
-
-
     conn.close()
 
     
 
-    return jsonify([dict(item) for item in dados]), 200
+    return jsonify({"sucesso": True}), 200
 
 

@@ -2632,7 +2632,7 @@
 
                 const res =
                     await fetch(
-                        '/obra/listar_obras'
+                        '/categoria/obra/listar_obras'
                     );
 
 
@@ -2992,7 +2992,7 @@
 
                 const res =
                     await fetch(
-                        '/obra/adicionar_obra',
+                        '/categoria/obra/adicionar_obra',
                         {
                             method: 'POST',
 
@@ -3264,7 +3264,7 @@
             try {
 
                 const url =
-                    `/dashboard_dados?obra_id=${encodeURIComponent(obraId)}`;
+                    `/categoria/dashboard_dados?obra_id=${encodeURIComponent(obraId)}`;
 
 
                 const res =
