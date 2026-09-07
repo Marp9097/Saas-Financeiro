@@ -18,7 +18,7 @@ def show_data_total():
 
     
     saldo_format = entradas - saidas
-    saldo = f"{saldo_format:.2f}"
+    saldo = f"{saldo_format:,.2f}".replace(',','.')
     conn.close()
 
     return(saldo)
@@ -32,7 +32,7 @@ def total_entradas():
     somando  = sum(item[3] for item in cursor.fetchall() if item[3] is not None  )
     conn.close()
 
-    total_entradas = f"{somando:.2f}"
+    total_entradas = f"{somando:,.2f}".replace(',','.')
 
 
     return total_entradas
@@ -46,7 +46,7 @@ def total_saida():
     calculando = sum(item[3] for item in cursor.fetchall() if item[3] is not None  )
     conn.close()
 
-    saida = f"{calculando:.2f}"
+    saida = f"{calculando:,.2f}".replace(',','.')
 
     return saida
 
@@ -62,6 +62,6 @@ def projetion_saldo():
     percent = entradas * (5/100)
     somando = entradas + percent
 
-    projetion = f"{somando:.2f}"
+    projetion = f"{somando:,.2f}".replace(',','.')
 
     return projetion

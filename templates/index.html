@@ -1,546 +1,329 @@
 <!DOCTYPE html>
-
 <html lang="pt-BR" class="dark">
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="titulo-pagina">SaaS Financeiro</title>
 
-<title id="titulo-pagina">SaaS Financeiro</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
 
-<!-- Tailwind CSS CDN -->
-<script src="https://cdn.tailwindcss.com"></script>
-
-<script>
-    tailwind.config = {
-        darkMode: 'class',
-        theme: {
-            extend: {
-                colors: {
-                    darkbg: '#0f172a',
-                    cardbg: '#1e293b'
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        darkbg: '#0f172a',
+                        cardbg: '#1e293b'
+                    }
                 }
             }
         }
-    }
-</script>
+    </script>
 
-<!-- ==================== ANIMAÇÕES ==================== -->
-<style>
+    <!-- ==================== ANIMAÇÕES ==================== -->
+    <style>
 
-    /* Entrada suave das abas */
-    .aba-conteudo {
-        animation: aparecerAba 0.35s ease-out;
-    }
-
-    @keyframes aparecerAba {
-        from {
-            opacity: 0;
-            transform: translateY(10px);
+        .aba-conteudo {
+            animation: aparecerAba 0.35s ease-out;
         }
 
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
+        @keyframes aparecerAba {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
 
-    /* Entrada dos cards */
-    .animar-card {
-        animation: aparecerCard 0.45s ease-out both;
-    }
-
-    @keyframes aparecerCard {
-        from {
-            opacity: 0;
-            transform: translateY(15px) scale(0.98);
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
-        to {
-            opacity: 1;
-            transform: translateY(0) scale(1);
-        }
-    }
-
-    /* Animação dos cards do extrato */
-    .extrato-card {
-        animation: aparecerExtrato 0.35s ease-out both;
-    }
-
-    @keyframes aparecerExtrato {
-        from {
-            opacity: 0;
-            transform: translateY(8px);
+        .animar-card {
+            animation: aparecerCard 0.45s ease-out both;
         }
 
-        to {
-            opacity: 1;
-            transform: translateY(0);
+        @keyframes aparecerCard {
+            from {
+                opacity: 0;
+                transform: translateY(15px) scale(0.98);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
         }
-    }
 
-    /* Efeito de carregamento */
-    .carregando {
-        opacity: 0.55;
-        pointer-events: none;
-        transition: opacity 0.2s ease;
-    }
-
-    /* Pequeno efeito de brilho */
-    .efeito-hover {
-        transition:
-            transform 0.2s ease,
-            box-shadow 0.2s ease,
-            border-color 0.2s ease;
-    }
-
-    .efeito-hover:hover {
-        transform: translateY(-3px);
-    }
-
-    /* Botões */
-    button,
-    a,
-    select,
-    input {
-        transition:
-            transform 0.15s ease,
-            box-shadow 0.2s ease,
-            border-color 0.2s ease,
-            background-color 0.2s ease,
-            color 0.2s ease;
-    }
-
-    button:active {
-        transform: scale(0.97);
-    }
-
-    /* Inputs */
-    input:focus,
-    select:focus {
-        transform: translateY(-1px);
-    }
-
-    /* Botão principal */
-    .botao-animado:hover {
-        transform: translateY(-2px);
-    }
-
-    /* Badge de tipo */
-    .badge-tipo {
-        transition:
-            transform 0.2s ease,
-            box-shadow 0.2s ease;
-    }
-
-    .badge-tipo:hover {
-        transform: scale(1.05);
-    }
-
-    /* Preview da logo */
-    .logo-preview {
-        width: 88px;
-        height: 88px;
-        object-fit: cover;
-        border-radius: 18px;
-    }
-
-    /* Respeita usuários que preferem menos movimento */
-    @media (prefers-reduced-motion: reduce) {
-        *,
-        *::before,
-        *::after {
-            animation-duration: 0.01ms !important;
-            animation-iteration-count: 1 !important;
-            transition-duration: 0.01ms !important;
+        .extrato-card {
+            animation: aparecerExtrato 0.35s ease-out both;
         }
-    }
 
-    /* Faixa de notificação (substitui os alerts) */
-    #notificacoes-container {
-        position: fixed;
-        top: 5rem;
-        right: 1rem;
-        z-index: 9999;
-        display: flex;
-        flex-direction: column;
-        gap: 0.5rem;
-        pointer-events: none;
-    }
+        @keyframes aparecerExtrato {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
 
-    .notificacao-toast {
-        max-width: 20rem;
-        padding: 0.65rem 1rem;
-        border-radius: 0.75rem;
-        border: 1px solid transparent;
-        box-shadow: 0 8px 20px -4px rgba(0, 0, 0, 0.45);
-        font-size: 0.875rem;
-        font-weight: 500;
-        line-height: 1.25rem;
-        pointer-events: none;
-        animation: entraESaiToast 2.4s cubic-bezier(0.4, 0, 0.2, 1) both;
-    }
-
-    @keyframes entraESaiToast {
-        0% {
-            transform: translateX(130%);
-            opacity: 0;
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
-        8% {
-            transform: translateX(0);
-            opacity: 1;
-        }
-        88% {
-            transform: translateX(0);
-            opacity: 1;
-        }
-        100% {
-            transform: translateX(130%);
-            opacity: 0;
-        }
-    }
 
-</style>
+        .carregando {
+            opacity: 0.55;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+        }
 
+        .efeito-hover {
+            transition:
+                transform 0.2s ease,
+                box-shadow 0.2s ease,
+                border-color 0.2s ease;
+        }
+
+        .efeito-hover:hover {
+            transform: translateY(-3px);
+        }
+
+        button,
+        a,
+        select,
+        input {
+            transition:
+                transform 0.15s ease,
+                box-shadow 0.2s ease,
+                border-color 0.2s ease,
+                background-color 0.2s ease,
+                color 0.2s ease;
+        }
+
+        button:active {
+            transform: scale(0.97);
+        }
+
+        input:focus,
+        select:focus {
+            transform: translateY(-1px);
+        }
+
+        .botao-animado:hover {
+            transform: translateY(-2px);
+        }
+
+        .badge-tipo {
+            transition:
+                transform 0.2s ease,
+                box-shadow 0.2s ease;
+        }
+
+        .badge-tipo:hover {
+            transform: scale(1.05);
+        }
+
+        .logo-preview {
+            width: 88px;
+            height: 88px;
+            object-fit: cover;
+            border-radius: 18px;
+        }
+
+        /*
+         * Animação usada quando os valores do Dashboard
+         * são atualizados através do filtro de obra.
+         */
+        .metric-atualizando {
+            animation: atualizarMetricas 0.35s ease-out;
+        }
+
+        @keyframes atualizarMetricas {
+            0% {
+                opacity: 0.35;
+                transform: translateY(5px);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /*
+         * Pequeno indicador de carregamento do Dashboard.
+         */
+        .dashboard-loading {
+            opacity: 0.5;
+            transition: opacity 0.2s ease;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        /* ==================== NOTIFICAÇÕES ==================== */
+
+        #notificacoes-container {
+            position: fixed;
+            top: 5rem;
+            right: 1rem;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            pointer-events: none;
+        }
+
+        .notificacao-toast {
+            max-width: 20rem;
+            padding: 0.65rem 1rem;
+            border-radius: 0.75rem;
+            border: 1px solid transparent;
+            box-shadow: 0 8px 20px -4px rgba(0, 0, 0, 0.45);
+            font-size: 0.875rem;
+            font-weight: 500;
+            line-height: 1.25rem;
+            pointer-events: none;
+            animation: entraESaiToast 2.4s cubic-bezier(0.4, 0, 0.2, 1) both;
+        }
+
+        @keyframes entraESaiToast {
+
+            0% {
+                transform: translateX(130%);
+                opacity: 0;
+            }
+
+            8% {
+                transform: translateX(0);
+                opacity: 1;
+            }
+
+            88% {
+                transform: translateX(0);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateX(130%);
+                opacity: 0;
+            }
+        }
+
+    </style>
 
 </head>
 
 <body class="bg-slate-950 text-slate-100 min-h-screen font-sans flex flex-col">
 
-<!-- Container das notificações (faixa que entra e sai rapidamente) -->
-<div id="notificacoes-container"></div>
+    <!-- ==================== NOTIFICAÇÕES ==================== -->
+
+    <div id="notificacoes-container"></div>
 
 
-<!-- ==================== BARRA DE NAVEGAÇÃO ==================== -->
-<nav class="bg-slate-900 border-b border-slate-800 sticky top-0 z-50">
+    <!-- ==================== BARRA DE NAVEGAÇÃO ==================== -->
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <nav class="bg-slate-900 border-b border-slate-800 sticky top-0 z-50">
 
-        <div class="flex flex-col gap-3 py-3 sm:flex-row sm:items-center sm:justify-between sm:h-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-            <!-- IDENTIDADE DO SISTEMA -->
-            <div class="flex items-center gap-3 shrink-0">
+            <div
+                class="flex flex-col gap-3 py-3 sm:flex-row sm:items-center sm:justify-between sm:h-16">
 
-                <!-- LOGO -->
-                <div
-                    id="logo-container"
-                    class="w-10 h-10 rounded-xl font-bold text-lg text-white efeito-hover cursor-default flex items-center justify-center overflow-hidden">
+                <!-- IDENTIDADE -->
+
+                <div class="flex items-center gap-3 shrink-0">
+
+                    <!-- LOGO -->
+
+                    <div
+                        id="logo-container"
+                        class="w-10 h-10 rounded-xl font-bold text-lg text-white efeito-hover cursor-default flex items-center justify-center overflow-hidden">
+
+                        <span
+                            id="logo-fallback"
+                            class="w-full h-full p-2 bg-indigo-600 rounded-xl flex items-center justify-center">
+
+                            SF
+
+                        </span>
+
+                        <img
+                            id="logo-topo"
+                            src=""
+                            alt="Logo"
+                            class="hidden w-full h-full object-cover">
+
+                    </div>
+
+                    <!-- NOME -->
 
                     <span
-                        id="logo-fallback"
-                        class="w-full h-full p-2 bg-indigo-600 rounded-xl flex items-center justify-center">
-                        SF
+                        id="nome-sistema-topo"
+                        class="font-bold text-base sm:text-lg tracking-wide text-slate-100">
+
+                        SaaS Financeiro
+
                     </span>
 
-                    <img
-                        id="logo-topo"
-                        src=""
-                        alt="Logo"
-                        class="hidden w-full h-full object-cover">
                 </div>
 
-                <!-- NOME -->
-                <span
-                    id="nome-sistema-topo"
-                    class="font-bold text-base sm:text-lg tracking-wide text-slate-100">
-                    SaaS Financeiro
-                </span>
 
-            </div>
+                <!-- ==================== BOTÕES DAS ABAS ==================== -->
 
+                <div
+                    class="flex w-full sm:w-auto gap-1 sm:gap-2 overflow-x-auto pb-1 sm:pb-0">
 
-            <!-- ==================== BOTÕES DE ABAS ==================== -->
-            <div class="flex w-full sm:w-auto gap-1 sm:gap-2 overflow-x-auto pb-1 sm:pb-0">
+                    <button
+                        onclick="alternarAba('dashboard')"
+                        id="btn-dashboard"
+                        class="aba-btn shrink-0 px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all bg-indigo-600 text-white">
 
-                <button
-                    onclick="alternarAba('dashboard')"
-                    id="btn-dashboard"
-                    class="aba-btn shrink-0 px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all bg-indigo-600 text-white">
+                        Dashboard
 
-                    Dashboard
+                    </button>
 
-                </button>
 
+                    <button
+                        onclick="alternarAba('declarar')"
+                        id="btn-declarar"
+                        class="aba-btn shrink-0 px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all text-slate-400 hover:text-white hover:bg-slate-800">
 
-                <button
-                    onclick="alternarAba('declarar')"
-                    id="btn-declarar"
-                    class="aba-btn shrink-0 px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all text-slate-400 hover:text-white hover:bg-slate-800">
+                        Declarar
 
-                    Declarar
+                    </button>
 
-                </button>
 
+                    <button
+                        onclick="alternarAba('extrato')"
+                        id="btn-extrato"
+                        class="aba-btn shrink-0 px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all text-slate-400 hover:text-white hover:bg-slate-800">
 
-                <button
-                    onclick="alternarAba('extrato')"
-                    id="btn-extrato"
-                    class="aba-btn shrink-0 px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all text-slate-400 hover:text-white hover:bg-slate-800">
+                        Extrato
 
-                    Extrato
+                    </button>
 
-                </button>
 
+                    <button
+                        onclick="alternarAba('configuracoes')"
+                        id="btn-configuracoes"
+                        class="aba-btn shrink-0 px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all text-slate-400 hover:text-white hover:bg-slate-800">
 
-                <button
-                    onclick="alternarAba('configuracoes')"
-                    id="btn-configuracoes"
-                    class="aba-btn shrink-0 px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all text-slate-400 hover:text-white hover:bg-slate-800">
+                        Configurações
 
-                    Configurações
-
-                </button>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</nav>
-
-
-<!-- ==================== CONTEÚDO PRINCIPAL ==================== -->
-<main class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-5 sm:py-8 flex-grow w-full min-w-0">
-
-
-    <!-- ==================== ABA 1: DASHBOARD ==================== -->
-    <section id="aba-dashboard" class="aba-conteudo space-y-6">
-
-
-        <!-- CARDS DE SALDO -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-
-
-            <div
-                class="bg-slate-900/90 border border-slate-800 p-4 sm:p-5 rounded-2xl shadow-lg min-w-0 animar-card efeito-hover"
-                style="animation-delay: 0.05s">
-
-                <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">
-                    Saldo Geral
-                </p>
-
-                <p class="text-xl sm:text-2xl font-bold mt-2 text-indigo-400 truncate">
-                    R$ {{ saldo_painel }}
-                </p>
-
-            </div>
-
-
-            <div
-                class="bg-slate-900/90 border border-slate-800 p-4 sm:p-5 rounded-2xl shadow-lg min-w-0 animar-card efeito-hover"
-                style="animation-delay: 0.1s">
-
-                <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">
-                    Total Entradas
-                </p>
-
-                <p class="text-xl sm:text-2xl font-bold mt-2 text-emerald-400 truncate">
-                    R$ {{ saldo_credit }}
-                </p>
-
-            </div>
-
-
-            <div
-                class="bg-slate-900/90 border border-slate-800 p-4 sm:p-5 rounded-2xl shadow-lg min-w-0 animar-card efeito-hover"
-                style="animation-delay: 0.15s">
-
-                <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">
-                    Total Saídas
-                </p>
-
-                <p class="text-xl sm:text-2xl font-bold mt-2 text-rose-400 truncate">
-                    R$ {{ saldo_debit }}
-                </p>
-
-            </div>
-
-
-            <div
-                class="bg-slate-900/90 border border-slate-800 p-4 sm:p-5 rounded-2xl shadow-lg min-w-0 animar-card efeito-hover"
-                style="animation-delay: 0.2s">
-
-                <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">
-                    Projeção (+5%)
-                </p>
-
-                <p class="text-xl sm:text-2xl font-bold mt-2 text-amber-400 truncate">
-                    R$ {{ projecao_saldo }}
-                </p>
-
-            </div>
-
-        </div>
-
-
-        <!-- TABELAS RESUMIDAS -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-
-
-            <!-- ENTRADAS -->
-            <div
-                class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-xl min-w-0 efeito-hover animar-card"
-                style="animation-delay: 0.25s">
-
-                <h3 class="text-lg font-bold text-emerald-400 mb-4 flex items-center gap-2">
-
-                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
-
-                    Últimas Entradas
-
-                </h3>
-
-
-                <div class="overflow-x-auto">
-
-                    <table class="w-full table-fixed text-left text-xs sm:text-sm text-slate-300">
-
-                        <thead class="text-xs uppercase bg-slate-800/50 text-slate-400">
-
-                            <tr>
-
-                                <th class="p-2 sm:p-3 w-[40%]">
-                                    Descrição
-                                </th>
-
-                                <th class="p-2 sm:p-3 w-[30%]">
-                                    Categoria
-                                </th>
-
-                                <th class="p-2 sm:p-3 w-[30%] text-right">
-                                    Valor
-                                </th>
-
-                            </tr>
-
-                        </thead>
-
-
-                        <tbody class="divide-y divide-slate-800">
-
-                            {% for item in creditos %}
-
-                            <tr class="hover:bg-slate-800/40 transition-colors">
-
-                                <td class="p-2 sm:p-3 font-medium text-slate-200 break-words">
-                                    {{ item['nome'] }}
-                                </td>
-
-                                <td class="p-2 sm:p-3 text-slate-400 break-words">
-                                    {{ item['categoria']|capitalize }}
-                                </td>
-
-                                <td class="p-2 sm:p-3 text-right font-semibold text-emerald-400 whitespace-nowrap">
-                                    +R$ {{ "%.2f"|format(item['valor']) }}
-                                </td>
-
-                            </tr>
-
-                            {% else %}
-
-                            <tr>
-
-                                <td
-                                    colspan="3"
-                                    class="p-3 text-slate-500 italic text-center">
-
-                                    Nenhuma entrada recente.
-
-                                </td>
-
-                            </tr>
-
-                            {% endfor %}
-
-                        </tbody>
-
-                    </table>
-
-                </div>
-
-            </div>
-
-
-            <!-- SAÍDAS -->
-            <div
-                class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-xl min-w-0 efeito-hover animar-card"
-                style="animation-delay: 0.3s">
-
-                <h3 class="text-lg font-bold text-rose-400 mb-4 flex items-center gap-2">
-
-                    <span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
-
-                    Últimas Saídas
-
-                </h3>
-
-
-                <div class="overflow-x-auto">
-
-                    <table class="w-full table-fixed text-left text-xs sm:text-sm text-slate-300">
-
-                        <thead class="text-xs uppercase bg-slate-800/50 text-slate-400">
-
-                            <tr>
-
-                                <th class="p-2 sm:p-3 w-[40%]">
-                                    Descrição
-                                </th>
-
-                                <th class="p-2 sm:p-3 w-[30%]">
-                                    Categoria
-                                </th>
-
-                                <th class="p-2 sm:p-3 w-[30%] text-right">
-                                    Valor
-                                </th>
-
-                            </tr>
-
-                        </thead>
-
-
-                        <tbody class="divide-y divide-slate-800">
-
-                            {% for item in debitos %}
-
-                            <tr class="hover:bg-slate-800/40 transition-colors">
-
-                                <td class="p-2 sm:p-3 font-medium text-slate-200 break-words">
-                                    {{ item['nome'] }}
-                                </td>
-
-                                <td class="p-2 sm:p-3 text-slate-400 break-words">
-                                    {{ item['categoria']|capitalize }}
-                                </td>
-
-                                <td class="p-2 sm:p-3 text-right font-semibold text-rose-400 whitespace-nowrap">
-                                    -R$ {{ "%.2f"|format(item['valor']) }}
-                                </td>
-
-                            </tr>
-
-                            {% else %}
-
-                            <tr>
-
-                                <td
-                                    colspan="3"
-                                    class="p-3 text-slate-500 italic text-center">
-
-                                    Nenhuma saída recente.
-
-                                </td>
-
-                            </tr>
-
-                            {% endfor %}
-
-                        </tbody>
-
-                    </table>
+                    </button>
 
                 </div>
 
@@ -548,46 +331,666 @@
 
         </div>
 
-    </section>
+    </nav>
 
 
-    <!-- ==================== ABA 2: DECLARAR ==================== -->
-    <section
-        id="aba-declarar"
-        class="aba-conteudo hidden max-w-2xl mx-auto">
+    <!-- ==================== CONTEÚDO PRINCIPAL ==================== -->
 
-        <div
-            class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-xl min-w-0 efeito-hover">
-
-            <h3 class="text-xl font-bold text-slate-100 mb-6">
-                Novo Lançamento
-            </h3>
+    <main
+        class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-5 sm:py-8 flex-grow w-full min-w-0">
 
 
-            <form
-                action="/actions/salvar_declaracao"
-                method="POST"
-                class="space-y-4">
+        <!-- ========================================================= -->
+        <!-- ==================== DASHBOARD ========================== -->
+        <!-- ========================================================= -->
+
+        <section
+            id="aba-dashboard"
+            class="aba-conteudo space-y-6">
 
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <!-- ==================== FILTRO DE OBRA ==================== -->
+
+            <div
+                class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 sm:p-5 shadow-xl efeito-hover">
+
+                <div
+                    class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
 
                     <div>
 
-                        <label class="block text-sm font-medium text-slate-300 mb-1">
-                            Tipo
+                        <p
+                            class="text-xs font-semibold text-indigo-400 uppercase tracking-wider">
+
+                            Visualização
+
+                        </p>
+
+                        <h3
+                            class="text-lg font-bold text-slate-100 mt-1">
+
+                            Obra / Projeto
+
+                        </h3>
+
+                        <p
+                            class="text-xs text-slate-500 mt-1">
+
+                            Selecione uma obra para visualizar somente seus dados financeiros.
+
+                        </p>
+
+                    </div>
+
+
+                    <div class="w-full sm:w-80">
+
+                        <select
+                            id="select_obra_dashboard"
+                            onchange="carregarDashboard()"
+                            class="w-full px-4 py-3 bg-slate-950 border border-slate-700 rounded-xl text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+
+                            <option value="todas">
+                                Todas as Obras
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- ==================== CARDS DE SALDO ==================== -->
+
+            <div
+                id="dashboard-metricas"
+                class="grid grid-cols-1 md:grid-cols-4 gap-4">
+
+
+                <!-- SALDO -->
+
+                <div
+                    class="bg-slate-900/90 border border-slate-800 p-4 sm:p-5 rounded-2xl shadow-lg min-w-0 animar-card efeito-hover"
+                    style="animation-delay: 0.05s">
+
+                    <p
+                        class="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+
+                        Saldo Geral
+
+                    </p>
+
+                    <p
+                        id="metric-saldo-painel"
+                        class="text-xl sm:text-2xl font-bold mt-2 text-indigo-400 truncate">
+
+                        R$ {{ saldo_painel }}
+
+                    </p>
+
+                </div>
+
+
+                <!-- ENTRADAS -->
+
+                <div
+                    class="bg-slate-900/90 border border-slate-800 p-4 sm:p-5 rounded-2xl shadow-lg min-w-0 animar-card efeito-hover"
+                    style="animation-delay: 0.1s">
+
+                    <p
+                        class="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+
+                        Total Entradas
+
+                    </p>
+
+                    <p
+                        id="metric-saldo-credit"
+                        class="text-xl sm:text-2xl font-bold mt-2 text-emerald-400 truncate">
+
+                        R$ {{ saldo_credit }}
+
+                    </p>
+
+                </div>
+
+
+                <!-- SAÍDAS -->
+
+                <div
+                    class="bg-slate-900/90 border border-slate-800 p-4 sm:p-5 rounded-2xl shadow-lg min-w-0 animar-card efeito-hover"
+                    style="animation-delay: 0.15s">
+
+                    <p
+                        class="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+
+                        Total Saídas
+
+                    </p>
+
+                    <p
+                        id="metric-saldo-debit"
+                        class="text-xl sm:text-2xl font-bold mt-2 text-rose-400 truncate">
+
+                        R$ {{ saldo_debit }}
+
+                    </p>
+
+                </div>
+
+
+                <!-- PROJEÇÃO -->
+
+                <div
+                    class="bg-slate-900/90 border border-slate-800 p-4 sm:p-5 rounded-2xl shadow-lg min-w-0 animar-card efeito-hover"
+                    style="animation-delay: 0.2s">
+
+                    <p
+                        class="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+
+                        Projeção (+5%)
+
+                    </p>
+
+                    <p
+                        id="metric-projecao"
+                        class="text-xl sm:text-2xl font-bold mt-2 text-amber-400 truncate">
+
+                        R$ {{ projecao_saldo }}
+
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- ==================== TABELAS RESUMIDAS ==================== -->
+
+            <div
+                class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+
+                <!-- ==================== ENTRADAS ==================== -->
+
+                <div
+                    class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-xl min-w-0 efeito-hover animar-card"
+                    style="animation-delay: 0.25s">
+
+                    <h3
+                        class="text-lg font-bold text-emerald-400 mb-4 flex items-center gap-2">
+
+                        <span
+                            class="w-2.5 h-2.5 rounded-full bg-emerald-500">
+                        </span>
+
+                        Últimas Entradas
+
+                    </h3>
+
+
+                    <div class="overflow-x-auto">
+
+                        <table
+                            class="w-full table-fixed text-left text-xs sm:text-sm text-slate-300">
+
+                            <thead
+                                class="text-xs uppercase bg-slate-800/50 text-slate-400">
+
+                                <tr>
+
+                                    <th class="p-2 sm:p-3 w-[40%]">
+                                        Descrição
+                                    </th>
+
+                                    <th class="p-2 sm:p-3 w-[30%]">
+                                        Categoria
+                                    </th>
+
+                                    <th class="p-2 sm:p-3 w-[30%] text-right">
+                                        Valor
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody
+                                id="dashboard-creditos-corpo"
+                                class="divide-y divide-slate-800">
+
+                                {% for item in creditos %}
+
+                                <tr
+                                    class="hover:bg-slate-800/40 transition-colors">
+
+                                    <td
+                                        class="p-2 sm:p-3 font-medium text-slate-200 break-words">
+
+                                        {{ item['nome'] }}
+
+                                    </td>
+
+                                    <td
+                                        class="p-2 sm:p-3 text-slate-400 break-words">
+
+                                        {{ item['categoria']|capitalize }}
+
+                                    </td>
+
+                                    <td
+                                        class="p-2 sm:p-3 text-right font-semibold text-emerald-400 whitespace-nowrap">
+
+                                        +R$ {{ "%.2f"|format(item['valor']) }}
+
+                                    </td>
+
+                                </tr>
+
+                                {% else %}
+
+                                <tr>
+
+                                    <td
+                                        colspan="3"
+                                        class="p-3 text-slate-500 italic text-center">
+
+                                        Nenhuma entrada recente.
+
+                                    </td>
+
+                                </tr>
+
+                                {% endfor %}
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ==================== SAÍDAS ==================== -->
+
+                <div
+                    class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-xl min-w-0 efeito-hover animar-card"
+                    style="animation-delay: 0.3s">
+
+                    <h3
+                        class="text-lg font-bold text-rose-400 mb-4 flex items-center gap-2">
+
+                        <span
+                            class="w-2.5 h-2.5 rounded-full bg-rose-500">
+                        </span>
+
+                        Últimas Saídas
+
+                    </h3>
+
+
+                    <div class="overflow-x-auto">
+
+                        <table
+                            class="w-full table-fixed text-left text-xs sm:text-sm text-slate-300">
+
+                            <thead
+                                class="text-xs uppercase bg-slate-800/50 text-slate-400">
+
+                                <tr>
+
+                                    <th class="p-2 sm:p-3 w-[40%]">
+                                        Descrição
+                                    </th>
+
+                                    <th class="p-2 sm:p-3 w-[30%]">
+                                        Categoria
+                                    </th>
+
+                                    <th class="p-2 sm:p-3 w-[30%] text-right">
+                                        Valor
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody
+                                id="dashboard-debitos-corpo"
+                                class="divide-y divide-slate-800">
+
+                                {% for item in debitos %}
+
+                                <tr
+                                    class="hover:bg-slate-800/40 transition-colors">
+
+                                    <td
+                                        class="p-2 sm:p-3 font-medium text-slate-200 break-words">
+
+                                        {{ item['nome'] }}
+
+                                    </td>
+
+                                    <td
+                                        class="p-2 sm:p-3 text-slate-400 break-words">
+
+                                        {{ item['categoria']|capitalize }}
+
+                                    </td>
+
+                                    <td
+                                        class="p-2 sm:p-3 text-right font-semibold text-rose-400 whitespace-nowrap">
+
+                                        -R$ {{ "%.2f"|format(item['valor']) }}
+
+                                    </td>
+
+                                </tr>
+
+                                {% else %}
+
+                                <tr>
+
+                                    <td
+                                        colspan="3"
+                                        class="p-3 text-slate-500 italic text-center">
+
+                                        Nenhuma saída recente.
+
+                                    </td>
+
+                                </tr>
+
+                                {% endfor %}
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ========================================================= -->
+        <!-- ==================== DECLARAR =========================== -->
+        <!-- ========================================================= -->
+
+        <section
+            id="aba-declarar"
+            class="aba-conteudo hidden max-w-2xl mx-auto">
+
+            <div
+                class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-xl min-w-0 efeito-hover">
+
+                <h3
+                    class="text-xl font-bold text-slate-100 mb-6">
+
+                    Novo Lançamento
+
+                </h3>
+
+
+                <form
+                    action="/actions/salvar_declaracao"
+                    method="POST"
+                    class="space-y-4">
+
+
+                    <!-- TIPO + VALOR -->
+
+                    <div
+                        class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+                        <div>
+
+                            <label
+                                class="block text-sm font-medium text-slate-300 mb-1">
+
+                                Tipo
+
+                            </label>
+
+                            <select
+                                name="tipo"
+                                class="w-full px-4 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-slate-100 focus:ring-2 focus:ring-indigo-500 outline-none">
+
+                                <option value="entrada">
+                                    Entrada (+)
+                                </option>
+
+                                <option value="saida">
+                                    Saída (-)
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div>
+
+                            <label
+                                class="block text-sm font-medium text-slate-300 mb-1">
+
+                                Valor (R$)
+
+                            </label>
+
+                            <input
+                                type="number"
+                                step="0.01"
+                                name="valor"
+                                placeholder="0.00"
+                                required
+                                class="w-full px-4 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-slate-100 focus:ring-2 focus:ring-indigo-500 outline-none">
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- DESCRIÇÃO -->
+
+                    <div>
+
+                        <label
+                            class="block text-sm font-medium text-slate-300 mb-1">
+
+                            Descrição
+
+                        </label>
+
+                        <input
+                            type="text"
+                            name="nome"
+                            placeholder="Ex: Pagamento de Fornecedor"
+                            required
+                            class="w-full px-4 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-slate-100 focus:ring-2 focus:ring-indigo-500 outline-none">
+
+                    </div>
+
+
+                    <!-- CATEGORIA -->
+
+                    <div>
+
+                        <label
+                            class="block text-sm font-medium text-slate-300 mb-1">
+
+                            Categoria
+
                         </label>
 
                         <select
-                            name="tipo"
+                            name="categoria"
+                            id="select_categoria_declarar"
+                            required
                             class="w-full px-4 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-slate-100 focus:ring-2 focus:ring-indigo-500 outline-none">
 
-                            <option value="entrada">
-                                Entrada (+)
+                        </select>
+
+                    </div>
+
+
+                    <!-- ==================== OBRA ==================== -->
+
+                    <div>
+
+                        <label
+                            for="select_obra_declarar"
+                            class="block text-sm font-medium text-slate-300 mb-1">
+
+                            Obra / Projeto
+
+                        </label>
+
+                        <select
+                            name="obra_id"
+                            id="select_obra_declarar"
+                            required
+                            class="w-full px-4 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-slate-100 focus:ring-2 focus:ring-indigo-500 outline-none">
+
+                            <option value="">
+                                Selecione uma obra
                             </option>
 
-                            <option value="saida">
-                                Saída (-)
+                        </select>
+
+                        <p
+                            class="text-xs text-slate-500 mt-1.5">
+
+                            A transação será vinculada à obra selecionada.
+
+                        </p>
+
+                    </div>
+
+
+                    <!-- RECORRENTE -->
+
+                    <div
+                        class="flex items-center gap-2 pt-2">
+
+                        <input
+                            type="checkbox"
+                            name="recorrente"
+                            id="recorrente"
+                            class="w-4 h-4 rounded bg-slate-950 border-slate-700 text-indigo-600 focus:ring-indigo-500">
+
+                        <label
+                            for="recorrente"
+                            class="text-sm text-slate-300">
+
+                            Lançamento Recorrente Mensal
+
+                        </label>
+
+                    </div>
+
+
+                    <!-- BOTÃO -->
+
+                    <button
+                        type="submit"
+                        class="w-full mt-4 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-3 px-4 rounded-xl shadow-lg transition-all botao-animado">
+
+                        Salvar Transação
+
+                    </button>
+
+                </form>
+
+            </div>
+
+        </section>
+
+
+        <!-- ========================================================= -->
+        <!-- ==================== EXTRATO ============================ -->
+        <!-- ========================================================= -->
+
+        <section
+            id="aba-extrato"
+            class="aba-conteudo hidden space-y-6">
+
+
+            <!-- ==================== FILTROS ==================== -->
+
+            <div
+                class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-xl flex flex-col sm:flex-row flex-wrap gap-4 items-stretch sm:items-end justify-between efeito-hover">
+
+
+                <div
+                    class="flex flex-col sm:flex-row flex-wrap gap-4 items-stretch sm:items-end min-w-0">
+
+
+                    <!-- MÊS -->
+
+                    <div>
+
+                        <label
+                            class="block text-xs font-semibold text-slate-400 uppercase mb-1">
+
+                            Mês
+
+                        </label>
+
+                        <select
+                            id="select_mes"
+                            onchange="carregarExtrato()"
+                            class="w-full sm:w-auto px-4 py-2 bg-slate-950 border border-slate-700 rounded-xl text-slate-100">
+
+                            <option value="jan">Janeiro</option>
+                            <option value="fev">Fevereiro</option>
+                            <option value="mar">Março</option>
+                            <option value="abr">Abril</option>
+                            <option value="mai">Maio</option>
+                            <option value="jun">Junho</option>
+                            <option value="jul">Julho</option>
+                            <option value="ago">Agosto</option>
+                            <option value="set">Setembro</option>
+                            <option value="out">Outubro</option>
+                            <option value="nov">Novembro</option>
+                            <option value="dez">Dezembro</option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- ANO -->
+
+                    <div>
+
+                        <label
+                            class="block text-xs font-semibold text-slate-400 uppercase mb-1">
+
+                            Ano
+
+                        </label>
+
+                        <select
+                            id="select_ano"
+                            onchange="carregarExtrato()"
+                            class="w-full sm:w-auto px-4 py-2 bg-slate-950 border border-slate-700 rounded-xl text-slate-100">
+
+                            <option value="2025">
+                                2025
+                            </option>
+
+                            <option value="2026">
+                                2026
                             </option>
 
                         </select>
@@ -595,555 +998,462 @@
                     </div>
 
 
+                    <!-- CATEGORIA -->
+
                     <div>
 
-                        <label class="block text-sm font-medium text-slate-300 mb-1">
-                            Valor (R$)
+                        <label
+                            class="block text-xs font-semibold text-slate-400 uppercase mb-1">
+
+                            Categoria
+
                         </label>
 
-                        <input
-                            type="number"
-                            step="0.01"
-                            name="valor"
-                            placeholder="0.00"
-                            required
-                            class="w-full px-4 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-slate-100 focus:ring-2 focus:ring-indigo-500 outline-none">
+                        <select
+                            id="select_categoria_filtro"
+                            onchange="carregarExtrato()"
+                            class="w-full sm:w-auto px-4 py-2 bg-slate-950 border border-slate-700 rounded-xl text-slate-100">
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- ==================== OBRA ==================== -->
+
+                    <div>
+
+                        <label
+                            class="block text-xs font-semibold text-slate-400 uppercase mb-1">
+
+                            Obra / Projeto
+
+                        </label>
+
+                        <select
+                            id="select_obra_filtro"
+                            onchange="carregarExtrato()"
+                            class="w-full sm:w-auto px-4 py-2 bg-slate-950 border border-slate-700 rounded-xl text-slate-100">
+
+                            <option value="todas">
+                                Todas as Obras
+                            </option>
+
+                        </select>
 
                     </div>
 
                 </div>
 
 
-                <div>
-
-                    <label class="block text-sm font-medium text-slate-300 mb-1">
-                        Descrição
-                    </label>
-
-                    <input
-                        type="text"
-                        name="nome"
-                        placeholder="Ex: Pagamento de Fornecedor"
-                        required
-                        class="w-full px-4 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-slate-100 focus:ring-2 focus:ring-indigo-500 outline-none">
-
-                </div>
-
-
-                <div>
-
-                    <label class="block text-sm font-medium text-slate-300 mb-1">
-                        Categoria
-                    </label>
-
-                    <select
-                        name="categoria"
-                        id="select_categoria_declarar"
-                        required
-                        class="w-full px-4 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-slate-100 focus:ring-2 focus:ring-indigo-500 outline-none">
-                    </select>
-
-                </div>
-
-
-                <div class="flex items-center gap-2 pt-2">
-
-                    <input
-                        type="checkbox"
-                        name="recorrente"
-                        id="recorrente"
-                        class="w-4 h-4 rounded bg-slate-950 border-slate-700 text-indigo-600 focus:ring-indigo-500">
-
-                    <label
-                        for="recorrente"
-                        class="text-sm text-slate-300">
-
-                        Lançamento Recorrente Mensal
-
-                    </label>
-
-                </div>
-
+                <!-- EXPORTAR -->
 
                 <button
-                    type="submit"
-                    class="w-full mt-4 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-3 px-4 rounded-xl shadow-lg transition-all botao-animado">
+                    onclick="exportarPDFComFiltro()"
+                    class="w-full sm:w-auto justify-center bg-indigo-600 hover:bg-indigo-500 text-white font-medium py-2 px-5 rounded-xl transition-all flex items-center gap-2 shadow-lg botao-animado">
 
-                    Salvar Transação
+                    <svg
+                        class="w-5 h-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24">
+
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                        </path>
+
+                    </svg>
+
+                    Exportar PDF
 
                 </button>
 
-            </form>
-
-        </div>
-
-    </section>
+            </div>
 
 
-    <!-- ==================== ABA 3: EXTRATO ==================== -->
-    <section
-        id="aba-extrato"
-        class="aba-conteudo hidden space-y-6">
-
-
-        <!-- FILTROS -->
-        <div
-            class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-xl flex flex-col sm:flex-row flex-wrap gap-4 items-stretch sm:items-end justify-between efeito-hover">
-
+            <!-- ==================== TABELA DESKTOP ==================== -->
 
             <div
-                class="flex flex-col sm:flex-row flex-wrap gap-4 items-stretch sm:items-end min-w-0">
+                class="hidden sm:block bg-slate-900/90 border border-slate-800 rounded-2xl p-3 sm:p-6 shadow-xl overflow-x-auto max-w-full efeito-hover">
 
+                <table
+                    class="w-full min-w-[680px] text-left text-sm text-slate-300">
 
-                <div>
+                    <thead
+                        class="text-xs uppercase bg-slate-800/50 text-slate-400">
 
-                    <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">
-                        Mês
-                    </label>
+                        <tr>
 
-                    <select
-                        id="select_mes"
-                        onchange="carregarExtrato()"
-                        class="w-full sm:w-auto px-4 py-2 bg-slate-950 border border-slate-700 rounded-xl text-slate-100">
+                            <th class="p-3">
+                                Data
+                            </th>
 
-                        <option value="jan">Janeiro</option>
-                        <option value="fev">Fevereiro</option>
-                        <option value="mar">Março</option>
-                        <option value="abr">Abril</option>
-                        <option value="mai">Maio</option>
-                        <option value="jun">Junho</option>
-                        <option value="jul" selected>Julho</option>
-                        <option value="ago">Agosto</option>
-                        <option value="set">Setembro</option>
-                        <option value="out">Outubro</option>
-                        <option value="nov">Novembro</option>
-                        <option value="dez">Dezembro</option>
+                            <th class="p-3">
+                                Tipo
+                            </th>
 
-                    </select>
+                            <th class="p-3">
+                                Descrição
+                            </th>
 
-                </div>
+                            <th class="p-3">
+                                Categoria
+                            </th>
 
+                            <th class="p-3 text-right">
+                                Valor
+                            </th>
 
-                <div>
+                        </tr>
 
-                    <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">
-                        Ano
-                    </label>
+                    </thead>
 
-                    <select
-                        id="select_ano"
-                        onchange="carregarExtrato()"
-                        class="w-full sm:w-auto px-4 py-2 bg-slate-950 border border-slate-700 rounded-xl text-slate-100">
+                    <tbody
+                        id="tabela-extrato-corpo"
+                        class="divide-y divide-slate-800">
 
-                        <option value="2025">
-                            2025
-                        </option>
+                    </tbody>
 
-                        <option value="2026" selected>
-                            2026
-                        </option>
-
-                    </select>
-
-                </div>
-
-
-                <div>
-
-                    <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">
-                        Categoria
-                    </label>
-
-                    <select
-                        id="select_categoria_filtro"
-                        onchange="carregarExtrato()"
-                        class="w-full sm:w-auto px-4 py-2 bg-slate-950 border border-slate-700 rounded-xl text-slate-100">
-                    </select>
-
-                </div>
+                </table>
 
             </div>
 
 
-            <!-- BOTÃO EXPORTAR PDF -->
-            <button
-                onclick="exportarPDFComFiltro()"
-                class="w-full sm:w-auto justify-center bg-indigo-600 hover:bg-indigo-500 text-white font-medium py-2 px-5 rounded-xl transition-all flex items-center gap-2 shadow-lg botao-animado">
-
-                <svg
-                    class="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24">
-
-                    <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
-                    </path>
-
-                </svg>
-
-                Exportar PDF
-
-            </button>
-
-        </div>
-
-
-        <!-- ==================== TABELA DESKTOP ==================== -->
-        <div
-            class="hidden sm:block bg-slate-900/90 border border-slate-800 rounded-2xl p-3 sm:p-6 shadow-xl overflow-x-auto max-w-full efeito-hover">
-
-            <table
-                class="w-full min-w-[680px] text-left text-sm text-slate-300">
-
-                <thead
-                    class="text-xs uppercase bg-slate-800/50 text-slate-400">
-
-                    <tr>
-
-                        <th class="p-3">
-                            Data
-                        </th>
-
-                        <th class="p-3">
-                            Tipo
-                        </th>
-
-                        <th class="p-3">
-                            Descrição
-                        </th>
-
-                        <th class="p-3">
-                            Categoria
-                        </th>
-
-                        <th class="p-3 text-right">
-                            Valor
-                        </th>
-
-                    </tr>
-
-                </thead>
-
-
-                <tbody
-                    id="tabela-extrato-corpo"
-                    class="divide-y divide-slate-800">
-
-                </tbody>
-
-            </table>
-
-        </div>
-
-
-        <!-- ==================== CARDS MOBILE ==================== -->
-        <div
-            id="extrato-mobile"
-            class="sm:hidden grid grid-cols-1 gap-3">
-        </div>
-
-    </section>
-
-
-    <!-- ==================== ABA 4: CONFIGURAÇÕES ==================== -->
-    <section
-        id="aba-configuracoes"
-        class="aba-conteudo hidden space-y-6 max-w-4xl mx-auto">
-
-
-        <!-- ==================== IDENTIDADE DO SISTEMA ==================== -->
-        <div
-            class="bg-slate-900/90 backdrop-blur-md rounded-2xl shadow-xl border border-slate-800 overflow-hidden efeito-hover">
-
+            <!-- ==================== MOBILE ==================== -->
 
             <div
-                class="bg-indigo-600/20 border-b border-indigo-500/20 px-6 py-4 flex items-center gap-3">
+                id="extrato-mobile"
+                class="sm:hidden grid grid-cols-1 gap-3">
+
+            </div>
+
+        </section>
+
+
+        <!-- ========================================================= -->
+        <!-- ================= CONFIGURAÇÕES ========================= -->
+        <!-- ========================================================= -->
+
+        <section
+            id="aba-configuracoes"
+            class="aba-conteudo hidden space-y-6 max-w-4xl mx-auto">
+
+
+            <!-- ==================== IDENTIDADE ==================== -->
+
+            <div
+                class="bg-slate-900/90 backdrop-blur-md rounded-2xl shadow-xl border border-slate-800 overflow-hidden efeito-hover">
 
                 <div
-                    class="p-2 bg-indigo-500/10 rounded-lg border border-indigo-500/20 text-indigo-400">
+                    class="bg-indigo-600/20 border-b border-indigo-500/20 px-6 py-4 flex items-center gap-3">
 
-                    <svg
-                        class="w-5 h-5"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24">
+                    <div
+                        class="p-2 bg-indigo-500/10 rounded-lg border border-indigo-500/20 text-indigo-400">
 
-                        <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                            d="M4 7h16M4 12h16M4 17h16">
-                        </path>
+                        <svg
+                            class="w-5 h-5"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24">
 
-                    </svg>
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M4 7h16M4 12h16M4 17h16">
+                            </path>
 
-                </div>
+                        </svg>
 
+                    </div>
 
-                <div>
+                    <div>
 
-                    <h3 class="font-semibold text-lg text-slate-100">
-                        Identidade do Sistema
-                    </h3>
+                        <h3
+                            class="font-semibold text-lg text-slate-100">
 
-                    <p class="text-xs text-slate-400">
-                        Personalize o nome e a logo exibidos no sistema.
-                    </p>
+                            Identidade do Sistema
 
-                </div>
+                        </h3>
 
-            </div>
+                        <p
+                            class="text-xs text-slate-400">
 
+                            Personalize o nome e a logo exibidos no sistema.
 
-            <div class="p-6">
-
-                <!-- NOME -->
-                <div class="mb-6">
-
-                    <label
-                        for="nome_sistema"
-                        class="block text-sm font-medium text-slate-300 mb-1.5">
-
-                        Nome do Sistema
-
-                    </label>
-
-
-                    <input
-                        type="text"
-                        id="nome_sistema"
-                        maxlength="50"
-                        value="SaaS Financeiro"
-                        placeholder="Ex: Minha Empresa"
-                        class="w-full px-4 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-
-                    <p class="text-xs text-slate-500 mt-1.5">
-                        Esse nome será exibido no topo do sistema.
-                    </p>
-
-                </div>
-
-
-                <!-- LOGO -->
-                <div class="border-t border-slate-800 pt-6">
-
-                    <label class="block text-sm font-medium text-slate-300 mb-3">
-                        Logo do Sistema
-                    </label>
-
-
-                    <div class="flex flex-col sm:flex-row gap-5 items-start sm:items-center">
-
-
-                        <!-- PREVIEW -->
-                        <div
-                            class="shrink-0 w-24 h-24 bg-slate-950 border border-slate-700 rounded-2xl flex items-center justify-center overflow-hidden">
-
-                            <div
-                                id="logo-preview-fallback"
-                                class="w-full h-full flex items-center justify-center text-2xl font-bold text-white bg-indigo-600">
-
-                                SF
-
-                            </div>
-
-
-                            <img
-                                id="logo-preview"
-                                src=""
-                                alt="Prévia da logo"
-                                class="hidden logo-preview">
-
-                        </div>
-
-
-                        <!-- CONTROLES -->
-                        <div class="flex-1 w-full">
-
-                            <input
-                                type="file"
-                                id="input_logo"
-                                accept="image/png,image/jpeg,image/jpg,image/webp"
-                                class="hidden"
-                                onchange="selecionarLogo(event)">
-
-
-                            <div class="flex flex-col sm:flex-row gap-2">
-
-                                <button
-                                    type="button"
-                                    onclick="document.getElementById('input_logo').click()"
-                                    class="bg-indigo-600 hover:bg-indigo-500 text-white font-medium py-2.5 px-5 rounded-xl transition-all botao-animado">
-
-                                    Escolher Imagem
-
-                                </button>
-
-
-                                <button
-                                    type="button"
-                                    onclick="removerLogo()"
-                                    class="bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 font-medium py-2.5 px-5 rounded-xl transition-all">
-
-                                    Remover Logo
-
-                                </button>
-
-                            </div>
-
-
-                            <p class="text-xs text-slate-500 mt-2">
-                                Formatos aceitos: PNG, JPG, JPEG e WEBP.
-                            </p>
-
-                        </div>
+                        </p>
 
                     </div>
 
                 </div>
 
 
-                <!-- SALVAR -->
-                <div class="border-t border-slate-800 mt-6 pt-5 flex flex-col sm:flex-row justify-end gap-3">
+                <div class="p-6">
 
-                    <button
-                        type="button"
-                        onclick="restaurarIdentidade()"
-                        class="w-full sm:w-auto bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 font-medium py-2.5 px-5 rounded-xl transition-all">
+                    <!-- NOME -->
 
-                        Restaurar Padrão
-
-                    </button>
-
-
-                    <button
-                        type="button"
-                        onclick="salvarIdentidade()"
-                        class="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-500 text-white font-medium py-2.5 px-6 rounded-xl transition-all shadow-lg shadow-emerald-900/20 botao-animado">
-
-                        Salvar Alterações
-
-                    </button>
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <!-- ==================== GERENCIADOR DE CATEGORIAS ==================== -->
-        <div
-            class="bg-slate-900/90 backdrop-blur-md rounded-2xl shadow-xl border border-slate-800 overflow-hidden efeito-hover">
-
-
-            <div
-                class="bg-indigo-600/20 border-b border-indigo-500/20 px-6 py-4 flex items-center gap-3">
-
-                <div
-                    class="p-2 bg-indigo-500/10 rounded-lg border border-indigo-500/20 text-indigo-400">
-
-                    <svg
-                        class="w-5 h-5"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24">
-
-                        <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                            d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a1.994 1.994 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z">
-                        </path>
-
-                    </svg>
-
-                </div>
-
-
-                <h3 class="font-semibold text-lg text-slate-100">
-                    Gerenciador de Categorias
-                </h3>
-
-            </div>
-
-
-            <div class="p-6">
-
-
-                <form
-                    onsubmit="cadastrarCategoria(event)"
-                    class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-
-
-                    <div class="md:col-span-2">
+                    <div class="mb-6">
 
                         <label
-                            for="nome_categoria"
+                            for="nome_sistema"
                             class="block text-sm font-medium text-slate-300 mb-1.5">
 
-                            Nome da Nova Categoria
+                            Nome do Sistema
+
+                        </label>
+
+                        <input
+                            type="text"
+                            id="nome_sistema"
+                            maxlength="50"
+                            value="SaaS Financeiro"
+                            placeholder="Ex: Minha Empresa"
+                            class="w-full px-4 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+
+                        <p
+                            class="text-xs text-slate-500 mt-1.5">
+
+                            Esse nome será exibido no topo do sistema.
+
+                        </p>
+
+                    </div>
+
+
+                    <!-- LOGO -->
+
+                    <div class="border-t border-slate-800 pt-6">
+
+                        <label
+                            class="block text-sm font-medium text-slate-300 mb-3">
+
+                            Logo do Sistema
 
                         </label>
 
 
-                        <input
-                            type="text"
-                            id="nome_categoria"
-                            placeholder="Ex: Software, Marketing, Impostos"
-                            required
-                            class="w-full px-4 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        <div
+                            class="flex flex-col sm:flex-row gap-5 items-start sm:items-center">
+
+
+                            <!-- PREVIEW -->
+
+                            <div
+                                class="shrink-0 w-24 h-24 bg-slate-950 border border-slate-700 rounded-2xl flex items-center justify-center overflow-hidden">
+
+                                <div
+                                    id="logo-preview-fallback"
+                                    class="w-full h-full flex items-center justify-center text-2xl font-bold text-white bg-indigo-600">
+
+                                    SF
+
+                                </div>
+
+                                <img
+                                    id="logo-preview"
+                                    src=""
+                                    alt="Prévia da logo"
+                                    class="hidden logo-preview">
+
+                            </div>
+
+
+                            <!-- CONTROLES -->
+
+                            <div class="flex-1 w-full">
+
+                                <input
+                                    type="file"
+                                    id="input_logo"
+                                    accept="image/png,image/jpeg,image/jpg,image/webp"
+                                    class="hidden"
+                                    onchange="selecionarLogo(event)">
+
+
+                                <div
+                                    class="flex flex-col sm:flex-row gap-2">
+
+                                    <button
+                                        type="button"
+                                        onclick="document.getElementById('input_logo').click()"
+                                        class="bg-indigo-600 hover:bg-indigo-500 text-white font-medium py-2.5 px-5 rounded-xl transition-all botao-animado">
+
+                                        Escolher Imagem
+
+                                    </button>
+
+
+                                    <button
+                                        type="button"
+                                        onclick="removerLogo()"
+                                        class="bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 font-medium py-2.5 px-5 rounded-xl transition-all">
+
+                                        Remover Logo
+
+                                    </button>
+
+                                </div>
+
+
+                                <p
+                                    class="text-xs text-slate-500 mt-2">
+
+                                    Formatos aceitos: PNG, JPG, JPEG e WEBP.
+
+                                </p>
+
+                            </div>
+
+                        </div>
 
                     </div>
 
 
-                    <div class="flex items-end">
+                    <!-- SALVAR -->
+
+                    <div
+                        class="border-t border-slate-800 mt-6 pt-5 flex flex-col sm:flex-row justify-end gap-3">
 
                         <button
-                            type="submit"
-                            class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-medium py-2.5 px-4 rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg shadow-emerald-900/20 botao-animado">
+                            type="button"
+                            onclick="restaurarIdentidade()"
+                            class="w-full sm:w-auto bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 font-medium py-2.5 px-5 rounded-xl transition-all">
 
-                            <svg
-                                class="w-5 h-5"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24">
+                            Restaurar Padrão
 
-                                <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    stroke-width="2"
-                                    d="M12 6v6m0 0v6m0-6h6m-6 0H6">
-                                </path>
+                        </button>
 
-                            </svg>
 
-                            Adicionar
+                        <button
+                            type="button"
+                            onclick="salvarIdentidade()"
+                            class="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-500 text-white font-medium py-2.5 px-6 rounded-xl transition-all shadow-lg shadow-emerald-900/20 botao-animado">
+
+                            Salvar Alterações
 
                         </button>
 
                     </div>
 
-                </form>
+                </div>
+
+            </div>
 
 
-                <div class="border-t border-slate-800 pt-5">
+            <!-- ===================================================== -->
+            <!-- ================= CATEGORIAS ========================= -->
+            <!-- ===================================================== -->
 
-                    <h4
-                        class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">
+            <div
+                class="bg-slate-900/90 backdrop-blur-md rounded-2xl shadow-xl border border-slate-800 overflow-hidden efeito-hover">
 
-                        Categorias Cadastradas
-
-                    </h4>
-
+                <div
+                    class="bg-indigo-600/20 border-b border-indigo-500/20 px-6 py-4 flex items-center gap-3">
 
                     <div
-                        id="lista-badges-categorias"
-                        class="flex flex-wrap gap-2">
+                        class="p-2 bg-indigo-500/10 rounded-lg border border-indigo-500/20 text-indigo-400">
+
+                        <svg
+                            class="w-5 h-5"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24">
+
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a1.994 1.994 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z">
+                            </path>
+
+                        </svg>
+
+                    </div>
+
+
+                    <h3
+                        class="font-semibold text-lg text-slate-100">
+
+                        Gerenciador de Categorias
+
+                    </h3>
+
+                </div>
+
+
+                <div class="p-6">
+
+                    <form
+                        onsubmit="cadastrarCategoria(event)"
+                        class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+
+                        <div class="md:col-span-2">
+
+                            <label
+                                for="nome_categoria"
+                                class="block text-sm font-medium text-slate-300 mb-1.5">
+
+                                Nome da Nova Categoria
+
+                            </label>
+
+                            <input
+                                type="text"
+                                id="nome_categoria"
+                                placeholder="Ex: Software, Marketing, Impostos"
+                                required
+                                class="w-full px-4 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+
+                        </div>
+
+
+                        <div class="flex items-end">
+
+                            <button
+                                type="submit"
+                                class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-medium py-2.5 px-4 rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg shadow-emerald-900/20 botao-animado">
+
+                                <svg
+                                    class="w-5 h-5"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24">
+
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M12 6v6m0 0v6m0-6h6m-6 0H6">
+                                    </path>
+
+                                </svg>
+
+                                Adicionar
+
+                            </button>
+
+                        </div>
+
+                    </form>
+
+
+                    <div class="border-t border-slate-800 pt-5">
+
+                        <h4
+                            class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">
+
+                            Categorias Cadastradas
+
+                        </h4>
+
+                        <div
+                            id="lista-badges-categorias"
+                            class="flex flex-wrap gap-2">
+
+                        </div>
 
                     </div>
 
@@ -1151,1181 +1461,2729 @@
 
             </div>
 
-        </div>
+
+            <!-- ===================================================== -->
+            <!-- ==================== OBRAS =========================== -->
+            <!-- ===================================================== -->
+
+            <div
+                class="bg-slate-900/90 backdrop-blur-md rounded-2xl shadow-xl border border-slate-800 overflow-hidden efeito-hover">
+
+                <div
+                    class="bg-emerald-600/10 border-b border-emerald-500/20 px-6 py-4 flex items-center gap-3">
+
+                    <div
+                        class="p-2 bg-emerald-500/10 rounded-lg border border-emerald-500/20 text-emerald-400">
+
+                        <!-- ÍCONE DE OBRA -->
+
+                        <svg
+                            class="w-5 h-5"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24">
+
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M3 21h18M5 21V10l7-5 7 5v11M9 21v-6h6v6M8 10h.01M12 10h.01M16 10h.01">
+                            </path>
+
+                        </svg>
+
+                    </div>
 
 
-        <!-- ==================== BACKUP ==================== -->
-        <div
-            class="bg-slate-900/90 rounded-2xl shadow-xl border border-slate-800 p-4 sm:p-6 flex flex-col sm:flex-row gap-4 justify-between items-stretch sm:items-center efeito-hover">
+                    <div>
+
+                        <h3
+                            class="font-semibold text-lg text-slate-100">
+
+                            Gerenciador de Obras
+
+                        </h3>
+
+                        <p
+                            class="text-xs text-slate-400">
+
+                            Cadastre as obras ou projetos utilizados nas transações.
+
+                        </p>
+
+                    </div>
+
+                </div>
 
 
-            <div>
+                <div class="p-6">
 
-                <h4 class="font-bold text-slate-100">
-                    Backup do Banco de Dados
-                </h4>
 
-                <p class="text-sm text-slate-400">
-                    Baixe uma cópia completa do arquivo SQLite contendo suas transações e dados.
-                </p>
+                    <!-- FORMULÁRIO DE NOVA OBRA -->
+
+                    <form
+                        onsubmit="cadastrarObra(event)"
+                        class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+
+                        <div class="md:col-span-2">
+
+                            <label
+                                for="nome_obra"
+                                class="block text-sm font-medium text-slate-300 mb-1.5">
+
+                                Nome da Nova Obra
+
+                            </label>
+
+                            <input
+                                type="text"
+                                id="nome_obra"
+                                maxlength="100"
+                                placeholder="Ex: Obra 1, Casa do João, Reforma Loja"
+                                required
+                                class="w-full px-4 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+
+                        </div>
+
+
+                        <div class="flex items-end">
+
+                            <button
+                                type="submit"
+                                class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-medium py-2.5 px-4 rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg shadow-emerald-900/20 botao-animado">
+
+                                <svg
+                                    class="w-5 h-5"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24">
+
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M12 6v6m0 0v6m0-6h6m-6 0H6">
+                                    </path>
+
+                                </svg>
+
+                                Adicionar Obra
+
+                            </button>
+
+                        </div>
+
+                    </form>
+
+
+                    <!-- LISTA -->
+
+                    <div class="border-t border-slate-800 pt-5">
+
+                        <h4
+                            class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">
+
+                            Obras Cadastradas
+
+                        </h4>
+
+
+                        <div
+                            id="lista-badges-obras"
+                            class="flex flex-wrap gap-2">
+
+                        </div>
+
+                    </div>
+
+                </div>
 
             </div>
 
 
-            <a
-                href="/backup_db"
-                class="w-full sm:w-auto text-center bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-medium py-2.5 px-5 rounded-xl transition-all botao-animado">
+            <!-- ===================================================== -->
+            <!-- ====================== BACKUP ======================== -->
+            <!-- ===================================================== -->
 
-                Baixar DB
+            <div
+                class="bg-slate-900/90 rounded-2xl shadow-xl border border-slate-800 p-4 sm:p-6 flex flex-col sm:flex-row gap-4 justify-between items-stretch sm:items-center efeito-hover">
 
-            </a>
+                <div>
 
-        </div>
+                    <h4
+                        class="font-bold text-slate-100">
 
-    </section>
+                        Backup do Banco de Dados
 
-</main>
+                    </h4>
 
+                    <p
+                        class="text-sm text-slate-400">
 
-<!-- ==================== SCRIPT JAVASCRIPT PRINCIPAL ==================== -->
-<script>
+                        Baixe uma cópia completa do arquivo SQLite contendo suas transações e dados.
 
+                    </p>
 
-    // ============================================================
-    // NOTIFICAÇÕES (faixa que entra e sai rapidamente)
-    // Substitui os alert() nativos do navegador
-    // ============================================================
-    function mostrarNotificacao(mensagem, tipo) {
-
-        tipo = tipo || 'info';
-
-        const container =
-            document.getElementById('notificacoes-container');
-
-        if (!container) {
-            return;
-        }
-
-        const cores = {
-            info: 'bg-slate-800 border-slate-600 text-slate-100',
-            sucesso: 'bg-emerald-600 border-emerald-500 text-white',
-            erro: 'bg-red-600 border-red-500 text-white',
-            aviso: 'bg-amber-500 border-amber-400 text-slate-950'
-        };
-
-        const toast = document.createElement('div');
-
-        toast.className =
-            'notificacao-toast ' +
-            (cores[tipo] || cores.info);
-
-        toast.textContent = mensagem;
-
-        container.appendChild(toast);
-
-        // Remove do DOM quando a animação termina
-        toast.addEventListener('animationend', () => {
-            toast.remove();
-        });
-
-    }
+                </div>
 
 
-    // ============================================================
-    // IDENTIDADE DO SISTEMA
-    // ============================================================
+                <a
+                    href="/backup_db"
+                    class="w-full sm:w-auto text-center bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-medium py-2.5 px-5 rounded-xl transition-all botao-animado">
 
-    const CONFIG_IDENTIDADE = {
-        nomePadrao: 'SaaS Financeiro',
-        logoPadrao: null
-    };
+                    Baixar DB
 
+                </a>
 
-    // Carrega as configurações salvas
-    function carregarIdentidade() {
+            </div>
 
-        const nomeSalvo =
-            localStorage.getItem('saas_nome_sistema');
+        </section>
 
-        const logoSalva =
-            localStorage.getItem('saas_logo_sistema');
+    </main>
 
 
-        const nome =
-            nomeSalvo ||
-            CONFIG_IDENTIDADE.nomePadrao;
+    <!-- ============================================================= -->
+    <!-- ==================== JAVASCRIPT ============================= -->
+    <!-- ============================================================= -->
 
+    <script>
 
-        // Atualiza campo da configuração
-        const campoNome =
-            document.getElementById('nome_sistema');
+        // ============================================================
+        // NOTIFICAÇÕES
+        // ============================================================
 
-        if (campoNome) {
-            campoNome.value = nome;
-        }
+        function mostrarNotificacao(mensagem, tipo) {
 
+            tipo = tipo || 'info';
 
-        // Atualiza nome no topo
-        atualizarNomeSistema(nome);
+            const container =
+                document.getElementById('notificacoes-container');
 
+            if (!container) {
+                return;
+            }
 
-        // Atualiza logo
-        if (logoSalva) {
+            const cores = {
 
-            aplicarLogo(logoSalva);
+                info:
+                    'bg-slate-800 border-slate-600 text-slate-100',
 
-        } else {
+                sucesso:
+                    'bg-emerald-600 border-emerald-500 text-white',
 
-            removerLogoVisual();
+                erro:
+                    'bg-red-600 border-red-500 text-white',
 
-        }
+                aviso:
+                    'bg-amber-500 border-amber-400 text-slate-950'
 
-    }
+            };
 
+            const toast =
+                document.createElement('div');
 
-    // Atualiza o nome em todos os lugares necessários
-    function atualizarNomeSistema(nome) {
+            toast.className =
+                'notificacao-toast ' +
+                (cores[tipo] || cores.info);
 
-        const nomeTopo =
-            document.getElementById('nome-sistema-topo');
+            toast.textContent = mensagem;
 
-        if (nomeTopo) {
-            nomeTopo.textContent = nome;
-        }
+            container.appendChild(toast);
 
-
-        const titulo =
-            document.getElementById('titulo-pagina');
-
-        if (titulo) {
-            titulo.textContent = nome;
-        }
-
-    }
-
-
-    // Selecionar imagem
-    function selecionarLogo(event) {
-
-        const arquivo =
-            event.target.files[0];
-
-
-        if (!arquivo) {
-            return;
-        }
-
-
-        // Verifica formato
-        const formatosPermitidos = [
-            'image/png',
-            'image/jpeg',
-            'image/jpg',
-            'image/webp'
-        ];
-
-
-        if (!formatosPermitidos.includes(arquivo.type)) {
-
-            mostrarNotificacao(
-                'Formato de imagem não permitido. Escolha PNG, JPG, JPEG ou WEBP.',
-                'erro'
+            toast.addEventListener(
+                'animationend',
+                () => toast.remove()
             );
-
-            event.target.value = '';
-
-            return;
         }
 
 
-        // Limite de 2 MB
-        const tamanhoMaximo =
-            2 * 1024 * 1024;
+        // ============================================================
+        // IDENTIDADE
+        // ============================================================
 
+        const CONFIG_IDENTIDADE = {
 
-        if (arquivo.size > tamanhoMaximo) {
+            nomePadrao:
+                'SaaS Financeiro',
 
-            mostrarNotificacao(
-                'A imagem é muito grande. Escolha uma imagem de até 2 MB.',
-                'erro'
-            );
-
-            event.target.value = '';
-
-            return;
-        }
-
-
-        const leitor =
-            new FileReader();
-
-
-        leitor.onload = function(e) {
-
-            const imagem =
-                e.target.result;
-
-
-            aplicarLogo(imagem);
-
-            // Guarda temporariamente
-            // para o botão salvar
-            window.logoSelecionada =
-                imagem;
+            logoPadrao:
+                null
 
         };
 
 
-        leitor.readAsDataURL(arquivo);
+        function carregarIdentidade() {
 
-    }
+            const nomeSalvo =
+                localStorage.getItem(
+                    'saas_nome_sistema'
+                );
 
+            const logoSalva =
+                localStorage.getItem(
+                    'saas_logo_sistema'
+                );
 
-    // Aplica a logo na interface
-    function aplicarLogo(imagem) {
 
-        const logoTopo =
-            document.getElementById('logo-topo');
-
-        const logoFallback =
-            document.getElementById('logo-fallback');
-
-
-        if (logoTopo) {
-
-            logoTopo.src =
-                imagem;
-
-            logoTopo.classList.remove('hidden');
-
-        }
-
-
-        if (logoFallback) {
-            logoFallback.classList.add('hidden');
-        }
-
-
-        // Preview
-        const preview =
-            document.getElementById('logo-preview');
-
-        const previewFallback =
-            document.getElementById('logo-preview-fallback');
-
-
-        if (preview) {
-
-            preview.src =
-                imagem;
-
-            preview.classList.remove('hidden');
-
-        }
-
-
-        if (previewFallback) {
-            previewFallback.classList.add('hidden');
-        }
-
-    }
-
-
-    // Remove somente visualmente
-    function removerLogoVisual() {
-
-        const logoTopo =
-            document.getElementById('logo-topo');
-
-        const logoFallback =
-            document.getElementById('logo-fallback');
-
-
-        if (logoTopo) {
-
-            logoTopo.src = '';
-
-            logoTopo.classList.add('hidden');
-
-        }
-
-
-        if (logoFallback) {
-            logoFallback.classList.remove('hidden');
-        }
-
-
-        // Preview
-        const preview =
-            document.getElementById('logo-preview');
-
-        const previewFallback =
-            document.getElementById('logo-preview-fallback');
-
-
-        if (preview) {
-
-            preview.src = '';
-
-            preview.classList.add('hidden');
-
-        }
-
-
-        if (previewFallback) {
-            previewFallback.classList.remove('hidden');
-        }
-
-    }
-
-
-    // Remover logo
-    function removerLogo() {
-
-        window.logoSelecionada = null;
-
-        localStorage.removeItem('saas_logo_sistema');
-
-        removerLogoVisual();
-
-
-        const input =
-            document.getElementById('input_logo');
-
-        if (input) {
-            input.value = '';
-        }
-
-    }
-
-
-    // Salvar identidade
-    function salvarIdentidade() {
-
-        const campoNome =
-            document.getElementById('nome_sistema');
-
-
-        if (!campoNome) {
-            return;
-        }
-
-
-        let nome =
-            campoNome.value.trim();
-
-
-        if (!nome) {
-
-            mostrarNotificacao(
-                'Digite um nome para o sistema.',
-                'aviso'
-            );
-
-            campoNome.focus();
-
-            return;
-        }
-
-
-        // Salva nome
-        localStorage.setItem(
-            'saas_nome_sistema',
-            nome
-        );
-
-
-        // Se existe uma nova logo,
-        // salva a nova logo
-        if (window.logoSelecionada) {
-
-            localStorage.setItem(
-                'saas_logo_sistema',
-                window.logoSelecionada
-            );
-
-        }
-
-
-        // Atualiza interface
-        atualizarNomeSistema(nome);
-
-
-        // Limpa estado temporário
-        window.logoSelecionada = null;
-
-    }
-
-
-    // Restaurar identidade padrão
-    function restaurarIdentidade() {
-
-        const confirmar =
-            confirm(
-                'Deseja restaurar o nome e a logo padrão?'
-            );
-
-
-        if (!confirmar) {
-            return;
-        }
-
-
-        localStorage.removeItem(
-            'saas_nome_sistema'
-        );
-
-
-        localStorage.removeItem(
-            'saas_logo_sistema'
-        );
-
-
-        const campoNome =
-            document.getElementById('nome_sistema');
-
-
-        if (campoNome) {
-            campoNome.value =
+            const nome =
+                nomeSalvo ||
                 CONFIG_IDENTIDADE.nomePadrao;
-        }
 
 
-        atualizarNomeSistema(
-            CONFIG_IDENTIDADE.nomePadrao
-        );
-
-
-        removerLogoVisual();
-
-
-        const input =
-            document.getElementById('input_logo');
-
-        if (input) {
-            input.value = '';
-        }
-
-
-        window.logoSelecionada = null;
-
-    }
-
-
-
-    // ============================================================
-    // NAVEGAÇÃO DE ABAS
-    // ============================================================
-
-    function alternarAba(nomeAba) {
-
-        document
-            .querySelectorAll('.aba-conteudo')
-            .forEach(el => {
-
-                el.classList.add('hidden');
-
-            });
-
-
-        document
-            .querySelectorAll('.aba-btn')
-            .forEach(btn => {
-
-                btn.classList.remove(
-                    'bg-indigo-600',
-                    'text-white'
-                );
-
-                btn.classList.add(
-                    'text-slate-400'
-                );
-
-            });
-
-
-        const aba =
-            document.getElementById(
-                `aba-${nomeAba}`
-            );
-
-
-        aba.classList.remove('hidden');
-
-
-        // Reinicia a animação da aba
-        aba.style.animation = 'none';
-
-        aba.offsetHeight;
-
-        aba.style.animation = '';
-
-
-        const btnAtivo =
-            document.getElementById(
-                `btn-${nomeAba}`
-            );
-
-
-        btnAtivo.classList.add(
-            'bg-indigo-600',
-            'text-white'
-        );
-
-
-        btnAtivo.classList.remove(
-            'text-slate-400'
-        );
-
-
-        if (nomeAba === 'extrato') {
-
-            carregarExtrato();
-
-        }
-
-    }
-
-
-
-    // ============================================================
-    // GERENCIAMENTO DE CATEGORIAS
-    // ============================================================
-
-    async function atualizarCategorias() {
-
-        try {
-
-            const res =
-                await fetch(
-                    '/categoria/listar_categorias'
-                );
-
-
-            const categorias =
-                await res.json();
-
-
-            // 1. Atualizar Badges
-            const containerBadges =
+            const campoNome =
                 document.getElementById(
-                    'lista-badges-categorias'
+                    'nome_sistema'
                 );
 
 
-            if (containerBadges) {
+            if (campoNome) {
 
-                if (categorias.length === 0) {
-
-                    containerBadges.innerHTML =
-                        '<p class="text-slate-500 text-sm italic">Nenhuma categoria cadastrada.</p>';
-
-                } else {
-
-                    containerBadges.innerHTML =
-                        categorias.map(cat => `
-
-                            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 bg-slate-950 text-slate-200 rounded-full text-sm font-medium border border-slate-700 efeito-hover">
-
-                                <span>
-                                    ${cat.nome.charAt(0).toUpperCase() + cat.nome.slice(1)}
-                                </span>
-
-                                <button
-                                    type="button"
-                                    onclick="removerCategoria(${cat.id})"
-                                    class="text-slate-400 hover:text-rose-400 focus:outline-none">
-
-                                    <svg
-                                        class="w-4 h-4"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        viewBox="0 0 24 24">
-
-                                        <path
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"
-                                            stroke-width="2"
-                                            d="M6 18L18 6M6 6l12 12">
-                                        </path>
-
-                                    </svg>
-
-                                </button>
-
-                            </div>
-
-                        `).join('');
-
-                }
+                campoNome.value =
+                    nome;
 
             }
 
 
-            // 2. Atualizar select da Aba Declarar
-            const selectDeclarar =
+            atualizarNomeSistema(nome);
+
+
+            if (logoSalva) {
+
+                aplicarLogo(logoSalva);
+
+            } else {
+
+                removerLogoVisual();
+
+            }
+
+        }
+
+
+        function atualizarNomeSistema(nome) {
+
+            const nomeTopo =
                 document.getElementById(
-                    'select_categoria_declarar'
+                    'nome-sistema-topo'
                 );
 
 
-            if (selectDeclarar) {
+            if (nomeTopo) {
 
-                selectDeclarar.innerHTML =
-                    categorias.map(cat => `
-
-                        <option
-                            value="${cat.nome}"
-                            class="bg-slate-900 text-slate-100">
-
-                            ${cat.nome.charAt(0).toUpperCase() + cat.nome.slice(1)}
-
-                        </option>
-
-                    `).join('');
+                nomeTopo.textContent =
+                    nome;
 
             }
 
 
-            // 3. Atualizar select de Filtros do Extrato
-            const selectFiltro =
+            const titulo =
                 document.getElementById(
-                    'select_categoria_filtro'
+                    'titulo-pagina'
                 );
 
 
-            if (selectFiltro) {
+            if (titulo) {
 
-                const valorAtual =
-                    selectFiltro.value ||
-                    'todas';
-
-
-                selectFiltro.innerHTML =
-                    '<option value="todas" class="bg-slate-900 text-slate-100">Todas as Categorias</option>' +
-
-                    categorias.map(cat => `
-
-                        <option
-                            value="${cat.nome}"
-                            class="bg-slate-900 text-slate-100">
-
-                            ${cat.nome.charAt(0).toUpperCase() + cat.nome.slice(1)}
-
-                        </option>
-
-                    `).join('');
-
-
-                selectFiltro.value =
-                    valorAtual;
+                titulo.textContent =
+                    nome;
 
             }
 
-
-        } catch (err) {
-
-            console.error(
-                "Erro ao carregar categorias:",
-                err
-            );
-
-        }
-
-    }
-
-
-
-    async function cadastrarCategoria(event) {
-
-        event.preventDefault();
-
-
-        const input =
-            document.getElementById(
-                'nome_categoria'
-            );
-
-
-        const nome =
-            input.value.trim();
-
-
-        if (!nome) {
-            return;
         }
 
 
-        const res =
-            await fetch(
-                '/categoria/adicionar_categoria',
-                {
-                    method: 'POST',
+        function selecionarLogo(event) {
 
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
+            const arquivo =
+                event.target.files[0];
 
-                    body: JSON.stringify({
-                        nome: nome
-                    })
-                }
-            );
 
-
-        const data =
-            await res.json();
-
-
-        if (data.sucesso) {
-
-            input.value = '';
-
-            await atualizarCategorias();
-
-        } else {
-
-            mostrarNotificacao(
-                data.erro ||
-                "Erro ao adicionar categoria",
-                'erro'
-            );
-
-        }
-
-    }
-
-
-
-    async function removerCategoria(id) {
-
-        if (!confirm(
-            'Tem certeza que deseja remover esta categoria?'
-        )) {
-
-            return;
-
-        }
-
-
-        const res =
-            await fetch(
-                `/categoria/deletar_categoria/${id}`,
-                {
-                    method: 'DELETE'
-                }
-            );
-
-
-        const data =
-            await res.json();
-
-
-        if (data.sucesso) {
-
-            await atualizarCategorias();
-
-        }
-
-    }
-
-
-
-    // ============================================================
-    // EXTRATO DINÂMICO
-    // ============================================================
-
-    async function carregarExtrato() {
-
-        const mes =
-            document.getElementById(
-                'select_mes'
-            )?.value;
-
-
-        const ano =
-            document.getElementById(
-                'select_ano'
-            )?.value;
-
-
-        const categoria =
-            document.getElementById(
-                'select_categoria_filtro'
-            )?.value ||
-            'todas';
-
-
-        try {
-
-            const res =
-                await fetch(
-                    `/filtra_mes?mes=${mes}&ano=${ano}&categoria=${categoria}`
-                );
-
-
-            const dados =
-                await res.json();
-
-
-            // ==================== DESKTOP ====================
-            const tbody =
-                document.getElementById(
-                    'tabela-extrato-corpo'
-                );
-
-
-            if (tbody) {
-
-                if (dados.length === 0) {
-
-                    tbody.innerHTML =
-                        '<tr><td colspan="5" class="p-4 text-center text-slate-500 italic">Nenhum registro encontrado para estes filtros.</td></tr>';
-
-                } else {
-
-                    tbody.innerHTML =
-                        dados.map((item, index) => `
-
-                            <tr
-                                class="hover:bg-slate-800/40 transition-colors"
-                                style="animation: aparecerExtrato 0.3s ease-out ${index * 0.04}s both">
-
-                                <td class="p-3 text-slate-400">
-                                    ${item.data}
-                                </td>
-
-
-                                <td class="p-3">
-
-                                    <span class="badge-tipo px-2.5 py-1 rounded-full text-xs font-semibold ${
-                                        item.tipo === 'entrada'
-                                            ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
-                                            : 'bg-rose-500/10 text-rose-400 border border-rose-500/20'
-                                    }">
-
-                                        ${
-                                            item.tipo === 'entrada'
-                                                ? 'Entrada'
-                                                : 'Saída'
-                                        }
-
-                                    </span>
-
-                                </td>
-
-
-                                <td class="p-3 font-medium text-slate-200">
-                                    ${item.nome}
-                                </td>
-
-
-                                <td class="p-3 text-slate-400">
-
-                                    ${
-                                        item.categoria.charAt(0).toUpperCase()
-                                        + item.categoria.slice(1)
-                                    }
-
-                                </td>
-
-
-                                <td class="p-3 text-right font-semibold ${
-                                    item.tipo === 'entrada'
-                                        ? 'text-emerald-400'
-                                        : 'text-rose-400'
-                                }">
-
-                                    ${
-                                        item.tipo === 'entrada'
-                                            ? '+'
-                                            : '-'
-                                    }
-
-                                    R$ ${parseFloat(item.valor).toFixed(2)}
-
-                                </td>
-
-                            </tr>
-
-                        `).join('');
-
-                }
-
+            if (!arquivo) {
+                return;
             }
 
 
-            // ==================== MOBILE ====================
-            const mobile =
-                document.getElementById(
-                    'extrato-mobile'
-                );
-
-
-            if (mobile) {
-
-                if (dados.length === 0) {
-
-                    mobile.innerHTML = `
-
-                        <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 text-center extrato-card">
-
-                            <p class="text-slate-500 italic text-sm">
-                                Nenhum registro encontrado para estes filtros.
-                            </p>
-
-                        </div>
-
-                    `;
-
-                } else {
-
-                    mobile.innerHTML =
-                        dados.map((item, index) => `
-
-                            <div
-                                class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 shadow-lg efeito-hover extrato-card"
-                                style="animation-delay: ${index * 0.05}s">
-
-
-                                <!-- TOPO DO CARD -->
-                                <div class="flex items-center justify-between gap-3 mb-4">
-
-                                    <span class="text-xs text-slate-400">
-                                        ${item.data}
-                                    </span>
-
-
-                                    <span class="badge-tipo px-2.5 py-1 rounded-full text-xs font-semibold ${
-                                        item.tipo === 'entrada'
-                                            ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
-                                            : 'bg-rose-500/10 text-rose-400 border border-rose-500/20'
-                                    }">
-
-                                        ${
-                                            item.tipo === 'entrada'
-                                                ? 'Entrada'
-                                                : 'Saída'
-                                        }
-
-                                    </span>
-
-                                </div>
-
-
-                                <!-- DESCRIÇÃO -->
-                                <div class="mb-4">
-
-                                    <p class="text-xs text-slate-500 uppercase font-semibold mb-1">
-                                        Descrição
-                                    </p>
-
-
-                                    <p class="text-base font-semibold text-slate-100 break-words">
-                                        ${item.nome}
-                                    </p>
-
-                                </div>
-
-
-                                <!-- INFORMAÇÕES -->
-                                <div class="grid grid-cols-2 gap-3">
-
-
-                                    <div class="bg-slate-950/70 rounded-xl p-3">
-
-                                        <p class="text-xs text-slate-500 mb-1">
-                                            Categoria
-                                        </p>
-
-
-                                        <p class="text-sm text-slate-300 break-words">
-
-                                            ${
-                                                item.categoria.charAt(0).toUpperCase()
-                                                + item.categoria.slice(1)
-                                            }
-
-                                        </p>
-
-                                    </div>
-
-
-                                    <div class="bg-slate-950/70 rounded-xl p-3">
-
-                                        <p class="text-xs text-slate-500 mb-1">
-                                            Valor
-                                        </p>
-
-
-                                        <p class="text-base font-bold ${
-                                            item.tipo === 'entrada'
-                                                ? 'text-emerald-400'
-                                                : 'text-rose-400'
-                                        }">
-
-                                            ${
-                                                item.tipo === 'entrada'
-                                                    ? '+'
-                                                    : '-'
-                                            }
-
-                                            R$ ${parseFloat(item.valor).toFixed(2)}
-
-                                        </p>
-
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                        `).join('');
-
-                }
-
-            }
-
-
-        } catch (err) {
-
-            console.error(
-                "Erro ao carregar extrato:",
-                err
-            );
-
-        }
-
-    }
-
-
-
-    // ============================================================
-    // EXPORTAR PDF
-    // ============================================================
-
-    function exportarPDFComFiltro() {
-
-        const mes =
-            document.getElementById(
-                'select_mes'
-            )?.value;
-
-
-        const ano =
-            document.getElementById(
-                'select_ano'
-            )?.value;
-
-
-        const categoria =
-            document.getElementById(
-                'select_categoria_filtro'
-            )?.value ||
-            'todas';
-
-
-        window.location.href =
-            `/exportar_pdf?mes=${mes}&ano=${ano}&categoria=${categoria}`;
-
-    }
-
-
-
-    // ============================================================
-    // INICIALIZAÇÃO
-    // ============================================================
-
-    document.addEventListener(
-        'DOMContentLoaded',
-        () => {
-
-
-            // CARREGAR IDENTIDADE PERSONALIZADA
-            carregarIdentidade();
-
-
-            // MESES NO MESMO FORMATO USADO PELO BACKEND
-            const meses = [
-
-                'jan',
-                'fev',
-                'mar',
-                'abr',
-                'mai',
-                'jun',
-                'jul',
-                'ago',
-                'set',
-                'out',
-                'nov',
-                'dez'
+            const formatosPermitidos = [
+
+                'image/png',
+                'image/jpeg',
+                'image/jpg',
+                'image/webp'
 
             ];
 
 
-            // DATA ATUAL DO COMPUTADOR DO USUÁRIO
-            const agora =
-                new Date();
+            if (!formatosPermitidos.includes(arquivo.type)) {
+
+                mostrarNotificacao(
+                    'Formato de imagem não permitido. Escolha PNG, JPG, JPEG ou WEBP.',
+                    'erro'
+                );
+
+                event.target.value = '';
+
+                return;
+            }
 
 
-            const mesAtual =
-                meses[agora.getMonth()];
+            const tamanhoMaximo =
+                2 * 1024 * 1024;
 
 
-            const anoAtual =
-                agora.getFullYear();
+            if (arquivo.size > tamanhoMaximo) {
+
+                mostrarNotificacao(
+                    'A imagem é muito grande. Escolha uma imagem de até 2 MB.',
+                    'erro'
+                );
+
+                event.target.value = '';
+
+                return;
+            }
 
 
-            // SELECIONAR MÊS ATUAL
-            const selectMes =
+            const leitor =
+                new FileReader();
+
+
+            leitor.onload = function(e) {
+
+                const imagem =
+                    e.target.result;
+
+                aplicarLogo(imagem);
+
+                window.logoSelecionada =
+                    imagem;
+
+            };
+
+
+            leitor.readAsDataURL(arquivo);
+
+        }
+
+
+        function aplicarLogo(imagem) {
+
+            const logoTopo =
                 document.getElementById(
-                    'select_mes'
+                    'logo-topo'
+                );
+
+            const logoFallback =
+                document.getElementById(
+                    'logo-fallback'
                 );
 
 
-            if (selectMes) {
+            if (logoTopo) {
 
-                selectMes.value =
-                    mesAtual;
+                logoTopo.src =
+                    imagem;
+
+                logoTopo.classList.remove(
+                    'hidden'
+                );
 
             }
 
 
-            // SELECIONAR ANO ATUAL
-            const selectAno =
+            if (logoFallback) {
+
+                logoFallback.classList.add(
+                    'hidden'
+                );
+
+            }
+
+
+            const preview =
                 document.getElementById(
-                    'select_ano'
+                    'logo-preview'
+                );
+
+            const previewFallback =
+                document.getElementById(
+                    'logo-preview-fallback'
                 );
 
 
-            if (selectAno) {
+            if (preview) {
 
-                const existeAno =
-                    [...selectAno.options].some(
-                        option =>
-                            option.value == anoAtual
+                preview.src =
+                    imagem;
+
+                preview.classList.remove(
+                    'hidden'
+                );
+
+            }
+
+
+            if (previewFallback) {
+
+                previewFallback.classList.add(
+                    'hidden'
+                );
+
+            }
+
+        }
+
+
+        function removerLogoVisual() {
+
+            const logoTopo =
+                document.getElementById(
+                    'logo-topo'
+                );
+
+            const logoFallback =
+                document.getElementById(
+                    'logo-fallback'
+                );
+
+
+            if (logoTopo) {
+
+                logoTopo.src = '';
+
+                logoTopo.classList.add(
+                    'hidden'
+                );
+
+            }
+
+
+            if (logoFallback) {
+
+                logoFallback.classList.remove(
+                    'hidden'
+                );
+
+            }
+
+
+            const preview =
+                document.getElementById(
+                    'logo-preview'
+                );
+
+            const previewFallback =
+                document.getElementById(
+                    'logo-preview-fallback'
+                );
+
+
+            if (preview) {
+
+                preview.src = '';
+
+                preview.classList.add(
+                    'hidden'
+                );
+
+            }
+
+
+            if (previewFallback) {
+
+                previewFallback.classList.remove(
+                    'hidden'
+                );
+
+            }
+
+        }
+
+
+        function removerLogo() {
+
+            window.logoSelecionada =
+                null;
+
+
+            localStorage.removeItem(
+                'saas_logo_sistema'
+            );
+
+
+            removerLogoVisual();
+
+
+            const input =
+                document.getElementById(
+                    'input_logo'
+                );
+
+
+            if (input) {
+
+                input.value = '';
+
+            }
+
+        }
+
+
+        function salvarIdentidade() {
+
+            const campoNome =
+                document.getElementById(
+                    'nome_sistema'
+                );
+
+
+            if (!campoNome) {
+                return;
+            }
+
+
+            const nome =
+                campoNome.value.trim();
+
+
+            if (!nome) {
+
+                mostrarNotificacao(
+                    'Digite um nome para o sistema.',
+                    'aviso'
+                );
+
+                campoNome.focus();
+
+                return;
+            }
+
+
+            localStorage.setItem(
+                'saas_nome_sistema',
+                nome
+            );
+
+
+            if (window.logoSelecionada) {
+
+                localStorage.setItem(
+                    'saas_logo_sistema',
+                    window.logoSelecionada
+                );
+
+            }
+
+
+            atualizarNomeSistema(nome);
+
+
+            window.logoSelecionada =
+                null;
+
+
+            mostrarNotificacao(
+                'Identidade salva com sucesso.',
+                'sucesso'
+            );
+
+        }
+
+
+        function restaurarIdentidade() {
+
+            const confirmar =
+                confirm(
+                    'Deseja restaurar o nome e a logo padrão?'
+                );
+
+
+            if (!confirmar) {
+                return;
+            }
+
+
+            localStorage.removeItem(
+                'saas_nome_sistema'
+            );
+
+
+            localStorage.removeItem(
+                'saas_logo_sistema'
+            );
+
+
+            const campoNome =
+                document.getElementById(
+                    'nome_sistema'
+                );
+
+
+            if (campoNome) {
+
+                campoNome.value =
+                    CONFIG_IDENTIDADE.nomePadrao;
+
+            }
+
+
+            atualizarNomeSistema(
+                CONFIG_IDENTIDADE.nomePadrao
+            );
+
+
+            removerLogoVisual();
+
+
+            const input =
+                document.getElementById(
+                    'input_logo'
+                );
+
+
+            if (input) {
+
+                input.value = '';
+
+            }
+
+
+            window.logoSelecionada =
+                null;
+
+
+            mostrarNotificacao(
+                'Identidade restaurada.',
+                'sucesso'
+            );
+
+        }
+
+
+        // ============================================================
+        // NAVEGAÇÃO
+        // ============================================================
+
+        function alternarAba(nomeAba) {
+
+            document
+                .querySelectorAll('.aba-conteudo')
+                .forEach(el => {
+
+                    el.classList.add(
+                        'hidden'
+                    );
+
+                });
+
+
+            document
+                .querySelectorAll('.aba-btn')
+                .forEach(btn => {
+
+                    btn.classList.remove(
+                        'bg-indigo-600',
+                        'text-white'
+                    );
+
+                    btn.classList.add(
+                        'text-slate-400'
+                    );
+
+                });
+
+
+            const aba =
+                document.getElementById(
+                    `aba-${nomeAba}`
+                );
+
+
+            if (!aba) {
+                return;
+            }
+
+
+            aba.classList.remove(
+                'hidden'
+            );
+
+
+            aba.style.animation =
+                'none';
+
+            aba.offsetHeight;
+
+            aba.style.animation =
+                '';
+
+
+            const btnAtivo =
+                document.getElementById(
+                    `btn-${nomeAba}`
+                );
+
+
+            if (btnAtivo) {
+
+                btnAtivo.classList.add(
+                    'bg-indigo-600',
+                    'text-white'
+                );
+
+                btnAtivo.classList.remove(
+                    'text-slate-400'
+                );
+
+            }
+
+
+            if (nomeAba === 'extrato') {
+
+                carregarExtrato();
+
+            }
+
+
+            if (nomeAba === 'dashboard') {
+
+                carregarDashboard();
+
+            }
+
+        }
+
+
+        // ============================================================
+        // CATEGORIAS
+        // ============================================================
+
+        async function atualizarCategorias() {
+
+            try {
+
+                const res =
+                    await fetch(
+                        '/categoria/listar_categorias'
                     );
 
 
-                if (existeAno) {
+                if (!res.ok) {
 
-                    selectAno.value =
-                        anoAtual;
+                    throw new Error(
+                        'Erro HTTP ao carregar categorias'
+                    );
+
+                }
+
+
+                const categorias =
+                    await res.json();
+
+
+                // ==============================
+                // BADGES
+                // ==============================
+
+                const containerBadges =
+                    document.getElementById(
+                        'lista-badges-categorias'
+                    );
+
+
+                if (containerBadges) {
+
+                    if (
+                        categorias.length === 0
+                    ) {
+
+                        containerBadges.innerHTML =
+                            '<p class="text-slate-500 text-sm italic">Nenhuma categoria cadastrada.</p>';
+
+                    } else {
+
+                        containerBadges.innerHTML =
+                            categorias.map(cat => `
+
+                                <div
+                                    class="inline-flex items-center gap-2 px-3.5 py-1.5 bg-slate-950 text-slate-200 rounded-full text-sm font-medium border border-slate-700 efeito-hover">
+
+                                    <span>
+                                        ${escaparHTML(
+                                            cat.nome.charAt(0).toUpperCase() +
+                                            cat.nome.slice(1)
+                                        )}
+                                    </span>
+
+                                    <button
+                                        type="button"
+                                        onclick="removerCategoria(${cat.id})"
+                                        class="text-slate-400 hover:text-rose-400 focus:outline-none">
+
+                                        <svg
+                                            class="w-4 h-4"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            viewBox="0 0 24 24">
+
+                                            <path
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                stroke-width="2"
+                                                d="M6 18L18 6M6 6l12 12">
+                                            </path>
+
+                                        </svg>
+
+                                    </button>
+
+                                </div>
+
+                            `).join('');
+
+                    }
+
+                }
+
+
+                // ==============================
+                // DECLARAR
+                // ==============================
+
+                const selectDeclarar =
+                    document.getElementById(
+                        'select_categoria_declarar'
+                    );
+
+
+                if (selectDeclarar) {
+
+                    selectDeclarar.innerHTML =
+                        categorias.map(cat => `
+
+                            <option
+                                value="${escaparAtributo(cat.nome)}"
+                                class="bg-slate-900 text-slate-100">
+
+                                ${escaparHTML(
+                                    cat.nome.charAt(0).toUpperCase() +
+                                    cat.nome.slice(1)
+                                )}
+
+                            </option>
+
+                        `).join('');
+
+                }
+
+
+                // ==============================
+                // FILTRO EXTRATO
+                // ==============================
+
+                const selectFiltro =
+                    document.getElementById(
+                        'select_categoria_filtro'
+                    );
+
+
+                if (selectFiltro) {
+
+                    const valorAtual =
+                        selectFiltro.value ||
+                        'todas';
+
+
+                    selectFiltro.innerHTML =
+                        `
+                        <option
+                            value="todas"
+                            class="bg-slate-900 text-slate-100">
+
+                            Todas as Categorias
+
+                        </option>
+                        ` +
+
+                        categorias.map(cat => `
+
+                            <option
+                                value="${escaparAtributo(cat.nome)}"
+                                class="bg-slate-900 text-slate-100">
+
+                                ${escaparHTML(
+                                    cat.nome.charAt(0).toUpperCase() +
+                                    cat.nome.slice(1)
+                                )}
+
+                            </option>
+
+                        `).join('');
+
+
+                    if (
+                        [...selectFiltro.options]
+                            .some(
+                                option =>
+                                    option.value === valorAtual
+                            )
+                    ) {
+
+                        selectFiltro.value =
+                            valorAtual;
+
+                    } else {
+
+                        selectFiltro.value =
+                            'todas';
+
+                    }
+
+                }
+
+
+            } catch (err) {
+
+                console.error(
+                    'Erro ao carregar categorias:',
+                    err
+                );
+
+                mostrarNotificacao(
+                    'Não foi possível carregar as categorias.',
+                    'erro'
+                );
+
+            }
+
+        }
+
+
+        async function cadastrarCategoria(event) {
+
+            event.preventDefault();
+
+
+            const input =
+                document.getElementById(
+                    'nome_categoria'
+                );
+
+
+            if (!input) {
+                return;
+            }
+
+
+            const nome =
+                input.value.trim();
+
+
+            if (!nome) {
+                return;
+            }
+
+
+            try {
+
+                const res =
+                    await fetch(
+                        '/categoria/adicionar_categoria',
+                        {
+                            method: 'POST',
+
+                            headers: {
+                                'Content-Type':
+                                    'application/json'
+                            },
+
+                            body: JSON.stringify({
+                                nome: nome
+                            })
+                        }
+                    );
+
+
+                const data =
+                    await res.json();
+
+
+                if (data.sucesso) {
+
+                    input.value = '';
+
+                    await atualizarCategorias();
+
+                    mostrarNotificacao(
+                        'Categoria adicionada com sucesso.',
+                        'sucesso'
+                    );
+
+                } else {
+
+                    mostrarNotificacao(
+                        data.erro ||
+                        'Erro ao adicionar categoria.',
+                        'erro'
+                    );
+
+                }
+
+            } catch (err) {
+
+                console.error(err);
+
+                mostrarNotificacao(
+                    'Erro de comunicação com o servidor.',
+                    'erro'
+                );
+
+            }
+
+        }
+
+
+        async function removerCategoria(id) {
+
+            if (
+                !confirm(
+                    'Tem certeza que deseja remover esta categoria?'
+                )
+            ) {
+
+                return;
+
+            }
+
+
+            try {
+
+                const res =
+                    await fetch(
+                        `/categoria/deletar_categoria/${id}`,
+                        {
+                            method: 'DELETE'
+                        }
+                    );
+
+
+                const data =
+                    await res.json();
+
+
+                if (data.sucesso) {
+
+                    await atualizarCategorias();
+
+                    mostrarNotificacao(
+                        'Categoria removida.',
+                        'sucesso'
+                    );
+
+                } else {
+
+                    mostrarNotificacao(
+                        data.erro ||
+                        'Não foi possível remover a categoria.',
+                        'erro'
+                    );
+
+                }
+
+            } catch (err) {
+
+                console.error(err);
+
+                mostrarNotificacao(
+                    'Erro de comunicação com o servidor.',
+                    'erro'
+                );
+
+            }
+
+        }
+
+
+        // ============================================================
+        // OBRAS
+        // ============================================================
+
+        /*
+         * Endpoint esperado:
+         *
+         * GET /obra/listar_obras
+         *
+         * Resposta:
+         *
+         * [
+         *   {
+         *      "id": 1,
+         *      "nome": "Obra 1"
+         *   },
+         *   {
+         *      "id": 2,
+         *      "nome": "Obra 2"
+         *   }
+         * ]
+         */
+
+        async function atualizarObras() {
+
+            try {
+
+                const res =
+                    await fetch(
+                        '/obra/listar_obras'
+                    );
+
+
+                if (!res.ok) {
+
+                    throw new Error(
+                        'Erro HTTP ao carregar obras'
+                    );
+
+                }
+
+
+                const obras =
+                    await res.json();
+
+
+                /*
+                 * Guarda as obras globalmente.
+                 * Isso facilita outras funções do sistema.
+                 */
+
+                window.obrasCadastradas =
+                    Array.isArray(obras)
+                        ? obras
+                        : [];
+
+
+                // ==============================================
+                // BADGES DAS OBRAS
+                // ==============================================
+
+                const containerBadges =
+                    document.getElementById(
+                        'lista-badges-obras'
+                    );
+
+
+                if (containerBadges) {
+
+                    if (
+                        window.obrasCadastradas.length === 0
+                    ) {
+
+                        containerBadges.innerHTML =
+                            `
+                            <p class="text-slate-500 text-sm italic">
+                                Nenhuma obra cadastrada.
+                            </p>
+                            `;
+
+                    } else {
+
+                        containerBadges.innerHTML =
+                            window.obrasCadastradas
+                                .map(obra => `
+
+                                    <div
+                                        class="inline-flex items-center gap-2 px-3.5 py-1.5 bg-slate-950 text-slate-200 rounded-full text-sm font-medium border border-slate-700 efeito-hover">
+
+                                        <span class="flex items-center gap-1.5">
+
+                                            <span
+                                                class="w-2 h-2 rounded-full bg-emerald-500">
+                                            </span>
+
+                                            ${escaparHTML(obra.nome)}
+
+                                        </span>
+
+
+                                        <button
+                                            type="button"
+                                            onclick="removerObra(${obra.id})"
+                                            class="text-slate-400 hover:text-rose-400 focus:outline-none">
+
+                                            <svg
+                                                class="w-4 h-4"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                viewBox="0 0 24 24">
+
+                                                <path
+                                                    stroke-linecap="round"
+                                                    stroke-linejoin="round"
+                                                    stroke-width="2"
+                                                    d="M6 18L18 6M6 6l12 12">
+                                                </path>
+
+                                            </svg>
+
+                                        </button>
+
+                                    </div>
+
+                                `)
+                                .join('');
+
+                    }
+
+                }
+
+
+                // ==============================================
+                // SELECT DO DASHBOARD
+                // ==============================================
+
+                const selectDashboard =
+                    document.getElementById(
+                        'select_obra_dashboard'
+                    );
+
+
+                if (selectDashboard) {
+
+                    const valorAtual =
+                        selectDashboard.value ||
+                        'todas';
+
+
+                    selectDashboard.innerHTML =
+                        `
+                        <option
+                            value="todas"
+                            class="bg-slate-900 text-slate-100">
+
+                            Todas as Obras
+
+                        </option>
+                        ` +
+
+                        window.obrasCadastradas
+                            .map(obra => `
+
+                                <option
+                                    value="${escaparAtributo(obra.id)}"
+                                    class="bg-slate-900 text-slate-100">
+
+                                    ${escaparHTML(obra.nome)}
+
+                                </option>
+
+                            `)
+                            .join('');
+
+
+                    if (
+                        [...selectDashboard.options]
+                            .some(
+                                option =>
+                                    option.value ===
+                                    String(valorAtual)
+                            )
+                    ) {
+
+                        selectDashboard.value =
+                            valorAtual;
+
+                    } else {
+
+                        selectDashboard.value =
+                            'todas';
+
+                    }
+
+                }
+
+
+                // ==============================================
+                // SELECT DECLARAR
+                // ==============================================
+
+                const selectDeclarar =
+                    document.getElementById(
+                        'select_obra_declarar'
+                    );
+
+
+                if (selectDeclarar) {
+
+                    const valorAtual =
+                        selectDeclarar.value;
+
+
+                    selectDeclarar.innerHTML =
+                        `
+                        <option
+                            value=""
+                            class="bg-slate-900 text-slate-100">
+
+                            Selecione uma obra
+
+                        </option>
+                        ` +
+
+                        window.obrasCadastradas
+                            .map(obra => `
+
+                                <option
+                                    value="${escaparAtributo(obra.id)}"
+                                    class="bg-slate-900 text-slate-100">
+
+                                    ${escaparHTML(obra.nome)}
+
+                                </option>
+
+                            `)
+                            .join('');
+
+
+                    if (
+                        [...selectDeclarar.options]
+                            .some(
+                                option =>
+                                    option.value ===
+                                    String(valorAtual)
+                            )
+                    ) {
+
+                        selectDeclarar.value =
+                            valorAtual;
+
+                    }
+
+                }
+
+
+                // ==============================================
+                // SELECT DO EXTRATO
+                // ==============================================
+
+                const selectFiltro =
+                    document.getElementById(
+                        'select_obra_filtro'
+                    );
+
+
+                if (selectFiltro) {
+
+                    const valorAtual =
+                        selectFiltro.value ||
+                        'todas';
+
+
+                    selectFiltro.innerHTML =
+                        `
+                        <option
+                            value="todas"
+                            class="bg-slate-900 text-slate-100">
+
+                            Todas as Obras
+
+                        </option>
+                        ` +
+
+                        window.obrasCadastradas
+                            .map(obra => `
+
+                                <option
+                                    value="${escaparAtributo(obra.id)}"
+                                    class="bg-slate-900 text-slate-100">
+
+                                    ${escaparHTML(obra.nome)}
+
+                                </option>
+
+                            `)
+                            .join('');
+
+
+                    if (
+                        [...selectFiltro.options]
+                            .some(
+                                option =>
+                                    option.value ===
+                                    String(valorAtual)
+                            )
+                    ) {
+
+                        selectFiltro.value =
+                            valorAtual;
+
+                    } else {
+
+                        selectFiltro.value =
+                            'todas';
+
+                    }
+
+                }
+
+
+            } catch (err) {
+
+                console.error(
+                    'Erro ao carregar obras:',
+                    err
+                );
+
+
+                mostrarNotificacao(
+                    'Não foi possível carregar as obras.',
+                    'erro'
+                );
+
+            }
+
+        }
+
+
+        /*
+         * Endpoint esperado:
+         *
+         * POST /obra/adicionar_obra
+         *
+         * JSON:
+         *
+         * {
+         *    "nome": "Obra 1"
+         * }
+         */
+
+        async function cadastrarObra(event) {
+
+            event.preventDefault();
+
+
+            const input =
+                document.getElementById(
+                    'nome_obra'
+                );
+
+
+            if (!input) {
+                return;
+            }
+
+
+            const nome =
+                input.value.trim();
+
+
+            if (!nome) {
+
+                mostrarNotificacao(
+                    'Digite o nome da obra.',
+                    'aviso'
+                );
+
+                input.focus();
+
+                return;
+
+            }
+
+
+            try {
+
+                const res =
+                    await fetch(
+                        '/obra/adicionar_obra',
+                        {
+                            method: 'POST',
+
+                            headers: {
+                                'Content-Type':
+                                    'application/json'
+                            },
+
+                            body: JSON.stringify({
+                                nome: nome
+                            })
+                        }
+                    );
+
+
+                const data =
+                    await res.json();
+
+
+                if (data.sucesso) {
+
+                    input.value = '';
+
+                    await atualizarObras();
+
+                    mostrarNotificacao(
+                        'Obra adicionada com sucesso.',
+                        'sucesso'
+                    );
+
+
+                    /*
+                     * Atualiza o Dashboard depois
+                     * que uma nova obra foi cadastrada.
+                     */
+
+                    await carregarDashboard();
+
+                } else {
+
+                    mostrarNotificacao(
+                        data.erro ||
+                        'Erro ao adicionar obra.',
+                        'erro'
+                    );
+
+                }
+
+            } catch (err) {
+
+                console.error(
+                    'Erro ao cadastrar obra:',
+                    err
+                );
+
+
+                mostrarNotificacao(
+                    'Erro de comunicação com o servidor.',
+                    'erro'
+                );
+
+            }
+
+        }
+
+
+        /*
+         * Endpoint esperado:
+         *
+         * DELETE /obra/deletar_obra/<id>
+         */
+
+        async function removerObra(id) {
+
+            if (
+                !confirm(
+                    'Tem certeza que deseja remover esta obra?'
+                )
+            ) {
+
+                return;
+
+            }
+
+
+            try {
+
+                const res =
+                    await fetch(
+                        `/obra/deletar_obra/${id}`,
+                        {
+                            method: 'DELETE'
+                        }
+                    );
+
+
+                const data =
+                    await res.json();
+
+
+                if (data.sucesso) {
+
+                    /*
+                     * Se a obra excluída estava selecionada
+                     * no Dashboard, volta para todas.
+                     */
+
+                    const dashboard =
+                        document.getElementById(
+                            'select_obra_dashboard'
+                        );
+
+
+                    if (
+                        dashboard &&
+                        dashboard.value === String(id)
+                    ) {
+
+                        dashboard.value =
+                            'todas';
+
+                    }
+
+
+                    const filtro =
+                        document.getElementById(
+                            'select_obra_filtro'
+                        );
+
+
+                    if (
+                        filtro &&
+                        filtro.value === String(id)
+                    ) {
+
+                        filtro.value =
+                            'todas';
+
+                    }
+
+
+                    await atualizarObras();
+
+                    await carregarDashboard();
+
+                    mostrarNotificacao(
+                        'Obra removida com sucesso.',
+                        'sucesso'
+                    );
+
+
+                } else {
+
+                    mostrarNotificacao(
+                        data.erro ||
+                        'Não foi possível remover a obra.',
+                        'erro'
+                    );
+
+                }
+
+            } catch (err) {
+
+                console.error(
+                    'Erro ao remover obra:',
+                    err
+                );
+
+
+                mostrarNotificacao(
+                    'Erro de comunicação com o servidor.',
+                    'erro'
+                );
+
+            }
+
+        }
+
+
+        // ============================================================
+        // DASHBOARD POR OBRA
+        // ============================================================
+
+        /*
+         * Endpoint esperado:
+         *
+         * GET /dashboard_dados?obra_id=1
+         *
+         * ou
+         *
+         * GET /dashboard_dados?obra_id=todas
+         *
+         *
+         * Resposta esperada:
+         *
+         * {
+         *     "saldo_painel": 1000,
+         *     "saldo_credit": 2000,
+         *     "saldo_debit": 1000,
+         *     "projecao_saldo": 1050,
+         *
+         *     "creditos": [
+         *         {
+         *             "nome": "Pagamento",
+         *             "categoria": "venda",
+         *             "valor": 1000
+         *         }
+         *     ],
+         *
+         *     "debitos": [
+         *         {
+         *             "nome": "Material",
+         *             "categoria": "material",
+         *             "valor": 500
+         *         }
+         *     ]
+         * }
+         */
+
+        async function carregarDashboard() {
+
+            const select =
+                document.getElementById(
+                    'select_obra_dashboard'
+                );
+
+
+            if (!select) {
+                return;
+            }
+
+
+            const obraId =
+                select.value ||
+                'todas';
+
+
+            const dashboard =
+                document.getElementById(
+                    'dashboard-metricas'
+                );
+
+
+            const corpoCreditos =
+                document.getElementById(
+                    'dashboard-creditos-corpo'
+                );
+
+
+            const corpoDebitos =
+                document.getElementById(
+                    'dashboard-debitos-corpo'
+                );
+
+
+            /*
+             * Adiciona estado visual de carregamento.
+             */
+
+            if (dashboard) {
+
+                dashboard.classList.add(
+                    'dashboard-loading'
+                );
+
+            }
+
+
+            try {
+
+                const url =
+                    `/dashboard_dados?obra_id=${encodeURIComponent(obraId)}`;
+
+
+                const res =
+                    await fetch(url);
+
+
+                if (!res.ok) {
+
+                    throw new Error(
+                        `Erro HTTP ${res.status}`
+                    );
+
+                }
+
+
+                const dados =
+                    await res.json();
+
+
+                // ==============================================
+                // ATUALIZAR MÉTRICAS
+                // ==============================================
+
+                atualizarElemento(
+                    'metric-saldo-painel',
+                    formatarValorMonetario(
+                        dados.saldo_painel
+                    )
+                );
+
+
+                atualizarElemento(
+                    'metric-saldo-credit',
+                    formatarValorMonetario(
+                        dados.saldo_credit
+                    )
+                );
+
+
+                atualizarElemento(
+                    'metric-saldo-debit',
+                    formatarValorMonetario(
+                        dados.saldo_debit
+                    )
+                );
+
+
+                atualizarElemento(
+                    'metric-projecao',
+                    formatarValorMonetario(
+                        dados.projecao_saldo
+                    )
+                );
+
+
+                // ==============================================
+                // ENTRADAS
+                // ==============================================
+
+                if (corpoCreditos) {
+
+                    renderizarDashboardLancamentos(
+                        corpoCreditos,
+                        Array.isArray(dados.creditos)
+                            ? dados.creditos
+                            : [],
+                        'entrada'
+                    );
+
+                }
+
+
+                // ==============================================
+                // SAÍDAS
+                // ==============================================
+
+                if (corpoDebitos) {
+
+                    renderizarDashboardLancamentos(
+                        corpoDebitos,
+                        Array.isArray(dados.debitos)
+                            ? dados.debitos
+                            : [],
+                        'saida'
+                    );
+
+                }
+
+
+            } catch (err) {
+
+                console.error(
+                    'Erro ao carregar Dashboard:',
+                    err
+                );
+
+
+                /*
+                 * Não substituímos imediatamente os dados
+                 * renderizados pelo Jinja.
+                 *
+                 * Isso evita deixar o Dashboard vazio
+                 * se o endpoint ainda não estiver criado.
+                 */
+
+                mostrarNotificacao(
+                    'Não foi possível atualizar os dados desta obra.',
+                    'erro'
+                );
+
+
+            } finally {
+
+                if (dashboard) {
+
+                    dashboard.classList.remove(
+                        'dashboard-loading'
+                    );
 
                 }
 
             }
 
+        }
 
-            // CARREGAR CATEGORIAS
-            atualizarCategorias();
+
+        function atualizarElemento(id, valor) {
+
+            const elemento =
+                document.getElementById(id);
+
+
+            if (!elemento) {
+                return;
+            }
+
+
+            elemento.textContent =
+                `R$ ${valor}`;
+
+
+            elemento.classList.remove(
+                'metric-atualizando'
+            );
+
+
+            /*
+             * Reinicia a animação.
+             */
+
+            void elemento.offsetWidth;
+
+
+            elemento.classList.add(
+                'metric-atualizando'
+            );
 
         }
-    );
 
-</script>
 
+        function formatarValorMonetario(valor) {
+
+            const numero =
+                parseFloat(valor);
+
+
+            if (Number.isNaN(numero)) {
+
+                return '0,00';
+
+            }
+
+
+            return numero.toLocaleString(
+                'pt-BR',
+                {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }
+            );
+
+        }
+
+
+        function renderizarDashboardLancamentos(
+            tbody,
+            dados,
+            tipo
+        ) {
+
+            if (!tbody) {
+                return;
+            }
+
+
+            if (dados.length === 0) {
+
+                const mensagem =
+                    tipo === 'entrada'
+                        ? 'Nenhuma entrada recente.'
+                        : 'Nenhuma saída recente.';
+
+
+                tbody.innerHTML = `
+
+                    <tr>
+
+                        <td
+                            colspan="3"
+                            class="p-3 text-slate-500 italic text-center">
+
+                            ${mensagem}
+
+                        </td>
+
+                    </tr>
+
+                `;
+
+
+                return;
+
+            }
+
+
+            const classeValor =
+                tipo === 'entrada'
+                    ? 'text-emerald-400'
+                    : 'text-rose-400';
+
+
+            const sinal =
+                tipo === 'entrada'
+                    ? '+'
+                    : '-';
+
+
+            tbody.innerHTML =
+                dados.map((item, index) => `
+
+                    <tr
+                        class="hover:bg-slate-800/40 transition-colors"
+                        style="
+                            animation:
+                            aparecerExtrato
+                            0.3s
+                            ease-out
+                            ${index * 0.04}s
+                            both;
+                        ">
+
+                        <td
+                            class="p-2 sm:p-3 font-medium text-slate-200 break-words">
+
+                            ${escaparHTML(
+                                item.nome || ''
+                            )}
+
+                        </td>
+
+
+                        <td
+                            class="p-2 sm:p-3 text-slate-400 break-words">
+
+                            ${escaparHTML(
+                                capitalizar(
+                                    item.categoria || ''
+                                )
+                            )}
+
+                        </td>
+
+
+                        <td
+                            class="p-2 sm:p-3 text-right font-semibold ${classeValor} whitespace-nowrap">
+
+                            ${sinal}R$
+                            ${formatarValorMonetario(
+                                item.valor
+                            )}
+
+                        </td>
+
+                    </tr>
+
+                `)
+                .join('');
+
+        }
+
+
+        // ============================================================
+        // EXTRATO
+        // ============================================================
+
+        async function carregarExtrato() {
+
+            const mes =
+                document.getElementById(
+                    'select_mes'
+                )?.value;
+
+
+            const ano =
+                document.getElementById(
+                    'select_ano'
+                )?.value;
+
+
+            const categoria =
+                document.getElementById(
+                    'select_categoria_filtro'
+                )?.value ||
+                'todas';
+
+
+            const obraId =
+                document.getElementById(
+                    'select_obra_filtro'
+                )?.value ||
+                'todas';
+
+
+            try {
+
+                const url =
+                    `/filtra_mes?mes=${encodeURIComponent(mes)}&ano=${encodeURIComponent(ano)}&categoria=${encodeURIComponent(categoria)}&obra_id=${encodeURIComponent(obraId)}`;
+
+
+                const res =
+                    await fetch(url);
+
+
+                if (!res.ok) {
+
+                    throw new Error(
+                        `Erro HTTP ${res.status}`
+                    );
+
+                }
+
+
+                const dados =
+                    await res.json();
+
+
+                // ==============================
+                // DESKTOP
+                // ==============================
+
+                const tbody =
+                    document.getElementById(
+                        'tabela-extrato-corpo'
+                    );
+
+
+                if (tbody) {
+
+                    if (dados.length === 0) {
+
+                        tbody.innerHTML =
+                            `
+                            <tr>
+
+                                <td
+                                    colspan="5"
+                                    class="p-4 text-center text-slate-500 italic">
+
+                                    Nenhum registro encontrado para estes filtros.
+
+                                </td>
+
+                            </tr>
+                            `;
+
+                    } else {
+
+                        tbody.innerHTML =
+                            dados.map(
+                                (item, index) => `
+
+                                <tr
+                                    class="hover:bg-slate-800/40 transition-colors"
+                                    style="
+                                        animation:
+                                        aparecerExtrato
+                                        0.3s
+                                        ease-out
+                                        ${index * 0.04}s
+                                        both;
+                                    ">
+
+
+                                    <td
+                                        class="p-3 text-slate-400">
+
+                                        ${escaparHTML(
+                                            item.data || ''
+                                        )}
+
+                                    </td>
+
+
+                                    <td class="p-3">
+
+                                        <span
+                                            class="
+                                                badge-tipo
+                                                px-2.5
+                                                py-1
+                                                rounded-full
+                                                text-xs
+                                                font-semibold
+                                                ${
+                                                    item.tipo === 'entrada'
+
+                                                        ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+
+                                                        : 'bg-rose-500/10 text-rose-400 border border-rose-500/20'
+                                                }
+                                            ">
+
+                                            ${
+                                                item.tipo === 'entrada'
+                                                    ? 'Entrada'
+                                                    : 'Saída'
+                                            }
+
+                                        </span>
+
+                                    </td>
+
+
+                                    <td
+                                        class="p-3 font-medium text-slate-200">
+
+                                        ${escaparHTML(
+                                            item.nome || ''
+                                        )}
+
+                                    </td>
+
+
+                                    <td
+                                        class="p-3 text-slate-400">
+
+                                        ${escaparHTML(
+                                            capitalizar(
+                                                item.categoria || ''
+                                            )
+                                        )}
+
+                                    </td>
+
+
+                                    <td
+                                        class="
+                                            p-3
+                                            text-right
+                                            font-semibold
+                                            ${
+                                                item.tipo === 'entrada'
+                                                    ? 'text-emerald-400'
+                                                    : 'text-rose-400'
+                                            }
+                                        ">
+
+                                        ${
+                                            item.tipo === 'entrada'
+                                                ? '+'
+                                                : '-'
+                                        }
+
+                                        R$
+                                        ${formatarValorMonetario(
+                                            item.valor
+                                        )}
+
+                                    </td>
+
+                                </tr>
+
+                            `).join('');
+
+                    }
+
+                }
+
+
+                // ==============================
+                // MOBILE
+                // ==============================
+
+                const mobile =
+                    document.getElementById(
+                        'extrato-mobile'
+                    );
+
+
+                if (mobile) {
+
+                    if (dados.length === 0) {
+
+                        mobile.innerHTML = `
+
+                            <div
+                                class="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 text-center extrato-card">
+
+                                <p
+                                    class="text-slate-500 italic text-sm">
+
+                                    Nenhum registro encontrado para estes filtros.
+
+                                </p>
+
+                            </div>
+
+                        `;
+
+                    } else {
+
+                        mobile.innerHTML =
+                            dados.map(
+                                (item, index) => `
+
+                                <div
+                                    class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 shadow-lg efeito-hover extrato-card"
+                                    style="
+                                        animation-delay:
+                                        ${index * 0.05}s
+                                    ">
+
+
+                                    <!-- TOPO -->
+
+                                    <div
+                                        class="flex items-center justify-between gap-3 mb-4">
+
+                                        <span
+                                            class="text-xs text-slate-400">
+
+                                            ${escaparHTML(
+                                                item.data || ''
+                                            )}
+
+                                        </span>
+
+
+                                        <span
+                                            class="
+                                                badge-tipo
+                                                px-2.5
+                                                py-1
+                                                rounded-full
+                                                text-xs
+                                                font-semibold
+                                                ${
+                                                    item.tipo === 'entrada'
+
+                                                        ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+
+                                                        : 'bg-rose-500/10 text-rose-400 border border-rose-500/20'
+                                                }
+                                            ">
+
+                                            ${
+                                                item.tipo === 'entrada'
+                                                    ? 'Entrada'
+                                                    : 'Saída'
+                                            }
+
+                                        </span>
+
+                                    </div>
+
+
+                                    <!-- DESCRIÇÃO -->
+
+                                    <div class="mb-4">
+
+                                        <p
+                                            class="text-xs text-slate-500 uppercase font-semibold mb-1">
+
+                                            Descrição
+
+                                        </p>
+
+
+                                        <p
+                                            class="text-base font-semibold text-slate-100 break-words">
+
+                                            ${escaparHTML(
+                                                item.nome || ''
+                                            )}
+
+                                        </p>
+
+                                    </div>
+
+
+                                    <!-- INFORMAÇÕES -->
+
+                                    <div
+                                        class="grid grid-cols-2 gap-3">
+
+
+                                        <!-- CATEGORIA -->
+
+                                        <div
+                                            class="bg-slate-950/70 rounded-xl p-3">
+
+                                            <p
+                                                class="text-xs text-slate-500 mb-1">
+
+                                                Categoria
+
+                                            </p>
+
+
+                                            <p
+                                                class="text-sm text-slate-300 break-words">
+
+                                                ${escaparHTML(
+                                                    capitalizar(
+                                                        item.categoria || ''
+                                                    )
+                                                )}
+
+                                            </p>
+
+                                        </div>
+
+
+                                        <!-- VALOR -->
+
+                                        <div
+                                            class="bg-slate-950/70 rounded-xl p-3">
+
+                                            <p
+                                                class="text-xs text-slate-500 mb-1">
+
+                                                Valor
+
+                                            </p>
+
+
+                                            <p
+                                                class="
+                                                    text-base
+                                                    font-bold
+                                                    ${
+                                                        item.tipo === 'entrada'
+                                                            ? 'text-emerald-400'
+                                                            : 'text-rose-400'
+                                                    }
+                                                ">
+
+                                                ${
+                                                    item.tipo === 'entrada'
+                                                        ? '+'
+                                                        : '-'
+                                                }
+
+                                                R$
+                                                ${formatarValorMonetario(
+                                                    item.valor
+                                                )}
+
+                                            </p>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            `).join('');
+
+                    }
+
+                }
+
+
+            } catch (err) {
+
+                console.error(
+                    'Erro ao carregar extrato:',
+                    err
+                );
+
+
+                mostrarNotificacao(
+                    'Não foi possível carregar o extrato.',
+                    'erro'
+                );
+
+            }
+
+        }
+
+
+        // ============================================================
+        // EXPORTAÇÃO PDF
+        // ============================================================
+
+        function exportarPDFComFiltro() {
+
+            const mes =
+                document.getElementById(
+                    'select_mes'
+                )?.value;
+
+
+            const ano =
+                document.getElementById(
+                    'select_ano'
+                )?.value;
+
+
+            const categoria =
+                document.getElementById(
+                    'select_categoria_filtro'
+                )?.value ||
+                'todas';
+
+
+            const obraId =
+                document.getElementById(
+                    'select_obra_filtro'
+                )?.value ||
+                'todas';
+
+
+            window.location.href =
+                `/exportar_pdf?mes=${encodeURIComponent(mes)}&ano=${encodeURIComponent(ano)}&categoria=${encodeURIComponent(categoria)}&obra_id=${encodeURIComponent(obraId)}`;
+
+        }
+
+
+        // ============================================================
+        // FUNÇÕES AUXILIARES
+        // ============================================================
+
+        function escaparHTML(valor) {
+
+            const div =
+                document.createElement(
+                    'div'
+                );
+
+
+            div.textContent =
+                valor == null
+                    ? ''
+                    : String(valor);
+
+
+            return div.innerHTML;
+
+        }
+
+
+        function escaparAtributo(valor) {
+
+            return String(valor ?? '')
+                .replace(/&/g, '&amp;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;');
+
+        }
+
+
+        function capitalizar(texto) {
+
+            texto =
+                String(texto || '');
+
+
+            if (!texto) {
+                return '';
+            }
+
+
+            return (
+                texto.charAt(0).toUpperCase() +
+                texto.slice(1)
+            );
+
+        }
+
+
+        // ============================================================
+        // INICIALIZAÇÃO
+        // ============================================================
+
+        document.addEventListener(
+            'DOMContentLoaded',
+            async () => {
+
+
+                // ==============================
+                // IDENTIDADE
+                // ==============================
+
+                carregarIdentidade();
+
+
+                // ==============================
+                // MESES
+                // ==============================
+
+                const meses = [
+
+                    'jan',
+                    'fev',
+                    'mar',
+                    'abr',
+                    'mai',
+                    'jun',
+                    'jul',
+                    'ago',
+                    'set',
+                    'out',
+                    'nov',
+                    'dez'
+
+                ];
+
+
+                const agora =
+                    new Date();
+
+
+                const mesAtual =
+                    meses[
+                        agora.getMonth()
+                    ];
+
+
+                const anoAtual =
+                    agora.getFullYear();
+
+
+                // ==============================
+                // MÊS ATUAL
+                // ==============================
+
+                const selectMes =
+                    document.getElementById(
+                        'select_mes'
+                    );
+
+
+                if (selectMes) {
+
+                    selectMes.value =
+                        mesAtual;
+
+                }
+
+
+                // ==============================
+                // ANO ATUAL
+                // ==============================
+
+                const selectAno =
+                    document.getElementById(
+                        'select_ano'
+                    );
+
+
+                if (selectAno) {
+
+                    const existeAno =
+                        [
+                            ...selectAno.options
+                        ].some(
+                            option =>
+                                option.value ==
+                                anoAtual
+                        );
+
+
+                    if (existeAno) {
+
+                        selectAno.value =
+                            anoAtual;
+
+                    }
+
+                }
+
+
+                // ==============================
+                // CATEGORIAS
+                // ==============================
+
+                await atualizarCategorias();
+
+
+                // ==============================
+                // OBRAS
+                // ==============================
+
+                await atualizarObras();
+
+
+                // ==============================
+                // DASHBOARD
+                // ==============================
+
+                await carregarDashboard();
+
+            }
+        );
+
+    </script>
 
 </body>
 
