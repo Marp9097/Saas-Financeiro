@@ -15,7 +15,8 @@ def init_db():
             categoria TEXT NOT NULL,
             recorrente INTEGER DEFAULT 0,
             data TEXT NOT NULL,
-            hora TEXT NOT NULL
+            hora TEXT NOT NULL,
+            pasta text NOT NULL
         )
     ''')
     cursor.execute('''

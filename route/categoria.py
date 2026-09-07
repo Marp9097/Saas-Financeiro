@@ -51,3 +51,24 @@ def salvar_categoria():
 
     return jsonify({"sucesso": True}), 200
 
+@add_categoria_bp.route('/dashboard_dados', methods=['GET'])
+def categoria_pastas():
+    pasta = request.args.get('obra_id')
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+    SELECT * FROM transacoes WHERER pasta = ?    
+    """,(pasta))
+
+    dados = cursor.fetchall()
+
+    resp = jsonify([dict[item] for item in dados])
+
+
+
+    return resp
+
+    
+
