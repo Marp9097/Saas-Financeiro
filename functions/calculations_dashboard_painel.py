@@ -2,12 +2,12 @@ import sqlite3
 from functions.get_db_connection import get_db_connection
 
 
-def show_data_total():
+def show_data_total(select_pasta):
     conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute("""
-        SELECT * FROM transacoes WHERE tipo = 'entrada'
-    """)
+        SELECT * FROM transacoes WHERE pasta LIKE ? AND tipo = 'entrada'
+    """,(select_pasta,))
     entradas = sum(item[3] for item in cursor.fetchall() if item[3] is not None  )
 
     cursor.execute("""
@@ -23,12 +23,12 @@ def show_data_total():
 
     return(saldo)
 
-def total_entradas():
+def total_entradas(select_pasta):
     conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute("""
-        SELECT * FROM transacoes WHERE tipo = 'entrada'
-    """)
+        SELECT * FROM transacoes WHERE pasta LIKE ? AND tipo = 'entrada'
+    """,(select_pasta,))
     somando  = sum(item[3] for item in cursor.fetchall() if item[3] is not None  )
     conn.close()
 
@@ -37,12 +37,12 @@ def total_entradas():
 
     return total_entradas
 
-def total_saida():
+def total_saida(select_pasta):
     conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute("""
-        SELECT * FROM transacoes WHERE tipo = 'saida'
-    """)
+        SELECT * FROM transacoes WHERE pasta LIKE ? AND tipo = 'saida'
+    """,(select_pasta,))
     calculando = sum(item[3] for item in cursor.fetchall() if item[3] is not None  )
     conn.close()
 
@@ -50,12 +50,12 @@ def total_saida():
 
     return saida
 
-def projetion_saldo():
+def projetion_saldo(select_pasta):
     conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute("""
-        SELECT * FROM transacoes WHERE tipo = 'entrada'
-    """)
+        SELECT * FROM transacoes WHERE pasta LIKE ? AND tipo = 'entrada'
+    """,(select_pasta,))
     entradas = sum(item[3] for item in cursor.fetchall() if item[3] is not None  )
     conn.close()
 
