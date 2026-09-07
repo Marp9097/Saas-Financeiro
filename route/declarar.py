@@ -16,6 +16,7 @@ def salvar_declaracao():
     valor = float(request.form.get('valor', 0))
     categoria = request.form.get('categoria')
     recorrente = 1 if request.form.get('recorrente') else 0
+    pasta = request.form.get('obra_id')  # Obtendo o valor do campo "pasta" do formulário
     
     agora = datetime.now()
     data_hoje = agora.strftime('%Y-%m-%d')
@@ -24,8 +25,8 @@ def salvar_declaracao():
     conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute(
-        "INSERT INTO transacoes (tipo, nome, valor, categoria, recorrente, data, hora) VALUES (?, ?, ?, ?, ?, ?, ?)",
-        (tipo, nome, valor, categoria, recorrente, data_hoje, hora_atual)
+        "INSERT INTO transacoes (tipo, nome, valor, categoria, recorrente, data, hora, pasta) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+        (tipo, nome, valor, categoria, recorrente, data_hoje, hora_atual, pasta)
     )
     conn.commit()
     conn.close()

@@ -1,5 +1,5 @@
 import sqlite3
-from flask import render_template, Blueprint
+from flask import render_template, Blueprint, request
 from flask import app
 from functions.get_db_connection import get_db_connection
 from functions.calculations_dashboard_painel import show_data_total, total_entradas, total_saida,projetion_saldo
@@ -21,4 +21,4 @@ def index():
 
     conn.close()
 
-    return render_template('index.html', categorias=categorias,debitos=get_all_saidas(),creditos=get_all_entradas(), saldo_painel=show_data_total(), saldo_credit=total_entradas(), saldo_debit=total_saida(), projecao_saldo=projetion_saldo() )  # Inicializa saldo_painel como 0
+    return render_template('index.html', categorias=categorias,debitos=get_all_saidas('*'),creditos=get_all_entradas('*'), saldo_painel=show_data_total(), saldo_credit=total_entradas(), saldo_debit=total_saida(), projecao_saldo=projetion_saldo() )  # Inicializa saldo_painel como 0

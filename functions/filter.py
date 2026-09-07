@@ -1,7 +1,7 @@
 import sqlite3
 from functions.get_db_connection import get_db_connection
 
-def filter(year, month, category):
+def filter(year, month, category, pasta):
     conn = get_db_connection()
     cursor = conn.cursor()
 
@@ -18,8 +18,8 @@ def filter(year, month, category):
     data_pattern = f"{year}-{num_month}-%"
 
     cursor.execute("""
-    SELECT *  FROM transacoes WHERE data LIKE ? AND categoria LIKE ? ORDER BY hora DESC
-    """,(data_pattern, category))
+    SELECT *  FROM transacoes WHERE pasta = ? AND data LIKE ? AND categoria LIKE ? ORDER BY hora DESC
+    """,(pasta, data_pattern, category))
 
     lista = cursor.fetchall()
 

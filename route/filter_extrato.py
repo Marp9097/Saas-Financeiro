@@ -9,11 +9,15 @@ def filtrar():
     month = request.args.get('mes')
     year = request.args.get('ano')
     category = request.args.get('categoria')
+    pasta = request.args.get('select_obra_filtro')  # Obtendo o valor do campo "pasta" do formulário
 
     if category == 'todas':
         category = '%'
 
-    result = filter(year, month, category)
+    if  pasta== 'todas':
+        pasta = '%'
+
+    result = filter(year=year, month=month, category=category, pasta=pasta)
 
 
     return  jsonify([dict(item) for item in result ])
