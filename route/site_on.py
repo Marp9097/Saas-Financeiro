@@ -12,9 +12,6 @@ site_on_bp = Blueprint("site_on", __name__)
 
 @site_on_bp.route('/')
 def index():
-    select_pasta = request.args.get('select_obra_dashboard')
-    if select_pasta == 'todas':
-        select_pasta = '%'
     conn = get_db_connection()
     cursor = conn.cursor()
 
@@ -24,4 +21,4 @@ def index():
 
     conn.close()
 
-    return render_template('index.html', categorias=categorias,debitos=get_all_saidas('*'),creditos=get_all_entradas('*'), saldo_painel=show_data_total(select_pasta), saldo_credit=total_entradas(select_pasta), saldo_debit=total_saida(select_pasta), projecao_saldo=projetion_saldo(select_pasta) )  # Inicializa saldo_painel como 0
+    return render_template('index.html', categorias=categorias,debitos=get_all_saidas('*'),creditos=get_all_entradas('*'), saldo_painel=show_data_total(), saldo_credit=total_entradas(), saldo_debit=total_saida(), projecao_saldo=projetion_saldo() )  # Inicializa saldo_painel como 0

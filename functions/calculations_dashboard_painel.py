@@ -1,8 +1,14 @@
 import sqlite3
+from flask import request
 from functions.get_db_connection import get_db_connection
 
 
-def show_data_total(select_pasta):
+def show_data_total():
+    select_pasta = request.args.get('select_obra_dashboard')
+    if select_pasta == None:
+        select_pasta = '%'
+    print(select_pasta)
+
     conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute("""
@@ -11,8 +17,8 @@ def show_data_total(select_pasta):
     entradas = sum(item[3] for item in cursor.fetchall() if item[3] is not None  )
 
     cursor.execute("""
-        SELECT * FROM transacoes WHERE tipo = 'saida'
-    """)
+        SELECT * FROM transacoes WHERE pasta LIKE ? AND tipo = 'saida'
+    """,(select_pasta,))
 
     saidas = sum(item[3] for item in cursor.fetchall() if item[3] is not None  )
 
@@ -23,7 +29,10 @@ def show_data_total(select_pasta):
 
     return(saldo)
 
-def total_entradas(select_pasta):
+def total_entradas():
+    select_pasta = request.args.get('select_obra_dashboard')
+    if select_pasta == None:
+        select_pasta = '%'
     conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute("""
@@ -37,7 +46,10 @@ def total_entradas(select_pasta):
 
     return total_entradas
 
-def total_saida(select_pasta):
+def total_saida():
+    select_pasta = request.args.get('select_obra_dashboard')
+    if select_pasta == None:
+        select_pasta = '%'
     conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute("""
@@ -50,7 +62,10 @@ def total_saida(select_pasta):
 
     return saida
 
-def projetion_saldo(select_pasta):
+def projetion_saldo():
+    select_pasta = request.args.get('select_obra_dashboard')
+    if select_pasta == None:
+        select_pasta = '%'
     conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute("""
