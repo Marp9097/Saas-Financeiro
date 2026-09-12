@@ -370,9 +370,3 @@ Projeto desenvolvido utilizando **Python, Flask, SQLite, JavaScript e Tailwind C
 O sistema está em desenvolvimento contínuo e novas funcionalidades serão adicionadas conforme a evolução do projeto.
 
 ---
-
-## 📄 Licença
-
-Este projeto ainda não possui uma licença definida.
-
-Caso o projeto seja disponibilizado publicamente, recomenda-se definir uma licença adequada antes de permitir reutilização ou distribuição do código.
