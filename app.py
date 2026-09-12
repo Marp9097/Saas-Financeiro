@@ -3,23 +3,23 @@ import sqlite3
 from datetime import datetime
 from flask import Flask, render_template, request, redirect, url_for
 from flask import Blueprint
-from route.declarar import actions_bp
-from route.categoria import add_categoria_bp
-from route.site_on import site_on_bp
-from functions.init_db import init_db
-from functions.get_db_connection import get_db_connection
-from route.filter_extrato import filter_bp
-from route.download import download_bp
+from routes.lancamentos import lancamentos_bp
+from routes.categorias import categorias_bp
+from routes.site import site_bp
+from database.init import init_db
+from database.connection import get_db_connection
+from routes.extrato import extrato_bp
+from routes.download import download_bp
 
 
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'uploads'
 app.config['DATABASE'] = 'sistema.db'
-app.register_blueprint(add_categoria_bp)
-app.register_blueprint(actions_bp)
-app.register_blueprint(site_on_bp)
-app.register_blueprint(filter_bp)
+app.register_blueprint(categorias_bp)
+app.register_blueprint(lancamentos_bp)
+app.register_blueprint(site_bp)
+app.register_blueprint(extrato_bp)
 app.register_blueprint(download_bp)
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 

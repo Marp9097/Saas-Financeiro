@@ -674,7 +674,7 @@
  
  
                 <form 
-                    action="/actions/salvar_declaracao" 
+                    action="/lancamentos/salvar" 
                     method="POST" 
                     class="space-y-4"> 
  
@@ -1605,7 +1605,7 @@
  
  
                 <a 
-                    href="/backup_db" 
+                    href="/sistema/backup" 
                     class="w-full sm:w-auto text-center bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-medium py-2.5 px-5 rounded-xl transition-all botao-animado"> 
  
                     Baixar DB 
@@ -2298,7 +2298,7 @@
  
                 const res = 
                     await fetch( 
-                        '/categoria/listar_categorias' 
+                        '/categorias/listar' 
                     ); 
  
  
@@ -2529,7 +2529,7 @@
  
                 const res = 
                     await fetch( 
-                        '/categoria/adicionar_categoria', 
+                        '/categorias/adicionar', 
                         { 
                             method: 'POST', 
  
@@ -2601,7 +2601,7 @@
  
                 const res = 
                     await fetch( 
-                        `/categoria/deletar_categoria/${id}`, 
+                        `/categorias/deletar/${id}`, 
                         { 
                             method: 'DELETE' 
                         } 
@@ -2652,7 +2652,7 @@
         /* 
          * Endpoint esperado: 
          * 
-         * GET /obra/listar_obras 
+         * GET /categorias/obras/listar 
          * 
          * Resposta: 
          * 
@@ -2674,7 +2674,7 @@
  
                 const res = 
                     await fetch( 
-                        '/categoria/obra/listar_obras' 
+                        '/categorias/obras/listar' 
                     ); 
  
  
@@ -2990,7 +2990,7 @@
         /* 
          * Endpoint esperado: 
          * 
-         * POST /obra/adicionar_obra 
+         * POST /categorias/obras/adicionar 
          * 
          * JSON: 
          * 
@@ -3037,7 +3037,7 @@
  
                 const res = 
                     await fetch( 
-                        '/categoria/obra/adicionar_obra', 
+                        '/categorias/obras/adicionar', 
                         { 
                             method: 'POST', 
  
@@ -3107,7 +3107,7 @@
         /* 
          * Endpoint esperado: 
          * 
-         * DELETE /obra/deletar_obra/<id> 
+         * DELETE /categorias/obras/deletar/<id> 
          */ 
  
         async function removerObra(id) { 
@@ -3127,7 +3127,7 @@
  
                 const res = 
                     await fetch( 
-                        `/categoria/obra/deletar_obra/?id=${id}`, 
+                        `/categorias/obras/deletar/?id=${id}`, 
                         { 
                             method: 'DELETE' 
                         } 
@@ -3309,7 +3309,7 @@
             try { 
  
                 const url = 
-                    `/categoria/dashboard_dados?obra_id=${encodeURIComponent(obraId)}`; 
+                    `/categorias/dashboard/dados?obra_id=${encodeURIComponent(obraId)}`; 
  
  
                 const res = 
@@ -3636,7 +3636,7 @@
             try { 
  
                 const url = 
-                    `/filtra_mes?mes=${encodeURIComponent(mes)}&ano=${encodeURIComponent(ano)}&categoria=${encodeURIComponent(categoria)}&obra_id=${encodeURIComponent(obraId)}`; 
+                    `/extrato/filtrar?mes=${encodeURIComponent(mes)}&ano=${encodeURIComponent(ano)}&categoria=${encodeURIComponent(categoria)}&obra_id=${encodeURIComponent(obraId)}`; 
  
  
                 const res = 
@@ -4097,7 +4097,7 @@
                 recorrente: document.getElementById('editar_recorrente').checked
             };
             try {
-                const res = await fetch(`/categoria/declaracao/editar/${encodeURIComponent(id)}`, {
+                const res = await fetch(`/categorias/declaracoes/editar/${encodeURIComponent(id)}`, {
                     method: 'PUT', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload)
                 });
                 const data = await res.json();
@@ -4115,7 +4115,7 @@
         async function excluirDeclaracao(id) {
             if (!id || !confirm('Tem certeza que deseja excluir este lançamento?')) return;
             try {
-                const res = await fetch(`/categoria/declaracao/deletar/${encodeURIComponent(id)}`, {method: 'DELETE'});
+                const res = await fetch(`/categorias/declaracoes/deletar/${encodeURIComponent(id)}`, {method: 'DELETE'});
                 const data = await res.json();
                 if (!res.ok || !data.sucesso) throw new Error(data.erro || 'Não foi possível excluir o lançamento.');
                 mostrarNotificacao('Lançamento excluído com sucesso.', 'sucesso');
@@ -4178,13 +4178,13 @@
 
         function formatarNumeroMoeda(valor) { return Number(valor || 0).toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2}); }
         function preencherSelectCategoriaServicos(id, valorSelecionado='') { const select=document.getElementById(id); if(!select)return; const lista=window.categoriasOrcamento||[]; select.innerHTML='<option value="">Selecione uma categoria</option>'+lista.map(c=>`<option value="${escaparAtributo(c.nome||'')}">${escaparHTML(capitalizar(c.nome||''))}</option>`).join(''); if(valorSelecionado)select.value=valorSelecionado; }
-        async function carregarCategoriasOrcamento() { try { const res=await fetch('/categoria/orcamento/categorias/listar'); if(!res.ok)throw new Error(); const d=await res.json(); window.categoriasOrcamento=Array.isArray(d)?d:[]; } catch(e){ console.error(e); window.categoriasOrcamento=[]; } const c=document.getElementById('lista-badges-categorias-servicos'); if(c)c.innerHTML=window.categoriasOrcamento.length?window.categoriasOrcamento.map(x=>`<div class="inline-flex items-center gap-2 px-3.5 py-1.5 bg-slate-950 text-slate-200 rounded-full text-sm font-medium border border-slate-700 efeito-hover"><span>${escaparHTML(capitalizar(x.nome||''))}</span><button type="button" onclick="removerCategoriaServico(${Number(x.id)})" class="text-slate-400 hover:text-rose-400">&times;</button></div>`).join(''):'<p class="text-slate-500 text-sm italic">Nenhuma categoria de serviço cadastrada.</p>'; preencherSelectCategoriaServicos('servico_categoria'); preencherSelectCategoriaServicos('produto_categoria_servico'); }
-        async function cadastrarCategoriaServico(event) { event.preventDefault(); const i=document.getElementById('nome_categoria_servico'), nome=i?.value.trim(); if(!nome)return; try{const r=await fetch('/categoria/orcamento/categorias/adicionar',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({nome})});const d=await r.json();if(!r.ok||!d.sucesso)throw new Error(d.erro||'Não foi possível cadastrar a categoria.');i.value='';await carregarCategoriasOrcamento();mostrarNotificacao('Categoria de serviço adicionada com sucesso.','sucesso');}catch(e){mostrarNotificacao(e.message||'Erro de comunicação com o servidor.','erro');} }
-        async function removerCategoriaServico(id) { if(!id||!confirm('Excluir esta categoria de serviço?'))return; try{const r=await fetch(`/categoria/orcamento/categorias/deletar/${encodeURIComponent(id)}`,{method:'DELETE'});const d=await r.json();if(!r.ok||!d.sucesso)throw new Error(d.erro||'Não foi possível excluir a categoria.');await carregarCategoriasOrcamento();mostrarNotificacao('Categoria de serviço excluída.','sucesso');}catch(e){mostrarNotificacao(e.message||'Erro de comunicação com o servidor.','erro');} }
-        async function carregarProdutosOrcamento(){try{const r=await fetch('/categoria/orcamento/produtos/listar');if(!r.ok)throw new Error();const d=await r.json();window.produtosOrcamento=Array.isArray(d)?d:[];}catch(e){window.produtosOrcamento=[];}renderizarCatalogoOrcamento();alterarTipoItemOrcamento();}
-        async function carregarServicosOrcamento(){try{const r=await fetch('/categoria/orcamento/servicos/listar');if(!r.ok)throw new Error();const d=await r.json();window.servicosOrcamento=Array.isArray(d)?d:[];}catch(e){window.servicosOrcamento=[];}renderizarCatalogoOrcamento();alterarTipoItemOrcamento();}
-        async function cadastrarProdutoOrcamento(event){event.preventDefault();const p={nome:document.getElementById('produto_nome').value.trim(),preco:document.getElementById('produto_preco').value,unidade:document.getElementById('produto_unidade').value.trim(),categoria:document.getElementById('produto_categoria_servico').value};try{const r=await fetch('/categoria/orcamento/produtos/adicionar',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(p)});const d=await r.json();if(!r.ok||!d.sucesso)throw new Error(d.erro||'Não foi possível salvar o produto.');event.target.reset();await carregarProdutosOrcamento();mostrarNotificacao('Produto salvo com sucesso.','sucesso');}catch(e){mostrarNotificacao(e.message||'Erro de comunicação com o servidor.','erro');}}
-        async function cadastrarServicoOrcamento(event){event.preventDefault();const p={nome:document.getElementById('servico_nome').value.trim(),preco:document.getElementById('servico_preco').value,categoria:document.getElementById('servico_categoria').value,calculo:document.getElementById('servico_calculo').value};try{const r=await fetch('/categoria/orcamento/servicos/adicionar',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(p)});const d=await r.json();if(!r.ok||!d.sucesso)throw new Error(d.erro||'Não foi possível salvar o serviço.');event.target.reset();await carregarServicosOrcamento();mostrarNotificacao('Serviço salvo com sucesso.','sucesso');}catch(e){mostrarNotificacao(e.message||'Erro de comunicação com o servidor.','erro');}}
+        async function carregarCategoriasOrcamento() { try { const res=await fetch('/categorias/orcamentos/categorias/listar'); if(!res.ok)throw new Error(); const d=await res.json(); window.categoriasOrcamento=Array.isArray(d)?d:[]; } catch(e){ console.error(e); window.categoriasOrcamento=[]; } const c=document.getElementById('lista-badges-categorias-servicos'); if(c)c.innerHTML=window.categoriasOrcamento.length?window.categoriasOrcamento.map(x=>`<div class="inline-flex items-center gap-2 px-3.5 py-1.5 bg-slate-950 text-slate-200 rounded-full text-sm font-medium border border-slate-700 efeito-hover"><span>${escaparHTML(capitalizar(x.nome||''))}</span><button type="button" onclick="removerCategoriaServico(${Number(x.id)})" class="text-slate-400 hover:text-rose-400">&times;</button></div>`).join(''):'<p class="text-slate-500 text-sm italic">Nenhuma categoria de serviço cadastrada.</p>'; preencherSelectCategoriaServicos('servico_categoria'); preencherSelectCategoriaServicos('produto_categoria_servico'); }
+        async function cadastrarCategoriaServico(event) { event.preventDefault(); const i=document.getElementById('nome_categoria_servico'), nome=i?.value.trim(); if(!nome)return; try{const r=await fetch('/categorias/orcamentos/categorias/adicionar',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({nome})});const d=await r.json();if(!r.ok||!d.sucesso)throw new Error(d.erro||'Não foi possível cadastrar a categoria.');i.value='';await carregarCategoriasOrcamento();mostrarNotificacao('Categoria de serviço adicionada com sucesso.','sucesso');}catch(e){mostrarNotificacao(e.message||'Erro de comunicação com o servidor.','erro');} }
+        async function removerCategoriaServico(id) { if(!id||!confirm('Excluir esta categoria de serviço?'))return; try{const r=await fetch(`/categorias/orcamentos/categorias/deletar/${encodeURIComponent(id)}`,{method:'DELETE'});const d=await r.json();if(!r.ok||!d.sucesso)throw new Error(d.erro||'Não foi possível excluir a categoria.');await carregarCategoriasOrcamento();mostrarNotificacao('Categoria de serviço excluída.','sucesso');}catch(e){mostrarNotificacao(e.message||'Erro de comunicação com o servidor.','erro');} }
+        async function carregarProdutosOrcamento(){try{const r=await fetch('/categorias/orcamentos/produtos/listar');if(!r.ok)throw new Error();const d=await r.json();window.produtosOrcamento=Array.isArray(d)?d:[];}catch(e){window.produtosOrcamento=[];}renderizarCatalogoOrcamento();alterarTipoItemOrcamento();}
+        async function carregarServicosOrcamento(){try{const r=await fetch('/categorias/orcamentos/servicos/listar');if(!r.ok)throw new Error();const d=await r.json();window.servicosOrcamento=Array.isArray(d)?d:[];}catch(e){window.servicosOrcamento=[];}renderizarCatalogoOrcamento();alterarTipoItemOrcamento();}
+        async function cadastrarProdutoOrcamento(event){event.preventDefault();const p={nome:document.getElementById('produto_nome').value.trim(),preco:document.getElementById('produto_preco').value,unidade:document.getElementById('produto_unidade').value.trim(),categoria:document.getElementById('produto_categoria_servico').value};try{const r=await fetch('/categorias/orcamentos/produtos/adicionar',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(p)});const d=await r.json();if(!r.ok||!d.sucesso)throw new Error(d.erro||'Não foi possível salvar o produto.');event.target.reset();await carregarProdutosOrcamento();mostrarNotificacao('Produto salvo com sucesso.','sucesso');}catch(e){mostrarNotificacao(e.message||'Erro de comunicação com o servidor.','erro');}}
+        async function cadastrarServicoOrcamento(event){event.preventDefault();const p={nome:document.getElementById('servico_nome').value.trim(),preco:document.getElementById('servico_preco').value,categoria:document.getElementById('servico_categoria').value,calculo:document.getElementById('servico_calculo').value};try{const r=await fetch('/categorias/orcamentos/servicos/adicionar',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(p)});const d=await r.json();if(!r.ok||!d.sucesso)throw new Error(d.erro||'Não foi possível salvar o serviço.');event.target.reset();await carregarServicosOrcamento();mostrarNotificacao('Serviço salvo com sucesso.','sucesso');}catch(e){mostrarNotificacao(e.message||'Erro de comunicação com o servidor.','erro');}}
         function rotuloCalculoServico(c){return ({unidade:'Quantidade',linear:'Metro linear',area:'Área',volume:'Volume'})[c]||'Quantidade';}
         function renderizarCatalogoOrcamento(){const cp=document.getElementById('contador-produtos-orcamento'),cs=document.getElementById('contador-servicos-orcamento');if(cp)cp.textContent=window.produtosOrcamento.length;if(cs)cs.textContent=window.servicosOrcamento.length;const lp=document.getElementById('lista-produtos-orcamento'),ls=document.getElementById('lista-servicos-orcamento');if(lp)lp.innerHTML=window.produtosOrcamento.length?window.produtosOrcamento.map(p=>`<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 rounded-xl border border-slate-800 bg-slate-950/50 p-3"><div><p class="font-medium text-slate-200">${escaparHTML(p.nome||'')}</p><p class="text-xs text-slate-500">${escaparHTML(p.categoria||'Sem categoria')} · ${escaparHTML(p.unidade||'un')}</p></div><div class="text-sm font-semibold text-sky-400">R$ ${formatarNumeroMoeda(p.preco)}</div></div>`).join(''):'<p class="text-sm text-slate-500 italic">Nenhum produto cadastrado.</p>';if(ls)ls.innerHTML=window.servicosOrcamento.length?window.servicosOrcamento.map(x=>`<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 rounded-xl border border-slate-800 bg-slate-950/50 p-3"><div><p class="font-medium text-slate-200">${escaparHTML(x.nome||'')}</p><p class="text-xs text-slate-500">${escaparHTML(x.categoria||'Sem categoria')} · ${escaparHTML(rotuloCalculoServico(x.calculo))}</p></div><div class="text-sm font-semibold text-violet-400">R$ ${formatarNumeroMoeda(x.preco)}</div></div>`).join(''):'<p class="text-sm text-slate-500 italic">Nenhum serviço cadastrado.</p>';}
         function alterarTipoItemOrcamento(){const tipo=document.getElementById('orcamento_item_tipo')?.value||'produto', cp=document.getElementById('orcamento_campos_produto'),cs=document.getElementById('orcamento_campos_servico'),select=document.getElementById('orcamento_item_catalogo');if(!select)return;if(cp)cp.classList.toggle('hidden',tipo!=='produto');if(cs)cs.classList.toggle('hidden',tipo!=='servico');const lista=tipo==='produto'?window.produtosOrcamento:window.servicosOrcamento;select.innerHTML='<option value="">Selecione</option>'+lista.map(x=>`<option value="${escaparAtributo(x.id??'')}">${escaparHTML(x.nome||'')}</option>`).join('');document.getElementById('orcamento_item_preco').value='';calcularItemOrcamento();}
@@ -4200,7 +4200,7 @@
 
         async function carregarOrcamentos() {
             try {
-                const res = await fetch('/categoria/orcamento/listar_orcamentos');
+                const res = await fetch('/categorias/orcamentos/listar_orcamentos');
                 if (!res.ok) throw new Error(`Erro HTTP ${res.status}`);
                 const dados = await res.json();
                 const lista = Array.isArray(dados) ? dados : [];
@@ -4254,7 +4254,7 @@
             if (!window.itensOrcamentoAtual.length) { mostrarNotificacao('Adicione pelo menos um item ao orçamento.', 'erro'); return; }
             const total = window.itensOrcamentoAtual.reduce((s,i)=>s+Number(i.total||0),0);
             const payload={obra_id:document.getElementById('orcamento_obra_id').value,categoria:document.getElementById('orcamento_categoria').value,nome:document.getElementById('orcamento_nome').value.trim(),valor:total,data:document.getElementById('orcamento_data').value,itens:window.itensOrcamentoAtual};
-            try { const res=await fetch('/categoria/orcamento/adicionar_orcamento',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}); const data=await res.json(); if(!res.ok||!data.sucesso)throw new Error(data.erro||'Não foi possível salvar o orçamento.'); document.getElementById('form-orcamento')?.reset(); window.itensOrcamentoAtual=[]; renderizarItensOrcamento(); definirDataAtualOrcamento(); alterarTipoItemOrcamento(); mostrarNotificacao('Orçamento salvo com sucesso.','sucesso'); await carregarOrcamentos(); } catch(err){ console.error(err); mostrarNotificacao(err.message||'Erro de comunicação com o servidor.','erro'); }
+            try { const res=await fetch('/categorias/orcamentos/adicionar_orcamento',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}); const data=await res.json(); if(!res.ok||!data.sucesso)throw new Error(data.erro||'Não foi possível salvar o orçamento.'); document.getElementById('form-orcamento')?.reset(); window.itensOrcamentoAtual=[]; renderizarItensOrcamento(); definirDataAtualOrcamento(); alterarTipoItemOrcamento(); mostrarNotificacao('Orçamento salvo com sucesso.','sucesso'); await carregarOrcamentos(); } catch(err){ console.error(err); mostrarNotificacao(err.message||'Erro de comunicação com o servidor.','erro'); }
         }
 
         function editarOrcamentoPorId(itemCodificado) {
@@ -4275,7 +4275,7 @@
             if (novaData === null) return;
             const payload = {obra_id: item.obra_id ?? '', categoria: item.categoria ?? '', nome: novoNome.trim(), valor: novoValor, data: novaData};
             try {
-                const res = await fetch(`/categoria/orcamento/editar/${encodeURIComponent(item.id)}`, {
+                const res = await fetch(`/categorias/orcamentos/editar/${encodeURIComponent(item.id)}`, {
                     method: 'PUT', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload)
                 });
                 const data = await res.json();
@@ -4291,7 +4291,7 @@
         async function excluirOrcamento(id) {
             if (!id || !confirm('Tem certeza que deseja excluir este orçamento?')) return;
             try {
-                const res = await fetch(`/categoria/orcamento/deletar/${encodeURIComponent(id)}`, {method: 'DELETE'});
+                const res = await fetch(`/categorias/orcamentos/deletar/${encodeURIComponent(id)}`, {method: 'DELETE'});
                 const data = await res.json();
                 if (!res.ok || !data.sucesso) throw new Error(data.erro || 'Não foi possível excluir o orçamento.');
                 mostrarNotificacao('Orçamento excluído com sucesso.', 'sucesso');
