@@ -10,6 +10,7 @@ from database.init import init_db
 from database.connection import get_db_connection
 from routes.extrato import extrato_bp
 from routes.download import download_bp
+from routes.produtos import produtos_bp
 
 
 
@@ -21,6 +22,7 @@ app.register_blueprint(lancamentos_bp)
 app.register_blueprint(site_bp)
 app.register_blueprint(extrato_bp)
 app.register_blueprint(download_bp)
+app.register_blueprint(produtos_bp)
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
 
