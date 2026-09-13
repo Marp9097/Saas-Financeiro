@@ -5,6 +5,7 @@ from functions.transactions import get_all_saidas, get_all_entradas
 
 
 
+
 site_bp = Blueprint("site", __name__)
 
 

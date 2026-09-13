@@ -11,6 +11,7 @@ from database.connection import get_db_connection
 from routes.extrato import extrato_bp
 from routes.download import download_bp
 from routes.produtos import produtos_bp
+from routes.servicos import servicos_bp
 
 
 
@@ -23,6 +24,7 @@ app.register_blueprint(site_bp)
 app.register_blueprint(extrato_bp)
 app.register_blueprint(download_bp)
 app.register_blueprint(produtos_bp)
+app.register_blueprint(servicos_bp)
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
 
