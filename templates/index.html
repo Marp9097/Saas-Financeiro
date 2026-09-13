@@ -4411,12 +4411,161 @@
                 );
             }
         }
-        async function carregarProdutosOrcamento(){try{const r=await fetch('/produtos/listar');if(!r.ok)throw new Error();const d=await r.json();window.produtosOrcamento=Array.isArray(d)?d:[];}catch(e){window.produtosOrcamento=[];}renderizarCatalogoOrcamento();alterarTipoItemOrcamento();}
-        async function carregarServicosOrcamento(){try{const r=await fetch('/servicos/orcamentos/listar_servicos');if(!r.ok)throw new Error();const d=await r.json();window.servicosOrcamento=Array.isArray(d)?d:[];}catch(e){window.servicosOrcamento=[];}renderizarCatalogoOrcamento();alterarTipoItemOrcamento();}
-        async function cadastrarProdutoOrcamento(event){event.preventDefault();const p={nome:document.getElementById('produto_nome').value.trim(),preco:document.getElementById('produto_preco').value,unidade:document.getElementById('produto_unidade').value.trim(),categoria:document.getElementById('produto_categoria_servico').value};try{const r=await fetch('/produtos/cadastrar',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(p)});const d=await r.json();if(!r.ok||!d.sucesso)throw new Error(d.erro||'Não foi possível salvar o produto.');event.target.reset();await carregarProdutosOrcamento();mostrarNotificacao('Produto salvo com sucesso.','sucesso');}catch(e){mostrarNotificacao(e.message||'Erro de comunicação com o servidor.','erro');}}
-        async function cadastrarServicoOrcamento(event){event.preventDefault();const p={nome:document.getElementById('servico_nome').value.trim(),preco:document.getElementById('servico_preco').value,categoria:document.getElementById('servico_categoria').value,calculo:document.getElementById('servico_calculo').value};try{const r=await fetch(' /servicos/orcamentos/servicos/adicionar',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(p)});const d=await r.json();if(!r.ok||!d.sucesso)throw new Error(d.erro||'Não foi possível salvar o serviço.');event.target.reset();await carregarServicosOrcamento();mostrarNotificacao('Serviço salvo com sucesso.','sucesso');}catch(e){mostrarNotificacao(e.message||'Erro de comunicação com o servidor.','erro');}}
-        function rotuloCalculoServico(c){return ({unidade:'Quantidade',linear:'Metro linear',area:'Área',volume:'Volume'})[c]||'Quantidade';}
-        function renderizarCatalogoOrcamento(){const cp=document.getElementById('contador-produtos-orcamento'),cs=document.getElementById('contador-servicos-orcamento');if(cp)cp.textContent=window.produtosOrcamento.length;if(cs)cs.textContent=window.servicosOrcamento.length;const lp=document.getElementById('lista-produtos-orcamento'),ls=document.getElementById('lista-servicos-orcamento');if(lp)lp.innerHTML=window.produtosOrcamento.length?window.produtosOrcamento.map(p=>`<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 rounded-xl border border-slate-800 bg-slate-950/50 p-3"><div><p class="font-medium text-slate-200">${escaparHTML(p.nome||'')}</p><p class="text-xs text-slate-500">${escaparHTML(p.categoria||'Sem categoria')} · ${escaparHTML(p.unidade||'un')}</p></div><div class="text-sm font-semibold text-sky-400">R$ ${formatarNumeroMoeda(p.preco)}</div></div>`).join(''):'<p class="text-sm text-slate-500 italic">Nenhum produto cadastrado.</p>';if(ls)ls.innerHTML=window.servicosOrcamento.length?window.servicosOrcamento.map(x=>`<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 rounded-xl border border-slate-800 bg-slate-950/50 p-3"><div><p class="font-medium text-slate-200">${escaparHTML(x.nome||'')}</p><p class="text-xs text-slate-500">${escaparHTML(x.categoria||'Sem categoria')} · ${escaparHTML(rotuloCalculoServico(x.calculo))}</p></div><div class="text-sm font-semibold text-violet-400">R$ ${formatarNumeroMoeda(x.preco)}</div></div>`).join(''):'<p class="text-sm text-slate-500 italic">Nenhum serviço cadastrado.</p>';}
+        function extrairRegistrosCatalogo(dados) {
+            const registros = Array.isArray(dados?.[0]) ? dados[0] : dados;
+            return Array.isArray(registros) ? registros : [];
+        }
+
+        async function carregarProdutosOrcamento() {
+            try {
+                const resposta = await fetch('/produtos/listar');
+                if (!resposta.ok) throw new Error('Erro ao carregar produtos');
+
+                const dados = await resposta.json();
+                window.produtosOrcamento = extrairRegistrosCatalogo(dados).map(produto => ({
+                    ...produto,
+                    unidade: produto.unidade || produto.uni_medida || 'un'
+                }));
+            } catch (erro) {
+                console.error('Erro ao carregar produtos:', erro);
+                window.produtosOrcamento = [];
+                mostrarNotificacao('Não foi possível carregar os produtos.', 'erro');
+            }
+
+            renderizarCatalogoOrcamento();
+            alterarTipoItemOrcamento();
+        }
+
+        async function carregarServicosOrcamento() {
+            try {
+                const resposta = await fetch('/servicos/orcamentos/listar_servicos');
+                if (!resposta.ok) throw new Error('Erro ao carregar serviços');
+
+                const dados = await resposta.json();
+                window.servicosOrcamento = extrairRegistrosCatalogo(dados).map(servico => ({
+                    ...servico,
+                    calculo: servico.calculo || servico.formula || 'unidade'
+                }));
+            } catch (erro) {
+                console.error('Erro ao carregar serviços:', erro);
+                window.servicosOrcamento = [];
+                mostrarNotificacao('Não foi possível carregar os serviços.', 'erro');
+            }
+
+            renderizarCatalogoOrcamento();
+            alterarTipoItemOrcamento();
+        }
+
+        async function cadastrarProdutoOrcamento(event) {
+            event.preventDefault();
+            const produto = {
+                nome: document.getElementById('produto_nome').value.trim(),
+                preco: document.getElementById('produto_preco').value,
+                unidade: document.getElementById('produto_unidade').value.trim(),
+                categoria: document.getElementById('produto_categoria_servico').value
+            };
+
+            try {
+                const resposta = await fetch('/produtos/cadastrar', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(produto)
+                });
+                const dados = await resposta.json();
+                if (!resposta.ok || !dados.sucesso) {
+                    throw new Error(dados.erro || 'Não foi possível salvar o produto.');
+                }
+
+                event.target.reset();
+                await carregarProdutosOrcamento();
+                mostrarNotificacao('Produto salvo com sucesso.', 'sucesso');
+            } catch (erro) {
+                mostrarNotificacao(erro.message || 'Erro de comunicação com o servidor.', 'erro');
+            }
+        }
+
+        async function cadastrarServicoOrcamento(event) {
+            event.preventDefault();
+            const servico = {
+                nome: document.getElementById('servico_nome').value.trim(),
+                preco: document.getElementById('servico_preco').value,
+                categoria: document.getElementById('servico_categoria').value,
+                calculo: document.getElementById('servico_calculo').value
+            };
+
+            try {
+                const resposta = await fetch('/servicos/orcamentos/servicos/adicionar', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(servico)
+                });
+                const dados = await resposta.json();
+                if (!resposta.ok || !dados.sucesso) {
+                    throw new Error(dados.erro || 'Não foi possível salvar o serviço.');
+                }
+
+                event.target.reset();
+                await carregarServicosOrcamento();
+                mostrarNotificacao('Serviço salvo com sucesso.', 'sucesso');
+            } catch (erro) {
+                mostrarNotificacao(erro.message || 'Erro de comunicação com o servidor.', 'erro');
+            }
+        }
+
+        function rotuloCalculoServico(calculo) {
+            return ({
+                unidade: 'Quantidade',
+                linear: 'Metro linear',
+                area: 'Área',
+                volume: 'Volume'
+            })[calculo] || 'Quantidade';
+        }
+
+        function renderizarCatalogoOrcamento() {
+            const contadorProdutos = document.getElementById('contador-produtos-orcamento');
+            const contadorServicos = document.getElementById('contador-servicos-orcamento');
+            const listaProdutos = document.getElementById('lista-produtos-orcamento');
+            const listaServicos = document.getElementById('lista-servicos-orcamento');
+
+            if (contadorProdutos) contadorProdutos.textContent = window.produtosOrcamento.length;
+            if (contadorServicos) contadorServicos.textContent = window.servicosOrcamento.length;
+
+            if (listaProdutos) {
+                listaProdutos.innerHTML = window.produtosOrcamento.length
+                    ? window.produtosOrcamento.map(produto => `
+                        <div class="flex items-center justify-between gap-4 rounded-xl border border-slate-800 bg-slate-950/50 p-3">
+                            <div class="min-w-0">
+                                <p class="font-medium text-slate-200 break-words">${escaparHTML(produto.nome || '')}</p>
+                                <p class="text-xs text-slate-500 mt-1 break-words">
+                                    ${escaparHTML(capitalizar(produto.categoria || 'Sem categoria'))}
+                                    <span class="text-slate-700">|</span>
+                                    Unidade: ${escaparHTML(produto.unidade || 'un')}
+                                </p>
+                            </div>
+                            <p class="shrink-0 text-sm font-semibold text-sky-400">R$ ${formatarNumeroMoeda(produto.preco)}</p>
+                        </div>
+                    `).join('')
+                    : '<p class="text-sm text-slate-500 italic">Nenhum produto cadastrado.</p>';
+            }
+
+            if (listaServicos) {
+                listaServicos.innerHTML = window.servicosOrcamento.length
+                    ? window.servicosOrcamento.map(servico => `
+                        <div class="flex items-center justify-between gap-4 rounded-xl border border-slate-800 bg-slate-950/50 p-3">
+                            <div class="min-w-0">
+                                <p class="font-medium text-slate-200 break-words">${escaparHTML(servico.nome || '')}</p>
+                                <p class="text-xs text-slate-500 mt-1 break-words">
+                                    ${escaparHTML(capitalizar(servico.categoria || 'Sem categoria'))}
+                                    <span class="text-slate-700">|</span>
+                                    Cálculo: ${escaparHTML(rotuloCalculoServico(servico.calculo))}
+                                </p>
+                            </div>
+                            <p class="shrink-0 text-sm font-semibold text-violet-400">R$ ${formatarNumeroMoeda(servico.preco)}</p>
+                        </div>
+                    `).join('')
+                    : '<p class="text-sm text-slate-500 italic">Nenhum serviço cadastrado.</p>';
+            }
+        }
         function alterarTipoItemOrcamento(){const tipo=document.getElementById('orcamento_item_tipo')?.value||'produto', cp=document.getElementById('orcamento_campos_produto'),cs=document.getElementById('orcamento_campos_servico'),select=document.getElementById('orcamento_item_catalogo');if(!select)return;if(cp)cp.classList.toggle('hidden',tipo!=='produto');if(cs)cs.classList.toggle('hidden',tipo!=='servico');const lista=tipo==='produto'?window.produtosOrcamento:window.servicosOrcamento;select.innerHTML='<option value="">Selecione</option>'+lista.map(x=>`<option value="${escaparAtributo(x.id??'')}">${escaparHTML(x.nome||'')}</option>`).join('');document.getElementById('orcamento_item_preco').value='';calcularItemOrcamento();}
         function carregarItemCatalogoOrcamento(){const tipo=document.getElementById('orcamento_item_tipo').value,id=document.getElementById('orcamento_item_catalogo').value,lista=tipo==='produto'?window.produtosOrcamento:window.servicosOrcamento,item=lista.find(x=>String(x.id)===String(id));if(item){document.getElementById('orcamento_item_preco').value=item.preco??'';if(tipo==='produto')document.getElementById('orcamento_item_unidade').value=item.unidade||'';window.calculoServicoAtual=item.calculo||'unidade';}calcularItemOrcamento();}
         function obterFatorCalculoServico(c){const a=Number(document.getElementById('orcamento_medida_1')?.value||0),b=Number(document.getElementById('orcamento_medida_2')?.value||0),d=Number(document.getElementById('orcamento_medida_3')?.value||0);if(c==='linear')return a;if(c==='area')return a*b;if(c==='volume')return a*b*d;return a;}
@@ -4484,7 +4633,7 @@
             if (!window.itensOrcamentoAtual.length) { mostrarNotificacao('Adicione pelo menos um item ao orçamento.', 'erro'); return; }
             const total = window.itensOrcamentoAtual.reduce((s,i)=>s+Number(i.total||0),0);
             const payload={obra_id:document.getElementById('orcamento_obra_id').value,categoria:document.getElementById('orcamento_categoria').value,nome:document.getElementById('orcamento_nome').value.trim(),valor:total,data:document.getElementById('orcamento_data').value,itens:window.itensOrcamentoAtual};
-            try { const res=await fetch('/categorias/orcamentos/adicionar_orcamento',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}); const data=await res.json(); if(!res.ok||!data.sucesso)throw new Error(data.erro||'Não foi possível salvar o orçamento.'); document.getElementById('form-orcamento')?.reset(); window.itensOrcamentoAtual=[]; renderizarItensOrcamento(); definirDataAtualOrcamento(); alterarTipoItemOrcamento(); mostrarNotificacao('Orçamento salvo com sucesso.','sucesso'); await carregarOrcamentos(); } catch(err){ console.error(err); mostrarNotificacao(err.message||'Erro de comunicação com o servidor.','erro'); }
+            try { const res=await fetch('/orcamentos/salvar_orcamento',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}); const data=await res.json(); if(!res.ok||!data.sucesso)throw new Error(data.erro||'Não foi possível salvar o orçamento.'); document.getElementById('form-orcamento')?.reset(); window.itensOrcamentoAtual=[]; renderizarItensOrcamento(); definirDataAtualOrcamento(); alterarTipoItemOrcamento(); mostrarNotificacao('Orçamento salvo com sucesso.','sucesso'); await carregarOrcamentos(); } catch(err){ console.error(err); mostrarNotificacao(err.message||'Erro de comunicação com o servidor.','erro'); }
         }
 
         function editarOrcamentoPorId(itemCodificado) {

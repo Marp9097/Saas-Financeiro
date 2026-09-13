@@ -68,6 +68,18 @@ def init_db():
         )
     ''')
 
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS orcamentos (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            nome TEXT NOT NULL,
+            data TEXT NOT NULL,
+            obra real NOT NULL,
+            categoria_orcamento TEXT NOT NULL,
+            valor_total REAL NOT NULL
+            )
+    ''')
+
+
     # Inserir categorias padrão caso a tabela esteja vazia
     cursor.execute("SELECT COUNT(*) FROM categorias")
     if cursor.fetchone()[0] == 0:
