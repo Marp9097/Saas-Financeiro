@@ -127,3 +127,36 @@ def deletar_categoria_obra():
 
     return jsonify({'sucesso':'True'}), 200 
 
+@categorias_bp.route('/orcamentos/categorias/adicionar', methods=['POST'])
+def add_categoria_servico():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    json = request.get_json()
+    nome = json.get('nome')
+
+    cursor.execute("""
+    INSERT OR IGNORE INTO categoria_servicos (nome) VALUES (?)
+    """,(nome,))
+
+    conn.commit()
+    conn.close()
+
+    return jsonify({'sucesso':'Categoria Cadastrada'}), 200
+
+@categorias_bp.route('/orcamentos/categorias/listar', methods=['GET'])
+def listar_cate():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+    SELECT * FROM categoria_servicos
+    """)
+
+    categoria = cursor.fetchall()
+
+    conn.close()
+
+    json_return = [dict(item) for item in categoria]
+    return  jsonify(json_return, {"sucesso": "pedido entregue "}), 200
+
