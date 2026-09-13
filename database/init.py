@@ -43,6 +43,16 @@ def init_db():
         )
     ''')
     
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS produtos (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            nome TEXT NOT NULL,
+            preco REAL NOT NULL,
+            uni_medida TEXT NOT NULL,
+            categoria TEXT NOT NULL
+        )
+    ''')
+
     # Inserir categorias padrão caso a tabela esteja vazia
     cursor.execute("SELECT COUNT(*) FROM categorias")
     if cursor.fetchone()[0] == 0:
