@@ -1437,10 +1437,10 @@
                 class="bg-slate-900/90 backdrop-blur-md rounded-2xl shadow-xl border border-slate-800 overflow-hidden efeito-hover"> 
  
                 <div 
-                    class="bg-amber-600/10 border-b border-amber-500/20 px-6 py-4 flex items-center gap-3"> 
+                    class="bg-orange-600/10 border-b border-orange-500/20 px-6 py-4 flex items-center gap-3"> 
  
                     <div 
-                        class="p-2 bg-amber-500/10 rounded-lg border border-amber-500/20 text-amber-400"> 
+                        class="p-2 bg-orange-500/10 rounded-lg border border-orange-500/20 text-orange-400"> 
  
                         <svg 
                             class="w-5 h-5" 
@@ -1473,13 +1473,13 @@
                 <div class="p-6"> 
  
                     <form 
-                        onsubmit="cadastrarCategoria(event)" 
+                        onsubmit="cadastrarCategoriaServico(event)" 
                         class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6"> 
  
                         <div class="md:col-span-2"> 
  
                             <label 
-                                for="nome_categoria" 
+                                for="nome_categoria_servico" 
                                 class="block text-sm font-medium text-slate-300 mb-1.5"> 
  
                                 Nome da Nova Categoria de Serviços
@@ -1489,7 +1489,7 @@
                             <input 
                                 type="text" 
                                 id="nome_categoria_servico"
-                                placeholder="Ex: Software, Marketing, Impostos" 
+                                placeholder="Ex: Elétrica, Hidráulica, Pintura" 
                                 required 
                                 class="w-full px-4 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"> 
  
@@ -1500,7 +1500,7 @@
  
                             <button 
                                 type="submit"
-                                onclick="cadastrarCategoriaServico(event)"  
+                                 
                                 class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-medium py-2.5 px-4 rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg shadow-emerald-900/20 botao-animado"> 
  
                                 <svg 
@@ -1532,12 +1532,12 @@
                         <h4 
                             class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3"> 
  
-                            Categorias de Serviços Cadastradas Cadastradas 
+                            Categorias de Serviços Cadastradas 
  
                         </h4> 
  
                         <div 
-                            id="lista-badges-categorias" 
+                            id="lista-badges-categorias_servicos" 
                             class="flex flex-wrap gap-2"> 
  
                         </div> 
@@ -2436,7 +2436,7 @@
  
  
                 // ============================== 
-                // BADGES 
+                // BADGES DE CATEGORIAS GERAIS
                 // ============================== 
  
                 const containerBadges = 
@@ -2498,8 +2498,7 @@
                     } 
  
                 } 
- 
- 
+
                 // ============================== 
                 // DECLARAR 
                 // ============================== 
@@ -2513,7 +2512,7 @@
                 if (selectDeclarar) { 
  
                     selectDeclarar.innerHTML = 
-                        categorias.map(cat => ` 
+                        window.categoriasCadastradas.map(cat => ` 
  
                             <option 
                                 value="${escaparAtributo(cat.nome)}" 
@@ -2559,7 +2558,7 @@
                         </option> 
                         ` + 
  
-                        categorias.map(cat => ` 
+                        window.categoriasCadastradas.map(cat => ` 
  
                             <option 
                                 value="${escaparAtributo(cat.nome)}" 
@@ -2593,9 +2592,13 @@
  
                     } 
  
-    
-
-                preencherSelectCategorias('editar_categoria', document.getElementById('editar_categoria')?.value || '');            } 
+                } 
+ 
+ 
+                preencherSelectCategorias( 
+                    'editar_categoria', 
+                    document.getElementById('editar_categoria')?.value || ''
+                );
  
  
             } catch (err) { 
@@ -4293,9 +4296,121 @@
 
         function formatarNumeroMoeda(valor) { return Number(valor || 0).toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2}); }
         function preencherSelectCategoriaServicos(id, valorSelecionado='') { const select=document.getElementById(id); if(!select)return; const lista=window.categoriasOrcamento||[]; select.innerHTML='<option value="">Selecione uma categoria</option>'+lista.map(c=>`<option value="${escaparAtributo(c.nome||'')}">${escaparHTML(capitalizar(c.nome||''))}</option>`).join(''); if(valorSelecionado)select.value=valorSelecionado; }
-        async function carregarCategoriasOrcamento() { try { const res=await fetch('/categorias/orcamentos/categorias/listar'); if(!res.ok)throw new Error(); const d=await res.json(); window.categoriasOrcamento=Array.isArray(d)?d:[]; } catch(e){ console.error(e); window.categoriasOrcamento=[]; } const c=document.getElementById('lista-badges-categorias-servicos'); if(c)c.innerHTML=window.categoriasOrcamento.length?window.categoriasOrcamento.map(x=>`<div class="inline-flex items-center gap-2 px-3.5 py-1.5 bg-slate-950 text-slate-200 rounded-full text-sm font-medium border border-slate-700 efeito-hover"><span>${escaparHTML(capitalizar(x.nome||''))}</span><button type="button" onclick="removerCategoriaServico(${Number(x.id)})" class="text-slate-400 hover:text-rose-400">&times;</button></div>`).join(''):'<p class="text-slate-500 text-sm italic">Nenhuma categoria de serviço cadastrada.</p>'; preencherSelectCategoriaServicos('servico_categoria'); preencherSelectCategoriaServicos('produto_categoria_servico'); }
-        async function cadastrarCategoriaServico(event) { event.preventDefault(); const i=document.getElementById('nome_categoria_servico'), nome=i?.value.trim(); if(!nome)return; try{const r=await fetch('/categorias/orcamentos/categorias/adicionar',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({nome})});const d=await r.json();if(!r.ok||!d.sucesso)throw new Error(d.erro||'Não foi possível cadastrar a categoria.');i.value='';await carregarCategoriasOrcamento();mostrarNotificacao('Categoria de serviço adicionada com sucesso.','sucesso');}catch(e){mostrarNotificacao(e.message||'Erro de comunicação com o servidor.','erro');} }
-        async function removerCategoriaServico(id) { if(!id||!confirm('Excluir esta categoria de serviço?'))return; try{const r=await fetch(`/categorias/orcamentos/categorias/deletar/${encodeURIComponent(id)}`,{method:'DELETE'});const d=await r.json();if(!r.ok||!d.sucesso)throw new Error(d.erro||'Não foi possível excluir a categoria.');await carregarCategoriasOrcamento();mostrarNotificacao('Categoria de serviço excluída.','sucesso');}catch(e){mostrarNotificacao(e.message||'Erro de comunicação com o servidor.','erro');} }
+        async function carregarCategoriasOrcamento() {
+            try {
+                const res = await fetch('/categorias/orcamentos/categorias/listar');
+
+                if (!res.ok) {
+                    throw new Error('Erro HTTP ao carregar categorias de serviço');
+                }
+
+                const dados = await res.json();
+                // O endpoint atual retorna a lista como o primeiro item do JSON.
+                const categorias = Array.isArray(dados?.[0]) ? dados[0] : dados;
+                window.categoriasOrcamento = Array.isArray(categorias) ? categorias : [];
+
+                const containerBadges = document.getElementById(
+                    'lista-badges-categorias_servicos'
+                );
+
+                if (containerBadges) {
+                    if (window.categoriasOrcamento.length === 0) {
+                        containerBadges.innerHTML =
+                            '<p class="text-slate-500 text-sm italic">Nenhuma categoria de serviço cadastrada.</p>';
+                    } else {
+                        containerBadges.innerHTML = window.categoriasOrcamento
+                            .map(categoria => `
+                                <div class="inline-flex items-center gap-2 px-3.5 py-1.5 bg-slate-950 text-slate-200 rounded-full text-sm font-medium border border-slate-700 efeito-hover">
+                                    <span>
+                                        ${escaparHTML(capitalizar(categoria.nome || ''))}
+                                    </span>
+                                    <button
+                                        type="button"
+                                        onclick="removerCategoriaServico(${Number(categoria.id)})"
+                                        class="text-slate-400 hover:text-rose-400 focus:outline-none"
+                                        aria-label="Remover categoria de serviço">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                        </svg>
+                                    </button>
+                                </div>
+                            `)
+                            .join('');
+                    }
+                }
+
+                preencherSelectCategoriaServicos('servico_categoria');
+                preencherSelectCategoriaServicos('produto_categoria_servico');
+            } catch (erro) {
+                console.error('Erro ao carregar categorias de serviço:', erro);
+                window.categoriasOrcamento = [];
+                mostrarNotificacao(
+                    'Não foi possível carregar as categorias de serviço.',
+                    'erro'
+                );
+            }
+        }
+
+        async function cadastrarCategoriaServico(event) {
+            event.preventDefault();
+
+            const input = document.getElementById('nome_categoria_servico');
+            const nome = input?.value.trim();
+
+            if (!nome) {
+                return;
+            }
+
+            try {
+                const res = await fetch('/categorias/orcamentos/categorias/adicionar', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({nome})
+                });
+                const dados = await res.json();
+
+                if (!res.ok || !dados.sucesso) {
+                    throw new Error(dados.erro || 'Não foi possível cadastrar a categoria.');
+                }
+
+                input.value = '';
+                await carregarCategoriasOrcamento();
+                mostrarNotificacao('Categoria de serviço adicionada com sucesso.', 'sucesso');
+            } catch (erro) {
+                console.error('Erro ao cadastrar categoria de serviço:', erro);
+                mostrarNotificacao(
+                    erro.message || 'Erro de comunicação com o servidor.',
+                    'erro'
+                );
+            }
+        }
+
+        async function removerCategoriaServico(id) {
+            if (!id || !confirm('Tem certeza que deseja remover esta categoria de serviço?')) {
+                return;
+            }
+
+            try {
+                const res = await fetch(
+                    `/servicos/orcamentos/servicos/deletar?id=${encodeURIComponent(id)}`,
+                    {method: 'DELETE'}
+                );
+                const dados = await res.json();
+
+                if (!res.ok || !dados.sucesso) {
+                    throw new Error(dados.erro || 'Não foi possível remover a categoria.');
+                }
+
+                await carregarCategoriasOrcamento();
+                mostrarNotificacao('Categoria de serviço removida.', 'sucesso');
+            } catch (erro) {
+                console.error('Erro ao remover categoria de serviço:', erro);
+                mostrarNotificacao(
+                    erro.message || 'Erro de comunicação com o servidor.',
+                    'erro'
+                );
+            }
+        }
         async function carregarProdutosOrcamento(){try{const r=await fetch('/produtos/listar');if(!r.ok)throw new Error();const d=await r.json();window.produtosOrcamento=Array.isArray(d)?d:[];}catch(e){window.produtosOrcamento=[];}renderizarCatalogoOrcamento();alterarTipoItemOrcamento();}
         async function carregarServicosOrcamento(){try{const r=await fetch('/servicos/orcamentos/listar_servicos');if(!r.ok)throw new Error();const d=await r.json();window.servicosOrcamento=Array.isArray(d)?d:[];}catch(e){window.servicosOrcamento=[];}renderizarCatalogoOrcamento();alterarTipoItemOrcamento();}
         async function cadastrarProdutoOrcamento(event){event.preventDefault();const p={nome:document.getElementById('produto_nome').value.trim(),preco:document.getElementById('produto_preco').value,unidade:document.getElementById('produto_unidade').value.trim(),categoria:document.getElementById('produto_categoria_servico').value};try{const r=await fetch('/produtos/cadastrar',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(p)});const d=await r.json();if(!r.ok||!d.sucesso)throw new Error(d.erro||'Não foi possível salvar o produto.');event.target.reset();await carregarProdutosOrcamento();mostrarNotificacao('Produto salvo com sucesso.','sucesso');}catch(e){mostrarNotificacao(e.message||'Erro de comunicação com o servidor.','erro');}}

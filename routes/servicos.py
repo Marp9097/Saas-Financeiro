@@ -43,3 +43,19 @@ def listar_servicos():
     conn.close()
 
     return  jsonify(json_to_send,{"sucesso":"Envia Realizado"}), 200
+
+@servicos_bp.route('/orcamentos/servicos/deletar', methods=['DELETE'])
+def deletar_categoria_servico():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    id = request.args.get('id')
+
+    cursor.execute("""
+    DELETE FROM categoria_servicos WHERE id = (?)
+    """,(id,))
+
+    conn.commit()
+    conn.close()
+
+    return jsonify({'sucesso':'Deletado com sucesso'}), 200
