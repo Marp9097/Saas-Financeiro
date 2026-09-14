@@ -4341,6 +4341,7 @@
 
                 preencherSelectCategoriaServicos('servico_categoria');
                 preencherSelectCategoriaServicos('produto_categoria_servico');
+                preencherSelectCategoriaServicos('orcamento_categoria');
             } catch (erro) {
                 console.error('Erro ao carregar categorias de serviço:', erro);
                 window.categoriasOrcamento = [];
@@ -4579,7 +4580,7 @@
 
         async function carregarOrcamentos() {
             try {
-                const res = await fetch('/categorias/orcamentos/listar_orcamentos');
+                const res = await fetch('/orcamentos/listar_orcamentos');
                 if (!res.ok) throw new Error(`Erro HTTP ${res.status}`);
                 const dados = await res.json();
                 const lista = Array.isArray(dados) ? dados : [];

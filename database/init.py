@@ -79,6 +79,27 @@ def init_db():
             )
     ''')
 
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS orcamento_itens (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            orcamento_id INTEGER NOT NULL,
+            tipo TEXT NOT NULL,
+            catalogo_id INTEGER,
+            nome TEXT NOT NULL,
+            categoria TEXT,
+            calculo TEXT,
+            fator REAL NOT NULL,
+            preco REAL NOT NULL,
+            total REAL NOT NULL,
+            formula TEXT,
+            medida_1 REAL,
+            medida_2 REAL,
+            medida_3 REAL,
+            unidade TEXT,
+            FOREIGN KEY (orcamento_id) REFERENCES orcamentos(id)
+        )
+    """)
+
 
     # Inserir categorias padrão caso a tabela esteja vazia
     cursor.execute("SELECT COUNT(*) FROM categorias")
