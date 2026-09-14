@@ -853,12 +853,12 @@
         <!-- ========================================================= -->
         <!-- ==================== ORÇAMENTOS ========================= -->
         <section id="aba-orcamentos" class="aba-conteudo hidden space-y-6 max-w-5xl mx-auto">
-            <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-xl efeito-hover">
+            <div id="painel-novo-orcamento" class="hidden bg-slate-900/90 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-xl efeito-hover">
                 <div class="mb-6"><h3 class="text-xl font-bold text-slate-100">Novo Orçamento</h3><p class="text-xs text-slate-500 mt-1">Monte o orçamento com produtos e serviços e deixe os cálculos automáticos.</p></div>
                 <form id="form-orcamento" onsubmit="salvarOrcamento(event)" class="space-y-4">
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                        <div><label class="block text-sm font-medium text-slate-300 mb-1">Obra / Projeto</label><select id="orcamento_obra_id" required class="w-full px-4 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-slate-100 focus:ring-2 focus:ring-indigo-500 outline-none"><option value="">Selecione uma obra</option></select></div>
-                        <div><label class="block text-sm font-medium text-slate-300 mb-1">Categoria do orçamento</label><select id="orcamento_categoria" required class="w-full px-4 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-slate-100 focus:ring-2 focus:ring-indigo-500 outline-none"></select></div>
+                        <div><label class="block text-sm font-medium text-slate-300 mb-1">Obra / Projeto</label><input id="orcamento_obra_busca" list="orcamento_obras_lista" oninput="selecionarObraOrcamento()" required placeholder="Pesquise uma obra" class="w-full px-4 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-slate-100"><input type="hidden" id="orcamento_obra_id"><datalist id="orcamento_obras_lista"></datalist></div>
+                        <div><label class="block text-sm font-medium text-slate-300 mb-1">Categoria do orçamento</label><input id="orcamento_categoria" list="orcamento_categorias_lista" required placeholder="Pesquise uma categoria" class="w-full px-4 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-slate-100"><datalist id="orcamento_categorias_lista"></datalist></div>
                         <div><label class="block text-sm font-medium text-slate-300 mb-1">Data</label><input type="date" id="orcamento_data" required class="w-full px-4 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-slate-100 focus:ring-2 focus:ring-indigo-500 outline-none"></div>
                     </div>
                     <div><label class="block text-sm font-medium text-slate-300 mb-1">Nome do orçamento</label><input type="text" id="orcamento_nome" required placeholder="Ex: Orçamento reforma da cozinha" class="w-full px-4 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-slate-100 focus:ring-2 focus:ring-indigo-500 outline-none"></div>
@@ -866,7 +866,7 @@
                         <h4 class="font-semibold text-lg text-slate-100">Adicionar item</h4><p class="text-xs text-slate-500 mt-1">Produtos usam quantidade. Serviços podem usar unidade, metro, área ou volume.</p>
                         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-4">
                             <div><label class="block text-sm font-medium text-slate-300 mb-1">Tipo</label><select id="orcamento_item_tipo" onchange="alterarTipoItemOrcamento()" class="w-full px-4 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-slate-100 focus:ring-2 focus:ring-indigo-500 outline-none"><option value="produto">Produto</option><option value="servico">Serviço</option></select></div>
-                            <div class="sm:col-span-1 lg:col-span-2"><label class="block text-sm font-medium text-slate-300 mb-1">Produto / Serviço</label><select id="orcamento_item_catalogo" onchange="carregarItemCatalogoOrcamento()" class="w-full px-4 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-slate-100 focus:ring-2 focus:ring-indigo-500 outline-none"></select></div>
+                            <div class="sm:col-span-1 lg:col-span-2"><label class="block text-sm font-medium text-slate-300 mb-1">Produto / Serviço</label><input id="orcamento_item_catalogo" list="orcamento_catalogo_lista" oninput="carregarItemCatalogoOrcamento()" placeholder="Pesquise um produto ou serviço" class="w-full px-4 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-slate-100"><datalist id="orcamento_catalogo_lista"></datalist></div>
                             <div><label class="block text-sm font-medium text-slate-300 mb-1">Preço unitário (R$)</label><input type="number" step="0.01" min="0" id="orcamento_item_preco" oninput="calcularItemOrcamento()" placeholder="0,00" class="w-full px-4 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-slate-100 focus:ring-2 focus:ring-indigo-500 outline-none"></div>
                         </div>
                         <div id="orcamento_campos_produto" class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4"><div><label class="block text-sm font-medium text-slate-300 mb-1">Quantidade</label><input type="number" step="0.01" min="0.01" value="1" id="orcamento_item_quantidade" oninput="calcularItemOrcamento()" class="w-full px-4 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-slate-100 focus:ring-2 focus:ring-indigo-500 outline-none"></div><div><label class="block text-sm font-medium text-slate-300 mb-1">Unidade</label><input type="text" id="orcamento_item_unidade" placeholder="un, m, kg, caixa..." class="w-full px-4 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-slate-100 focus:ring-2 focus:ring-indigo-500 outline-none"></div></div>
@@ -878,7 +878,7 @@
                 </form>
             </div>
             <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-xl efeito-hover"><div class="mb-4"><h3 class="text-lg font-bold text-slate-100">Produtos e serviços</h3><p class="text-xs text-slate-500 mt-1">Use o catálogo para não precisar digitar os mesmos dados em cada orçamento.</p></div><div class="grid grid-cols-1 sm:grid-cols-2 gap-4"><div class="rounded-xl border border-slate-800 bg-slate-950/50 p-4"><p class="text-xs text-slate-500">Produtos cadastrados</p><p id="contador-produtos-orcamento" class="text-2xl font-bold text-slate-100 mt-1">0</p></div><div class="rounded-xl border border-slate-800 bg-slate-950/50 p-4"><p class="text-xs text-slate-500">Serviços cadastrados</p><p id="contador-servicos-orcamento" class="text-2xl font-bold text-slate-100 mt-1">0</p></div></div><p class="text-xs text-slate-500 mt-4">O cadastro completo de produtos, serviços e categorias fica em Configurações.</p></div>
-            <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-xl efeito-hover"><div class="mb-4"><h3 class="text-lg font-bold text-slate-100">Orçamentos cadastrados</h3><p class="text-xs text-slate-500 mt-1">Consulte os orçamentos já salvos.</p></div><div class="overflow-x-auto"><table class="w-full min-w-[760px] text-left text-sm text-slate-300"><thead class="text-xs uppercase bg-slate-800/50 text-slate-400"><tr><th class="p-3">Data</th><th class="p-3">Obra</th><th class="p-3">Descrição</th><th class="p-3">Categoria</th><th class="p-3 text-right">Valor</th><th class="p-3 text-right">Ações</th></tr></thead><tbody id="tabela-orcamentos-corpo" class="divide-y divide-slate-800"></tbody></table></div><div id="orcamentos-mobile" class="sm:hidden grid grid-cols-1 gap-3 mt-3"></div></div>
+            <div id="card-lista-orcamentos" class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-xl efeito-hover"><div class="mb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"><div><h3 class="text-lg font-bold text-slate-100">Orçamentos cadastrados</h3><p class="text-xs text-slate-500 mt-1">Consulte, edite, exporte ou crie um novo orçamento.</p></div><button type="button" onclick="alternarNovoOrcamento()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-2.5 px-4 rounded-xl shadow-lg transition-all botao-animado">+ Novo orçamento</button></div><div class="overflow-x-auto"><table class="w-full min-w-[760px] text-left text-sm text-slate-300"><thead class="text-xs uppercase bg-slate-800/50 text-slate-400"><tr><th class="p-3">Data</th><th class="p-3">Obra</th><th class="p-3">Descrição</th><th class="p-3">Categoria</th><th class="p-3 text-right">Valor</th><th class="p-3 text-right">Ações</th></tr></thead><tbody id="tabela-orcamentos-corpo" class="divide-y divide-slate-800"></tbody></table></div><div id="orcamentos-mobile" class="sm:hidden grid grid-cols-1 gap-3 mt-3"></div></div>
         </section>
 
         <!-- ==================== EXTRATO ============================ --> 
@@ -1789,6 +1789,20 @@
             </div>
         </div>
 
+        <!-- Modal moderno para consulta e edição completa de orçamentos. -->
+        <div id="modal-orcamento" class="hidden fixed inset-0 z-[100] bg-slate-950/80 backdrop-blur-sm p-4 flex items-center justify-center" role="dialog" aria-modal="true">
+            <div class="w-full max-w-5xl max-h-[92vh] overflow-y-auto bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl p-4 sm:p-6">
+                <div class="flex items-start justify-between gap-4 mb-6">
+                    <div>
+                        <p id="modal-orcamento-etiqueta" class="text-xs uppercase tracking-widest text-indigo-400 font-bold">Orçamento</p>
+                        <h3 id="modal-orcamento-titulo" class="text-xl font-bold text-slate-100 mt-1">Detalhes do orçamento</h3>
+                    </div>
+                    <button type="button" onclick="fecharModalOrcamento()" class="text-slate-400 hover:text-white text-2xl px-2" aria-label="Fechar">&times;</button>
+                </div>
+                <div id="modal-orcamento-conteudo"></div>
+            </div>
+        </div>
+
     </main> 
  
  
@@ -1812,6 +1826,15 @@
             if (!container) { 
                 return; 
             } 
+
+            // Evita vários avisos idênticos empilhados na tela.
+            if ([...container.children].some(toast => toast.dataset.mensagem === mensagem)) {
+                return;
+            }
+
+            while (container.children.length >= 3) {
+                container.firstElementChild.remove();
+            }
  
             const cores = { 
  
@@ -1835,6 +1858,9 @@
             toast.className = 
                 'notificacao-toast ' + 
                 (cores[tipo] || cores.info); 
+
+            toast.dataset.mensagem = mensagem;
+            toast.setAttribute('role', 'status');
  
             toast.textContent = mensagem; 
  
@@ -4600,7 +4626,7 @@
                                 <td class="p-3 text-slate-400">${escaparHTML(capitalizar(item.categoria || ''))}</td>
                                 <td class="p-3 text-right font-semibold text-amber-400 whitespace-nowrap">R$ ${formatarValorMonetario(item.valor)}</td>
                                 <td class="p-3 text-right whitespace-nowrap">
-                                    ${item.id == null ? '' : `<button type="button" onclick="editarOrcamentoPorId('${codificado}')" class="text-indigo-400 hover:text-indigo-300 text-xs font-semibold mr-2">Editar</button><button type="button" onclick="excluirOrcamento(${Number(item.id)})" class="text-rose-400 hover:text-rose-300 text-xs font-semibold">Excluir</button>`}
+                                    ${item.id == null ? '' : `<button type="button" onclick="visualizarOrcamentoPorId('${codificado}')" class="text-sky-400 hover:text-sky-300 text-xs font-semibold mr-3">Visualizar</button><button type="button" onclick="editarOrcamentoPorId('${codificado}')" class="text-indigo-400 hover:text-indigo-300 text-xs font-semibold mr-3">Editar</button><button type="button" onclick="excluirOrcamento(${Number(item.id)})" class="text-rose-400 hover:text-rose-300 text-xs font-semibold">Excluir</button>`}
                                 </td>
                             </tr>
                         `;
@@ -4618,7 +4644,7 @@
                                 <p class="text-base font-semibold text-slate-100 break-words">${escaparHTML(item.nome || '')}</p>
                                 <p class="text-sm text-slate-400 mt-1">${escaparHTML(item.obra_nome || item.obra || '')}</p>
                                 <p class="text-sm text-slate-500 mt-1">${escaparHTML(capitalizar(item.categoria || ''))}</p>
-                                ${item.id == null ? '' : `<div class="flex justify-end gap-3 mt-4"><button type="button" onclick="editarOrcamentoPorId('${codificado}')" class="text-indigo-400 hover:text-indigo-300 text-xs font-semibold">Editar</button><button type="button" onclick="excluirOrcamento(${Number(item.id)})" class="text-rose-400 hover:text-rose-300 text-xs font-semibold">Excluir</button></div>`}
+                                ${item.id == null ? '' : `<div class="flex justify-end gap-3 mt-4"><button type="button" onclick="visualizarOrcamentoPorId('${codificado}')" class="text-sky-400 hover:text-sky-300 text-xs font-semibold">Visualizar</button><button type="button" onclick="editarOrcamentoPorId('${codificado}')" class="text-indigo-400 hover:text-indigo-300 text-xs font-semibold">Editar</button><button type="button" onclick="excluirOrcamento(${Number(item.id)})" class="text-rose-400 hover:text-rose-300 text-xs font-semibold">Excluir</button></div>`}
                             </div>
                         `;
                     }).join('');
@@ -4637,41 +4663,53 @@
             try { const res=await fetch('/orcamentos/salvar_orcamento',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}); const data=await res.json(); if(!res.ok||!data.sucesso)throw new Error(data.erro||'Não foi possível salvar o orçamento.'); document.getElementById('form-orcamento')?.reset(); window.itensOrcamentoAtual=[]; renderizarItensOrcamento(); definirDataAtualOrcamento(); alterarTipoItemOrcamento(); mostrarNotificacao('Orçamento salvo com sucesso.','sucesso'); await carregarOrcamentos(); } catch(err){ console.error(err); mostrarNotificacao(err.message||'Erro de comunicação com o servidor.','erro'); }
         }
 
-        function editarOrcamentoPorId(itemCodificado) {
-            try { editarOrcamento(JSON.parse(decodeURIComponent(itemCodificado))); }
-            catch (err) { console.error(err); mostrarNotificacao('Não foi possível abrir o orçamento.', 'erro'); }
+        function obterOrcamentoCodificado(itemCodificado) { return JSON.parse(decodeURIComponent(itemCodificado)); }
+        function fecharModalOrcamento() { document.getElementById('modal-orcamento')?.classList.add('hidden'); }
+        function visualizarOrcamentoPorId(itemCodificado) { try { visualizarOrcamento(obterOrcamentoCodificado(itemCodificado)); } catch (err) { console.error(err); mostrarNotificacao('Não foi possível abrir o orçamento.', 'erro'); } }
+        function editarOrcamentoPorId(itemCodificado) { try { abrirEditorOrcamento(obterOrcamentoCodificado(itemCodificado)); } catch (err) { console.error(err); mostrarNotificacao('Não foi possível abrir o orçamento.', 'erro'); } }
+
+        function visualizarOrcamento(item) {
+            const modal = document.getElementById('modal-orcamento');
+            const conteudo = document.getElementById('modal-orcamento-conteudo');
+            if (!modal || !conteudo) return;
+            document.getElementById('modal-orcamento-etiqueta').textContent = 'Visualização';
+            document.getElementById('modal-orcamento-titulo').textContent = item.nome || 'Orçamento';
+            const itens = Array.isArray(item.itens) ? item.itens : [];
+            conteudo.innerHTML = `<div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6"><div class="rounded-xl bg-slate-950 border border-slate-800 p-3"><p class="text-xs text-slate-500">Obra</p><p class="text-sm text-slate-200 mt-1">${escaparHTML(item.obra_nome || '')}</p></div><div class="rounded-xl bg-slate-950 border border-slate-800 p-3"><p class="text-xs text-slate-500">Categoria</p><p class="text-sm text-slate-200 mt-1">${escaparHTML(capitalizar(item.categoria || ''))}</p></div><div class="rounded-xl bg-slate-950 border border-slate-800 p-3"><p class="text-xs text-slate-500">Data</p><p class="text-sm text-slate-200 mt-1">${escaparHTML(item.data || '')}</p></div><div class="rounded-xl bg-emerald-500/10 border border-emerald-500/20 p-3"><p class="text-xs text-emerald-300">Total</p><p class="text-lg font-bold text-emerald-400 mt-1">R$ ${formatarValorMonetario(item.valor)}</p></div></div><div class="flex items-center justify-between mb-3"><h4 class="font-semibold text-slate-100">Itens (${itens.length})</h4><button type="button" onclick="abrirEditorOrcamento(window.orcamentoVisualizado)" class="bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold py-2 px-4 rounded-xl transition-all">Editar orçamento</button></div><div class="space-y-2">${itens.length ? itens.map(i => `<div class="grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-3 rounded-xl bg-slate-950 border border-slate-800 p-4"><div><p class="font-medium text-slate-100">${escaparHTML(i.nome || '')}</p><p class="text-xs text-slate-500 mt-1">${escaparHTML(capitalizar(i.tipo || ''))} · ${escaparHTML(i.formula || `${i.fator || 0} × R$ ${formatarValorMonetario(i.preco)}`)}</p></div><p class="font-semibold text-emerald-400">R$ ${formatarValorMonetario(i.total)}</p></div>`).join('') : '<p class="text-sm text-slate-500">Nenhum item cadastrado.</p>'}</div>`;
+            window.orcamentoVisualizado = item;
+            modal.classList.remove('hidden');
         }
 
-        async function editarOrcamento(item) {
-            if (!item || item.id == null) {
-                mostrarNotificacao('Este orçamento não possui ID para edição.', 'erro');
-                return;
-            }
-            const novoNome = prompt('Nome do orçamento:', item.nome || '');
-            if (novoNome === null) return;
-            const novoValor = prompt('Valor planejado:', item.valor ?? '');
-            if (novoValor === null) return;
-            const novaData = prompt('Data (AAAA-MM-DD):', normalizarDataParaInput(item.data));
-            if (novaData === null) return;
-            const payload = {obra_id: item.obra_id ?? '', categoria: item.categoria ?? '', nome: novoNome.trim(), valor: novoValor, data: novaData};
-            try {
-                const res = await fetch(`/categorias/orcamentos/editar/${encodeURIComponent(item.id)}`, {
-                    method: 'PUT', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload)
-                });
-                const data = await res.json();
-                if (!res.ok || !data.sucesso) throw new Error(data.erro || 'Não foi possível editar o orçamento.');
-                mostrarNotificacao('Orçamento atualizado com sucesso.', 'sucesso');
-                await carregarOrcamentos();
-            } catch (err) {
-                console.error('Erro ao editar orçamento:', err);
-                mostrarNotificacao(err.message || 'Erro de comunicação com o servidor.', 'erro');
-            }
+        function abrirEditorOrcamento(item) {
+            window.orcamentoEditando = JSON.parse(JSON.stringify(item));
+            const modal = document.getElementById('modal-orcamento');
+            const conteudo = document.getElementById('modal-orcamento-conteudo');
+            const obras = Array.isArray(window.obrasCadastradas) ? window.obrasCadastradas : [];
+            const categorias = Array.isArray(window.categoriasOrcamento) ? window.categoriasOrcamento : [];
+            const itens = Array.isArray(item.itens) ? item.itens : [];
+            document.getElementById('modal-orcamento-etiqueta').textContent = 'Edição completa';
+            document.getElementById('modal-orcamento-titulo').textContent = 'Editar orçamento';
+            conteudo.innerHTML = `<form id="form-editar-orcamento" onsubmit="salvarEdicaoOrcamento(event)" class="space-y-5"><div class="grid grid-cols-1 sm:grid-cols-2 gap-4"><label class="text-sm text-slate-300">Nome<input id="editar-orcamento-nome" required value="${escaparAtributo(item.nome || '')}" class="mt-1.5 w-full px-4 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-slate-100"></label><label class="text-sm text-slate-300">Data<input id="editar-orcamento-data" type="date" required value="${escaparAtributo(normalizarDataParaInput(item.data))}" class="mt-1.5 w-full px-4 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-slate-100"></label><label class="text-sm text-slate-300">Obra<select id="editar-orcamento-obra" required class="mt-1.5 w-full px-4 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-slate-100">${obras.map(o=>`<option value="${escaparAtributo(o.id)}" ${String(o.id)===String(item.obra_id)?'selected':''}>${escaparHTML(o.nome)}</option>`).join('')}</select></label><label class="text-sm text-slate-300">Categoria<select id="editar-orcamento-categoria" required class="mt-1.5 w-full px-4 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-slate-100">${categorias.map(c=>`<option value="${escaparAtributo(c.nome)}" ${c.nome===item.categoria?'selected':''}>${escaparHTML(capitalizar(c.nome))}</option>`).join('')}</select></label></div><div><div class="flex items-center justify-between mb-3"><h4 class="font-semibold text-slate-100">Itens do orçamento</h4><span class="text-xs text-slate-500">Edite quantidade/fator, preço, medidas e informações de cada item.</span></div><div class="space-y-3">${itens.map((i, n) => `<div class="item-edicao rounded-xl bg-slate-950 border border-slate-800 p-4" data-indice="${n}"><div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3"><label class="text-xs text-slate-400">Nome<input data-campo="nome" value="${escaparAtributo(i.nome || '')}" required class="mt-1 w-full p-2 bg-slate-900 border border-slate-700 rounded-lg text-slate-100"></label><label class="text-xs text-slate-400">Tipo<select data-campo="tipo" class="mt-1 w-full p-2 bg-slate-900 border border-slate-700 rounded-lg text-slate-100"><option value="produto" ${i.tipo==='produto'?'selected':''}>Produto</option><option value="servico" ${i.tipo==='servico'?'selected':''}>Serviço</option></select></label><label class="text-xs text-slate-400">Fator / quantidade<input data-campo="fator" type="number" step="0.01" min="0" value="${i.fator ?? 0}" class="mt-1 w-full p-2 bg-slate-900 border border-slate-700 rounded-lg text-slate-100"></label><label class="text-xs text-slate-400">Preço unitário<input data-campo="preco" type="number" step="0.01" min="0" value="${i.preco ?? 0}" class="mt-1 w-full p-2 bg-slate-900 border border-slate-700 rounded-lg text-slate-100"></label><label class="text-xs text-slate-400">Categoria<input data-campo="categoria" value="${escaparAtributo(i.categoria || '')}" class="mt-1 w-full p-2 bg-slate-900 border border-slate-700 rounded-lg text-slate-100"></label><label class="text-xs text-slate-400">Unidade<input data-campo="unidade" value="${escaparAtributo(i.unidade || '')}" class="mt-1 w-full p-2 bg-slate-900 border border-slate-700 rounded-lg text-slate-100"></label><label class="text-xs text-slate-400">Medida 1<input data-campo="medida_1" type="number" step="0.01" value="${i.medida_1 ?? 0}" class="mt-1 w-full p-2 bg-slate-900 border border-slate-700 rounded-lg text-slate-100"></label><label class="text-xs text-slate-400">Medida 2<input data-campo="medida_2" type="number" step="0.01" value="${i.medida_2 ?? 0}" class="mt-1 w-full p-2 bg-slate-900 border border-slate-700 rounded-lg text-slate-100"></label></div></div>`).join('')}</div></div><div class="flex flex-col-reverse sm:flex-row gap-3"><button type="button" onclick="fecharModalOrcamento()" class="sm:w-1/3 py-3 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold">Cancelar</button><button type="submit" class="sm:flex-1 py-3 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold shadow-lg botao-animado">Salvar todas as alterações</button></div></form>`;
+            modal?.classList.remove('hidden');
+        }
+
+        async function salvarEdicaoOrcamento(event) {
+            event.preventDefault();
+            const itemBase = window.orcamentoEditando;
+            const itens = (itemBase.itens || []).map((item, indice) => {
+                const card = document.querySelector(`.item-edicao[data-indice="${indice}"]`);
+                const valor = campo => card.querySelector(`[data-campo="${campo}"]`)?.value;
+                const fator = Number(valor('fator') || 0), preco = Number(valor('preco') || 0);
+                return {...item, nome: valor('nome')?.trim(), tipo: valor('tipo'), fator, preco, total: fator * preco, formula: `${fator} × R$ ${formatarNumeroMoeda(preco)}`, categoria: valor('categoria')?.trim(), unidade: valor('unidade')?.trim(), medida_1: Number(valor('medida_1') || 0), medida_2: Number(valor('medida_2') || 0)};
+            });
+            const payload = {nome: document.getElementById('editar-orcamento-nome').value.trim(), data: document.getElementById('editar-orcamento-data').value, obra_id: document.getElementById('editar-orcamento-obra').value, categoria: document.getElementById('editar-orcamento-categoria').value, valor: itens.reduce((s, i) => s + i.total, 0), itens};
+            try { const res = await fetch(`/orcamentos/${encodeURIComponent(itemBase.id)}`, {method:'PUT', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload)}); const dados=await res.json(); if(!res.ok||!dados.sucesso) throw new Error(dados.erro||'Não foi possível atualizar o orçamento.'); fecharModalOrcamento(); mostrarNotificacao('Orçamento atualizado com sucesso.','sucesso'); await carregarOrcamentos(); } catch(err) { console.error(err); mostrarNotificacao(err.message||'Erro de comunicação com o servidor.','erro'); }
         }
 
         async function excluirOrcamento(id) {
             if (!id || !confirm('Tem certeza que deseja excluir este orçamento?')) return;
             try {
-                const res = await fetch(`/categorias/orcamentos/deletar/${encodeURIComponent(id)}`, {method: 'DELETE'});
+                const res = await fetch(`/orcamentos/${encodeURIComponent(id)}`, {method: 'DELETE'});
                 const data = await res.json();
                 if (!res.ok || !data.sucesso) throw new Error(data.erro || 'Não foi possível excluir o orçamento.');
                 mostrarNotificacao('Orçamento excluído com sucesso.', 'sucesso');
